@@ -1,0 +1,14 @@
+<Addin Type="Standard">
+  <!--Created for Autodesk Inventor Version 23.0-->
+  <ClassId>{5df622b8-f73c-4238-91d0-97e2b5739f0c}</ClassId>
+  <ClientId>{5df622b8-f73c-4238-91d0-97e2b5739f0c}</ClientId>
+  <DisplayName>Inspection</DisplayName>
+  <Description>Inspection</Description>
+  <Assembly>Inspection.dll</Assembly>
+  <LoadOnStartUp>1</LoadOnStartUp>
+  <UserUnloadable>1</UserUnloadable>
+  <Hidden>0</Hidden>
+  <SupportedSoftwareVersionGreaterThan>22..</SupportedSoftwareVersionGreaterThan>
+  <DataVersion>1</DataVersion>
+  <UserInterfaceVersion>1</UserInterfaceVersion>
+</Addin>

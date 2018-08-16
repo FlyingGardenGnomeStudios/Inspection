@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+
+  <assemblyIdentity name="Inspection" version="1.0.0.0"></assemblyIdentity>
+
+  <clrClass clsid="{5df622b8-f73c-4238-91d0-97e2b5739f0c}" progid="Inspection.StandardAddInServer" threadingModel="Both" name="Inspection.Inspection.StandardAddInServer" runtimeVersion=""></clrClass>
+
+  <file name="Inspection.dll" hashalg="SHA1"></file>
+
+</assembly>
