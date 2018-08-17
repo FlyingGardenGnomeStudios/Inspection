@@ -78,6 +78,12 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Autodesk.Inventor.Interop\v4.0_23.0.0.0__d84147f8b4276564\autodesk.inventor.interop.dll</HintPath>
     </Reference>
+    <Reference Include="DropDownPanel">
+      <HintPath>..\..\..\Visual Studio 2015\Projects\DropDownPanel\bin\Debug\DropDownPanel.dll</HintPath>
+    </Reference>
+    <Reference Include="ExpandableGridView">
+      <HintPath>..\..\..\Visual Studio 2015\Projects\TreeGridview\TreeGridView\bin\Release\ExpandableGridView.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System">
@@ -123,6 +129,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Inspection.X.manifest" />
   </ItemGroup>
   <ItemGroup>
@@ -184,8 +191,7 @@
     </PreBuildEvent>
     <PostBuildEvent>call "%25VS140COMNTOOLS%25vsvars32"
 			mt.exe -manifest "$(ProjectDir)Inspection.X.manifest" -outputresource:"$(TargetPath)";#2
-			XCopy "$(TargetPath)" "%AppData%\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R
-		    XCopy "$(ProjectDir)Autodesk.Inspection.Inventor.addin" "%AppData%\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R
-	</PostBuildEvent>
+XCopy "$(TargetPath)" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R
+XCopy "$(ProjectDir)Autodesk.Inspection.Inventor.addin" "%25AppData%25\Autodesk\ApplicationPlugins\$(TargetName)\" /Y /R</PostBuildEvent>
   </PropertyGroup>
 </Project>

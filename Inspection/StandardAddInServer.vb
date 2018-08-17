@@ -12,6 +12,7 @@ Namespace Inspection
         Dim oUserIntrerfaceMgr As UserInterfaceManager
         Dim oWindowValue_Table As DockableWindow
         Dim oWindowCharacteristics As DockableWindow
+        Dim WithEvents m_AppEvents As ApplicationEvents
         Private WithEvents m_uiEvents As UserInterfaceEvents
         Private WithEvents m_AddNew As ButtonDefinition
         Private WithEvents m_Show As ButtonDefinition
@@ -141,7 +142,6 @@ Namespace Inspection
 
             oWindowCharacteristics.AddChild(CharacteristicsChild)
 
-
             oWindowValue_Table.AddChild(ValueTableChild)
             oWindowValue_Table.DisabledDockingStates = Nothing
             oWindowValue_Table.DisabledDockingStates = DockingStateEnum.kDockLeft + DockingStateEnum.kDockRight
@@ -238,29 +238,35 @@ Namespace Inspection
 
             Dim oSheetSettings As SheetSettings = oDoc.SheetSettings
             Dim SelectedFeature = g_inventorApplication.CommandManager.Pick(SelectionFilterEnum.kAllEntitiesFilter, "Select something")
-            Dim RefKey() As Byte = New Byte() {}
-            Call SelectedFeature.GetReferenceKey(RefKey)
+            Dim RefKeyValue() As Byte = New Byte() {}
+            Call SelectedFeature.GetReferenceKey(RefKeyValue)
+            Dim RefKey As String = g_inventorApplication.ActiveDocument.ReferenceKeyManager.KeyToString(RefKeyValue)
+            ' Dim Value_Table As New Value_Table
+            'CharacteristicsForm.txtCustomer.Text = "IMM"
+
+            Value_TableForm.PopAddin(Me)
+
             Select Case SelectedFeature.type
                 Case 117474560
-                    LinearDim(SelectedFeature, RefKey)
+                    Value_TableForm.LinearDim(SelectedFeature, RefKey)
                 Case 117475328
-                    DiametralDim(SelectedFeature, RefKey)
+                    Value_TableForm.DiametralDim(SelectedFeature, RefKey)
                 Case 117475072
-                    RadialDim(SelectedFeature, RefKey)
+                    Value_TableForm.RadialDim(SelectedFeature, RefKey)
                 Case 117483008
-                    FCF(SelectedFeature, RefKey)
+                    Value_TableForm.FCF(SelectedFeature, RefKey)
                 Case 117471488
-                    HoleTableTag(SelectedFeature, RefKey)
+                    Value_TableForm.HoleTableTag(SelectedFeature, RefKey)
                 Case 117491712
-                    HoleTag(SelectedFeature, RefKey)
+                    Value_TableForm.HoleTag(SelectedFeature, RefKey)
                 Case 117473024
-                    Note(SelectedFeature, RefKey)
+                    Value_TableForm.Note(SelectedFeature, RefKey)
                 Case 117484032
-                    Surface(SelectedFeature, RefKey)
+                    Value_TableForm.Surface(SelectedFeature, RefKey)
                 Case 117488384
-                    Chamfer(SelectedFeature, RefKey)
+                    Value_TableForm.Chamfer(SelectedFeature, RefKey)
                 Case 117469952
-                    HoleTable(SelectedFeature, RefKey)
+                    Value_TableForm.HoleTable(SelectedFeature, RefKey)
                 Case Else
                     MsgBox("Unknown")
             End Select
@@ -375,8 +381,16 @@ Namespace Inspection
             InsertSketchedSymboSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
         End Sub
         Private Sub DiametralDim(oDim As DiameterGeneralDimension, RefKey As Byte())
-            dgvDimValues.Rows.Add(dgvDimValues.Rows.Count, g_inventorApplication.ActiveDocument.ReferenceKeyManager.KeyToString(RefKey), oDim.Text.Text, "TBD", oDim.Type, oDim.Tolerance.Upper, oDim.Tolerance.Lower)
-            Dim Values As String = "<Number>" & dgvDimValues.Rows.Count &
+            ' Value_TableForm.dgvDimValues.Rows.Add(Value_TableForm.dgvDimValues.Rows.Count, g_inventorApplication.ActiveDocument.ReferenceKeyManager.KeyToString(RefKey), oDim.Text, "TBD", oDim.Type, "", oDim.Tolerance.Upper, oDim.Tolerance.Lower, "", "", "", "Comment")
+            Value_TableForm.dgvDimValues.Rows.Add(1)
+            Value_TableForm.dgvDimValues(Value_TableForm.dgvDimValues.Columns("Balloon").Index, Value_TableForm.dgvDimValues.RowCount - 1).Value = Value_TableForm.dgvDimValues.RowCount
+            Value_TableForm.dgvDimValues(Value_TableForm.dgvDimValues.Columns("Ref").Index, Value_TableForm.dgvDimValues.RowCount - 1).Value = g_inventorApplication.ActiveDocument.ReferenceKeyManager.KeyToString(RefKey)
+            Value_TableForm.dgvDimValues(Value_TableForm.dgvDimValues.Columns("Value").Index, Value_TableForm.dgvDimValues.RowCount - 1).Value = oDim.Text.Text
+            Value_TableForm.dgvDimValues(Value_TableForm.dgvDimValues.Columns("Qty").Index, Value_TableForm.dgvDimValues.RowCount - 1).Value = "TBD"
+            Value_TableForm.dgvDimValues(Value_TableForm.dgvDimValues.Columns("Type").Index, Value_TableForm.dgvDimValues.RowCount - 1).Value = oDim.Type
+            Value_TableForm.dgvDimValues(Value_TableForm.dgvDimValues.Columns("UTol").Index, Value_TableForm.dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Upper
+            Value_TableForm.dgvDimValues(Value_TableForm.dgvDimValues.Columns("LTol").Index, Value_TableForm.dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Lower
+            Dim Values As String = "<Number>" & Value_TableForm.dgvDimValues.Rows.Count &
             "<Reference>" & g_inventorApplication.ActiveDocument.ReferenceKeyManager.KeyToString(RefKey) &
             "<Value>" & oDim.Text.Text &
             "<QTY>" & "TBD" &
@@ -508,8 +522,8 @@ Namespace Inspection
                 Case True
                     oWindowCharacteristics.Visible = True
                     oWindowValue_Table.Visible = True
-                    'oWindowCharacteristics.DockingState = DockingStateEnum.kDockLeft
-                    'oWindowValue_Table.DockingState = DockingStateEnum.kDockBottom
+                    oWindowCharacteristics.DockingState = DockingStateEnum.kDockLastKnown
+                    oWindowValue_Table.DockingState = DockingStateEnum.kDockLastKnown
                 Case False
                     oWindowCharacteristics.Visible = False
                     oWindowValue_Table.Visible = False
@@ -519,6 +533,7 @@ Namespace Inspection
         Private Sub m_Show_OnExecute(Context As NameValueMap) Handles m_Show.OnExecute
             DockVisibility(True)
         End Sub
+
 #End Region
 
     End Class

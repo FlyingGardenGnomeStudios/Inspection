@@ -89,6 +89,234 @@ Namespace My
                 Me("BalloonStyle") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.03125")>  _
+        Public Property LinP0() As Decimal
+            Get
+                Return CType(Me("LinP0"),Decimal)
+            End Get
+            Set
+                Me("LinP0") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.03")>  _
+        Public Property LinP1() As Decimal
+            Get
+                Return CType(Me("LinP1"),Decimal)
+            End Get
+            Set
+                Me("LinP1") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.01")>  _
+        Public Property LinP2() As Decimal
+            Get
+                Return CType(Me("LinP2"),Decimal)
+            End Get
+            Set
+                Me("LinP2") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.005")>  _
+        Public Property LinP3() As Decimal
+            Get
+                Return CType(Me("LinP3"),Decimal)
+            End Get
+            Set
+                Me("LinP3") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.001")>  _
+        Public Property LinP4() As Decimal
+            Get
+                Return CType(Me("LinP4"),Decimal)
+            End Get
+            Set
+                Me("LinP4") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.03125")>  _
+        Public Property LinN0() As Decimal
+            Get
+                Return CType(Me("LinN0"),Decimal)
+            End Get
+            Set
+                Me("LinN0") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.03")>  _
+        Public Property LinN1() As Decimal
+            Get
+                Return CType(Me("LinN1"),Decimal)
+            End Get
+            Set
+                Me("LinN1") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.01")>  _
+        Public Property LinN2() As Decimal
+            Get
+                Return CType(Me("LinN2"),Decimal)
+            End Get
+            Set
+                Me("LinN2") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.005")>  _
+        Public Property LinN3() As Decimal
+            Get
+                Return CType(Me("LinN3"),Decimal)
+            End Get
+            Set
+                Me("LinN3") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.001")>  _
+        Public Property LinN4() As Decimal
+            Get
+                Return CType(Me("LinN4"),Decimal)
+            End Get
+            Set
+                Me("LinN4") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.5")>  _
+        Public Property AngP0() As Decimal
+            Get
+                Return CType(Me("AngP0"),Decimal)
+            End Get
+            Set
+                Me("AngP0") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.25")>  _
+        Public Property AngP1() As Decimal
+            Get
+                Return CType(Me("AngP1"),Decimal)
+            End Get
+            Set
+                Me("AngP1") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.1")>  _
+        Public Property AngP2() As Decimal
+            Get
+                Return CType(Me("AngP2"),Decimal)
+            End Get
+            Set
+                Me("AngP2") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.5")>  _
+        Public Property AngN0() As Decimal
+            Get
+                Return CType(Me("AngN0"),Decimal)
+            End Get
+            Set
+                Me("AngN0") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.25")>  _
+        Public Property AngN1() As Decimal
+            Get
+                Return CType(Me("AngN1"),Decimal)
+            End Get
+            Set
+                Me("AngN1") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.1")>  _
+        Public Property AngN2() As Decimal
+            Get
+                Return CType(Me("AngN2"),Decimal)
+            End Get
+            Set
+                Me("AngN2") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Inch")>  _
+        Public Property PUoM() As String
+            Get
+                Return CType(Me("PUoM"),String)
+            End Get
+            Set
+                Me("PUoM") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Millimeter")>  _
+        Public Property SUoM() As String
+            Get
+                Return CType(Me("SUoM"),String)
+            End Get
+            Set
+                Me("SUoM") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Degrees")>  _
+        Public Property AUoM() As String
+            Get
+                Return CType(Me("AUoM"),String)
+            End Get
+            Set
+                Me("AUoM") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
