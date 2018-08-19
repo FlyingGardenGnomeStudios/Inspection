@@ -104,10 +104,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.vb" />
-    <Compile Include="Characteristics.designer.vb">
+    <Compile Include="Characteristics.Designer.vb">
       <DependentUpon>Characteristics.vb</DependentUpon>
     </Compile>
     <Compile Include="Characteristics.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings.designer.vb">
+      <DependentUpon>Settings.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
@@ -133,7 +139,9 @@
     <None Include="Inspection.X.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Autodesk.Inspection.Inventor.addin" />
+    <None Include="Autodesk.Inspection.Inventor.addin">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="My Project\Settings.settings">
@@ -143,7 +151,9 @@
     </None>
     <None Include="Readme.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
@@ -175,6 +185,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Characteristics.resx">
       <DependentUpon>Characteristics.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings.resx">
+      <DependentUpon>Settings.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>

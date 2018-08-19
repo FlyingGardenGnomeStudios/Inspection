@@ -141,7 +141,7 @@ Partial Class Value_Table
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.Controls.Add(Me.dgvDimValues)
         Me.Name = "Value_Table"
-        Me.Size = New System.Drawing.Size(936, 189)
+        Me.Size = New System.Drawing.Size(940, 194)
         CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 

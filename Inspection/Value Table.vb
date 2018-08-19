@@ -5,6 +5,7 @@ Imports Inventor
 Public Class Value_Table
     Dim _invApp As Inventor.Application
     Dim StandardAddinServer As StandardAddInServer
+    Private CharacteristicsForm As Settings
     Public Sub New()
 
         ' This call is required by the designer.
@@ -315,5 +316,13 @@ Public Class Value_Table
         oTextBox.Color = oColor
         ' oTextBox.FormattedText = "<StyleOverride FontSize = '0.08'></StyleOverride>"
         Call oSketchedSymbolDef.ExitEdit(True)
+    End Sub
+
+    Private Sub dgvDimValues_CellContentClick(sender As Object, e As Windows.Forms.DataGridViewCellEventArgs) Handles dgvDimValues.CellContentClick
+        Dim Characteristics = New Characteristics
+        Characteristics.PopValueTable(Me)
+        For Each Column As Column In dgvDimValues.Columns
+            Characteristics.dgvProperties.Rows.Add(Column.Title, dgvDimValues(Column.index, e.RowIndex).value)
+        Next
     End Sub
 End Class

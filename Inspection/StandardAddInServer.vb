@@ -107,7 +107,7 @@ Namespace Inspection
 #End Region
 
 #Region "User interface definition"
-        Private CharacteristicsForm As Characteristics
+        Private CharacteristicsForm As Settings
         Private Value_TableForm As Value_Table
         ' Sub where the user-interface creation is done.  This is called when
         ' the add-in loaded and also if the user interface is reset.
@@ -159,7 +159,7 @@ Namespace Inspection
                 CharacteristicsForm = Nothing
             End If
 
-            CharacteristicsForm = New Characteristics
+            CharacteristicsForm = New Settings
             CharacteristicsForm.Show() 'New WindowWrapper(g_inventorApplication.MainFrameHWND))
             Return CharacteristicsForm.Handle.ToInt64()
         End Function
@@ -197,8 +197,8 @@ Namespace Inspection
         End Sub
 
         Private Sub Tab_Activated(ByVal sender As Object, ByVal e As EventArgs)
-            System.Windows.Forms.MessageBox.Show(("Tab " _
-                        + (ComponentManager.Ribbon.ActiveTab.Id + " Activated!")))
+            'System.Windows.Forms.MessageBox.Show(("Tab " _
+            '            + (ComponentManager.Ribbon.ActiveTab.Id + " Activated!")))
         End Sub
 
         'Private Sub ComponentManager_ItemInitialized(ByVal sender As Object, ByVal e As RibbonItemEventArgs)
