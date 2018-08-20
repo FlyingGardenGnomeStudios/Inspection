@@ -3,12 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <OutputType>Library</OutputType>
-    <StartupObject>
-    </StartupObject>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Inspection.Value_Table_SA</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <MyType>Windows</MyType>
+    <MyType>WindowsFormsWithCustomSubMain</MyType>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <ProjectGuid>{E3133B87-5830-4ECA-A611-BE8CABD0D3EF}</ProjectGuid>
@@ -127,6 +126,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="StandardAddInServer.vb" />
+    <Compile Include="Value Table SA.Designer.vb">
+      <DependentUpon>Value Table SA.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Value Table SA.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Value Table.designer.vb">
       <DependentUpon>Value Table.vb</DependentUpon>
     </Compile>
@@ -193,6 +198,9 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Value Table SA.resx">
+      <DependentUpon>Value Table SA.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Value Table.resx">
       <DependentUpon>Value Table.vb</DependentUpon>

@@ -1,12 +1,11 @@
 ﻿Imports System.Runtime.InteropServices
 Imports Inspection.Inspection
 Imports Inventor
-
-Public Class Value_Table
+Public Class Value_Table_SA
     Dim _invApp As Inventor.Application
     Dim StandardAddinServer As StandardAddInServer
     Private CharacteristicsForm As Settings
-
+    Private WithEvents oSelect As SelectEvents
     Public Sub New()
 
         ' This call is required by the designer.
@@ -15,74 +14,163 @@ Public Class Value_Table
         ' Add any initialization after the InitializeComponent() call.
 
     End Sub
-    Public Function PopAddin(CalledFunction As StandardAddInServer) As Object
-        PopAddin = CalledFunction
-        Return Nothing
-    End Function
-    Private Sub Value_Table_Resize(sender As Object, e As EventArgs) Handles Me.Resize
-        dgvDimValues.Height = dgvDimValues.Parent.Height
-    End Sub
-    Public Sub DiametralDim(oDim As DiameterGeneralDimension, RefKey As String)
-        dgvDimValues.Rows.Add()
-        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
-        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text.Text
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
-        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Upper
-        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Lower
-        Dim Values As String = RefKey
-        '    "<Number>" & dgvDimValues.Rows.Count + 1 &
-        '"<Reference>" & RefKey &
-        '"<Value>" & oDim.Text.Text &
-        '"<QTY>" & "TBD" &
-        '"<Type>" & oDim.Type &
-        '"<UTol>" & oDim.Tolerance.Upper &
-        '"<LTol>" & oDim.Tolerance.Lower
-        InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
-    End Sub
-    Public Sub LinearDim(oDim As LinearGeneralDimension, RefKey As String)
-        dgvDimValues.Rows.Add()
-        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
-        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text.Text
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
-        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Upper
-        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Lower
-        Dim Values As String = RefKey
-        '"<Number>" & dgvDimValues.Rows.Count &
-        '"<Reference>" & RefKey &
-        '"<Size>" & My.Settings.BalloonSize &
-        '"<Position>" & My.Settings.BalloonPos &
-        '"<BalloonColor>" = "TBD" &
-        '"<TextColor>" = "TBD" &
-        '"<Value>" & oDim.Text.Text &
-        '"<QTY>" & "TBD" &
-        '"<Type>" & oDim.Type &
-        '"<UTol>" & oDim.Tolerance.Upper &
-        '"<LTol>" & oDim.Tolerance.Lower
-        InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
-    End Sub
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim oDoc As DrawingDocument = _invApp.ActiveDocument
+        Dim oInteraction As InteractionEvents = _invApp.CommandManager.CreateInteractionEvents
+        oInteraction.StatusBarText = "Select a dimension"
+        oSelect = oInteraction.SelectEvents
+        oSelect.AddSelectionFilter(SelectionFilterEnum.kDrawingDimensionFilter)
+        oSelect.SingleSelectEnabled = True
+        oInteraction.Start()
 
-    Public Sub RadialDim(oDim As RadiusGeneralDimension, RefKey As String)
-        dgvDimValues.Rows.Add()
-        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
-        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text.Text
+        Dim oSheetSettings As SheetSettings = oDoc.SheetSettings
+        Dim SelectedFeature = _invApp.CommandManager.Pick(SelectionFilterEnum.kAllEntitiesFilter, "Select something")
+        If SelectedFeature Is Nothing Then Exit Sub
+        Dim RefKeyValue() As Byte = New Byte() {}
+        Call SelectedFeature.GetReferenceKey(RefKeyValue)
+        Dim RefKey As String = _invApp.ActiveDocument.ReferenceKeyManager.KeyToString(RefKeyValue)
+        Dim Dup As Boolean = False
+        For Each row In dgvDimValues.Rows
+            If dgvDimValues(dgvDimValues.Columns("Ref").Index, row.index).Value = RefKey Then
+                Dup = True
+                Exit For
+            End If
+        Next
+        If Dup = True Then
+            MsgBox("Balloon already exists")
+        Else
+            Dim oType As String
+            Select Case SelectedFeature.type
+            'Linear Diametral Radial
+                Case 117474560
+                    oType = "Linear"
+                    LinearDim(SelectedFeature, RefKey, "Linear")
+                Case 117475328
+                    oType = "Diameter"
+                    LinearDim(SelectedFeature, RefKey, "Diameter")
+                Case 117475072
+                    oType = "Radial"
+                    LinearDim(SelectedFeature, RefKey, "Radial")
+                Case 117474816
+                    oType = "Angular"
+                    LinearDim(SelectedFeature, RefKey, "Angular")
+                Case 117483008
+                    FCF(SelectedFeature, RefKey)
+                Case 117471488
+                    HoleTableTag(SelectedFeature, RefKey)
+                Case 117491712
+                    HoleTag(SelectedFeature, RefKey)
+                Case 117473024
+                    Note(SelectedFeature, RefKey)
+                Case 117484032
+                    Surface(SelectedFeature, RefKey)
+                Case 117488384
+                    Chamfer(SelectedFeature, RefKey)
+                Case 117469952
+                    HoleTable(SelectedFeature, RefKey)
+                Case Else
+                    MsgBox("Unknown")
+            End Select
+        End If
+    End Sub
+    Public Sub LinearDim(oDim As GeneralDimension, RefKey As String, oType As String)
+        Dim Value, Prefix, Tag As String
+        Prefix = ""
+        Tag = ""
+
+        Dim uTol, lTol As Decimal
+        If oType = "Angular" Then
+            Value = Math.Round(oDim.ModelValue * 180 / Math.PI, oDim.Precision)
+            Tag = Chr(176)
+        Else
+            Select Case Replace(oDim.Text.Text, oDim.ModelValue, "")
+                Case "n"
+                    Value = oDim.ModelValue
+                    Prefix = Chr(216)
+                Case "R"
+                    Value = oDim.ModelValue
+                    Prefix = "R"
+            End Select
+        End If
+        If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kMaxTolerance OrElse oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kMinTolerance Then
+            If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kMaxTolerance Then
+                lTol = uTol + lTol
+                uTol = 0
+            Else
+                uTol = uTol + lTol
+                lTol = 0
+            End If
+        End If
+        If oDim.Tolerance.Upper = 0 AndAlso oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kDefaultTolerance Then
+                'Return deafault upper tol
+                uTol = 0.005
+            Else
+                uTol = oDim.Tolerance.Upper
+            End If
+            If oDim.Tolerance.Lower = 0 Then
+                'Return deafault upper tol
+                lTol = -0.005
+            Else
+                lTol = oDim.Tolerance.Lower
+            End If
+            dgvDimValues.Rows.Add()
+            dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
+            dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
+        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
         dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
-        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Upper
-        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Lower
-        Dim Values As String = RefKey
-        '"<Number>" & dgvDimValues.Rows.Count &
-        '    "<Reference>" & RefKey &
-        '    "<Value>" & oDim.Text.Text &
-        '    "<QTY>" & "TBD" &
-        '    "<Type>" & oDim.Type &
-        '    "<UTol>" & oDim.Tolerance.Upper &
-        '    "<LTol>" & oDim.Tolerance.Lower
-        InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
+            dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
+            dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
+            dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = uTol
+            dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = lTol
+        dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = Value + uTol
+        dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = Value + lTol
+        If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsLinearTolerance Or
+            oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowSizeTolerance Or
+            oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowTolerance Or
+            oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsStackedTolerance Then
+                If oDim.Tolerance.ShaftTolerance <> "" AndAlso oDim.Tolerance.HoleTolerance <> "" Then
+                    dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance & "/" & oDim.Tolerance.ShaftTolerance
+                    dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                    dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                    dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                    dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                ElseIf oDim.Tolerance.ShaftTolerance <> "" Then
+                    dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.ShaftTolerance
+                ElseIf oDim.Tolerance.HoleTolerance <> "" Then
+                    dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance
+                End If
+            End If
+            Dim Values As String = RefKey
+            InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
+    End Sub
+    Sub parameterInfo()
+
+        Dim oDoc As PartDocument
+
+        oDoc = _invApp.ActiveDocument
+
+        Dim para As Parameter
+
+        Dim UOM As UnitsOfMeasure
+
+        UOM = oDoc.UnitsOfMeasure
+
+        For Each para In oDoc.ComponentDefinition.Parameters
+
+            Debug.Print("Expression is " + para.Expression)
+
+            Debug.Print("Display unit is " + para.Units)
+
+            Debug.Print("ModelVaule is " + para.ModelValue.ToString)
+
+            Debug.Print("Value is " + para.Value.ToString)
+
+            Dim displayValue As String
+            displayValue = UOM.ConvertUnits(para.Value, UOM.GetTypeFromString(UOM.GetDatabaseUnitsFromExpression(para.Expression, para.Units)), para.Units)
+            Debug.Print("Display value is " + displayValue)
+
+        Next
+
     End Sub
     Public Sub Note(oDim As DrawingNote, RefKey As String)
         dgvDimValues.Rows.Add()
@@ -92,13 +180,6 @@ Public Class Value_Table
         dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
         dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
         Dim Values As String = RefKey
-        '"<Number>" & dgvDimValues.Rows.Count &
-        '    "<Reference>" & RefKey &
-        '    "<Value>" & oDim.Text &
-        '    "<QTY>" & "TBD" &
-        '    "<Type>" & oDim.Type &
-        '    "<UTol>" & oDim.Tolerance.Upper &
-        '    "<LTol>" & oDim.Tolerance.Lower
         InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values)
     End Sub
     Public Sub HoleTableTag(oDim As HoleTag, RefKey As String)
@@ -109,13 +190,6 @@ Public Class Value_Table
         dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
         dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
         Dim Values As String = RefKey
-        '"<Number>" & dgvDimValues.Rows.Count &
-        '    "<Reference>" & RefKey &
-        '    "<Value>" & oDim.Text &
-        '    "<QTY>" & "TBD" &
-        '    "<Type>" & oDim.Type &
-        '    "<UTol>" & oDim.Tolerance.Upper &
-        '    "<LTol>" & oDim.Tolerance.Lower
         InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values)
     End Sub
     Public Sub Surface(oDim As SurfaceTextureSymbol, RefKey As String)
@@ -128,13 +202,6 @@ Public Class Value_Table
         dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = oDim.MaximumRoughness
         dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.MinimumRoughness
         Dim Values As String = RefKey
-        '"<Number>" & dgvDimValues.Rows.Count &
-        '    "<Reference>" & RefKey &
-        '    "<Value>" & oDim.Text.Text &
-        '    "<QTY>" & "TBD" &
-        '    "<Type>" & oDim.Type &
-        '    "<UTol>" & oDim.Tolerance.Upper &
-        '    "<LTol>" & oDim.Tolerance.Lower
         InsertSketchedSymbolSample(oDim, oDim.Position, oDim.Position, Values)
     End Sub
     Public Sub HoleTag(oDim As HoleThreadNote, RefKey As String)
@@ -147,13 +214,6 @@ Public Class Value_Table
         dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Upper
         dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Lower
         Dim Values As String = RefKey
-        '"<Number>" & dgvDimValues.Rows.Count &
-        '    "<Reference>" & RefKey &
-        '    "<Value>" & oDim.Text.Text &
-        '    "<QTY>" & "TBD" &
-        '    "<Type>" & oDim.Type &
-        '    "<UTol>" & oDim.Tolerance.Upper &
-        '    "<LTol>" & oDim.Tolerance.Lower
         InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
     End Sub
     Public Sub Chamfer(oDim As ChamferNote, RefKey As String)
@@ -166,13 +226,6 @@ Public Class Value_Table
         dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
         dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
         Dim Values As String = RefKey
-        '"<Number>" & dgvDimValues.Rows.Count &
-        '    "<Reference>" & RefKey &
-        '    "<Value>" & oDim.Text &
-        '    "<QTY>" & "TBD" &
-        '    "<Type>" & oDim.Type &
-        '    "<UTol>" & oDim.Tolerance.Upper &
-        '    "<LTol>" & oDim.Tolerance.Lower
         InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values)
     End Sub
     Public Sub HoleTable(oDim As HoleTable, RefKey As String)
@@ -185,13 +238,6 @@ Public Class Value_Table
             'dgvDimValues.Rows.Add(dgvDimValues.Rows.Count, oDim.GetHashCode, Text, "TBD", oDim.Type, item.Tolerance, item.LowerTolerance)
         Next
         Dim Values As String = RefKey
-        '"<Number>" & dgvDimValues.Rows.Count &
-        '    "<Reference>" & RefKey &
-        '    "<Value>" & oDim.Text.Text &
-        '    "<QTY>" & "TBD" &
-        '    "<Type>" & oDim.Type &
-        '    "<UTol>" & oDim.Tolerance.Upper &
-        '    "<LTol>" & oDim.Tolerance.Lower
         InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values)
     End Sub
     Public Sub FCF(oDim As FeatureControlFrame, RefKey As String)
@@ -202,13 +248,6 @@ Public Class Value_Table
             dgvDimValues.Rows.Add(dgvDimValues.Rows.Count, _invApp.ReferenceKeyManager.KeyToString(RefKey), Text, "TBD", oDim.Type, item.Tolerance, item.LowerTolerance)
         Next
         Dim Values As String = RefKey
-        '"<Number>" & dgvDimValues.Rows.Count &
-        '    "<Reference>" & RefKey &
-        '    "<Value>" & oDim.Text.Text &
-        '    "<QTY>" & "TBD" &
-        '    "<Type>" & oDim.Type &
-        '    "<UTol>" & oDim.Tolerance.Upper &
-        '    "<LTol>" & oDim.Tolerance.Lower
         InsertSketchedSymbolSample(oDim, oDim.Position, oDim.Position, Values)
     End Sub
     Public Sub HoleTable()
@@ -306,22 +345,22 @@ Public Class Value_Table
         Dim oColor As Color = _invApp.TransientObjects.CreateColor(oSheetSettings.SheetColor.Red, oSheetSettings.SheetColor.Green, oSheetSettings.SheetColor.Blue, 0)
         ' Add a prompted text field at the center of the sketch circle.
         Dim sText As String
-        sText = "<StyleOverride FontSize = '" & My.Settings.BalloonSize / 50 & "'>" & "<Prompt>Number</Prompt>" & "</StyleOverride>"
+        sText = "<StyleOverride FontSize='" & My.Settings.BalloonSize / 50 & "'>" & "<Prompt>Number</Prompt>" & "</StyleOverride>"
         Dim oTextBox As TextBox
-        Dim ValueText As String = "<StyleOverride FontSize = '" & 0.0001 & "'>" & "<Prompt>Value</Prompt>" & "</StyleOverride>"
+        Dim ValueText As String = "<StyleOverride FontSize='" & 0.0001 & "'>" & "<Prompt>Value</Prompt>" & "</StyleOverride>"
 
         oTextBox = oSketch.TextBoxes.AddFitted(oTG.CreatePoint2d(0, 0), sText)
         oTextBox.VerticalJustification = VerticalTextAlignmentEnum.kAlignTextMiddle
         oTextBox.HorizontalJustification = HorizontalTextAlignmentEnum.kAlignTextCenter
         oTextBox = oSketch.TextBoxes.AddFitted(oTG.CreatePoint2d(0, 0), ValueText)
         oTextBox.Color = oColor
-        ' oTextBox.FormattedText = "<StyleOverride FontSize = '0.08'></StyleOverride>"
+        ' oTextBox.FormattedText = "<StyleOverride FontSize='0.08'></StyleOverride>"
         Call oSketchedSymbolDef.ExitEdit(True)
     End Sub
 
     Private Sub dgvDimValues_CellContentClick(sender As Object, e As Windows.Forms.DataGridViewCellEventArgs) Handles dgvDimValues.CellContentClick
         Dim Characteristics = New Characteristics
-        Characteristics.PopValueTable(Me)
+        ' Characteristics.PopValueTable(Me)
         For Each Column As Column In dgvDimValues.Columns
             Characteristics.dgvProperties.Rows.Add(Column.Title, dgvDimValues(Column.index, e.RowIndex).value)
         Next
