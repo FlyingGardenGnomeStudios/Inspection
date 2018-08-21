@@ -70,7 +70,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="adwindows">
-      <HintPath>C:\Program Files\Autodesk\Inventor 2019\Bin\adwindows.dll</HintPath>
+      <HintPath>K:\Autodesk\Inventor 2017\Bin\adwindows.dll</HintPath>
     </Reference>
     <Reference Include="autodesk.inventor.interop, Version=23.0.0.0, Culture=neutral, PublicKeyToken=d84147f8b4276564, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -78,10 +78,10 @@
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Autodesk.Inventor.Interop\v4.0_23.0.0.0__d84147f8b4276564\autodesk.inventor.interop.dll</HintPath>
     </Reference>
     <Reference Include="DropDownPanel">
-      <HintPath>..\..\..\Visual Studio 2015\Projects\DropDownPanel\bin\Debug\DropDownPanel.dll</HintPath>
+      <HintPath>Resources\DropDownPanel.dll</HintPath>
     </Reference>
     <Reference Include="ExpandableGridView">
-      <HintPath>..\..\..\Visual Studio 2015\Projects\TreeGridview\TreeGridView\bin\Release\ExpandableGridView.dll</HintPath>
+      <HintPath>Resources\ExpandableGridView.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

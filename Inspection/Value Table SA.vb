@@ -6,6 +6,7 @@ Public Class Value_Table_SA
     Dim StandardAddinServer As StandardAddInServer
     Private CharacteristicsForm As Settings
     Private WithEvents oSelect As SelectEvents
+
     Public Sub New()
 
         ' This call is required by the designer.
@@ -269,7 +270,7 @@ Public Class Value_Table_SA
         ' Obtain a sketched symbol definition.
         Dim oSketchedSymbolDef As SketchedSymbolDefinition = Nothing
         For i = 1 To oDrawDoc.SketchedSymbolDefinitions.Count
-            If oDrawDoc.SketchedSymbolDefinitions.Item(i).Name = "mySymbol" Then
+            If oDrawDoc.SketchedSymbolDefinitions.Item(i).Name = "Insp" Then
                 oSketchedSymbolDef = oDrawDoc.SketchedSymbolDefinitions.Item(i)
                 Exit For
             End If
@@ -277,7 +278,7 @@ Public Class Value_Table_SA
         If oSketchedSymbolDef Is Nothing Then
             CreateSketchedSymbolDefinition()
             For i = 1 To oDrawDoc.SketchedSymbolDefinitions.Count
-                If oDrawDoc.SketchedSymbolDefinitions.Item(i).Name = "mySymbol" Then
+                If oDrawDoc.SketchedSymbolDefinitions.Item(i).Name = "Insp" Then
                     oSketchedSymbolDef = oDrawDoc.SketchedSymbolDefinitions.Item(i)
                     Exit For
                 End If
@@ -327,7 +328,7 @@ Public Class Value_Table_SA
 
         ' Create the new sketched symbol definition.
         Dim oSketchedSymbolDef As SketchedSymbolDefinition
-        oSketchedSymbolDef = oDrawDoc.SketchedSymbolDefinitions.Add("mySymbol")
+        oSketchedSymbolDef = oDrawDoc.SketchedSymbolDefinitions.Add("Insp")
 
         ' Open the sketched symbol definition's sketch for edit. This is done by calling the Edit
         ' method of the SketchedSymbolDefinition to obtain a DrawingSketch. This actually creates
@@ -364,5 +365,44 @@ Public Class Value_Table_SA
         For Each Column As Column In dgvDimValues.Columns
             Characteristics.dgvProperties.Rows.Add(Column.Title, dgvDimValues(Column.index, e.RowIndex).value)
         Next
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Dim oDoc As DrawingDocument = _invApp.ActiveDocument
+        Dim Ref As Byte
+        For Each oSketch As SketchedSymbol In oDoc.SketchedSymbolDefinitions
+            If oSketch.Name = "Insp" Then
+                dgvDimValues.Rows.Add()
+                dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = oSketch.Definition.Sketch.TextBoxes.Item(0).Text
+                dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = oSketch.Definition.Sketch.TextBoxes.Item(1).Text
+                '    Dim 
+                '    dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
+                '    dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
+                '    dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
+                '    dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
+                '    dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = UTol
+                '    dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = LTol
+                '    dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = Value + UTol
+                '    dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = Value + LTol
+                '    If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsLinearTolerance Or
+                'oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowSizeTolerance Or
+                'oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowTolerance Or
+                'oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsStackedTolerance Then
+                '        If oDim.Tolerance.ShaftTolerance <> "" AndAlso oDim.Tolerance.HoleTolerance <> "" Then
+                '            dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance & "/" & oDim.Tolerance.ShaftTolerance
+                '            dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                '            dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                '            dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                '            dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                '        ElseIf oDim.Tolerance.ShaftTolerance <> "" Then
+                '            dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.ShaftTolerance
+                '        ElseIf oDim.Tolerance.HoleTolerance <> "" Then
+                '            dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance
+                '        End If
+                '    End If
+                '    .Definition.Sketch.TextBoxes.text
+            End If
+        Next
+
     End Sub
 End Class
