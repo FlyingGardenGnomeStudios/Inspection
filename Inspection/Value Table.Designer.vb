@@ -26,6 +26,7 @@ Partial Class Value_Table
         Me.Balloon = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Ref = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Value = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Units = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Qty = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Type = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.SubType = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -43,7 +44,7 @@ Partial Class Value_Table
         Me.dgvDimValues.AllowUserToAddRows = False
         Me.dgvDimValues.AllowUserToOrderColumns = True
         Me.dgvDimValues.AllowUserToResizeRows = False
-        Me.dgvDimValues.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Balloon, Me.Ref, Me.Value, Me.Qty, Me.Type, Me.SubType, Me.UTol, Me.LTol, Me.ULimit, Me.LLimit, Me.FitGrade, Me.Comments})
+        Me.dgvDimValues.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Balloon, Me.Ref, Me.Value, Me.Units, Me.Qty, Me.Type, Me.SubType, Me.UTol, Me.LTol, Me.ULimit, Me.LLimit, Me.FitGrade, Me.Comments})
         Me.dgvDimValues.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgvDimValues.Location = New System.Drawing.Point(3, 3)
         Me.dgvDimValues.Name = "dgvDimValues"
@@ -72,6 +73,12 @@ Partial Class Value_Table
         Me.Value.HeaderText = "Value"
         Me.Value.Name = "Value"
         Me.Value.Width = 59
+        '
+        'Units
+        '
+        Me.Units.HeaderText = "Units"
+        Me.Units.Name = "Units"
+        Me.Units.ReadOnly = True
         '
         'Qty
         '
@@ -151,6 +158,7 @@ Partial Class Value_Table
     Friend WithEvents Balloon As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Ref As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Value As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents Units As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Qty As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Type As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents SubType As Windows.Forms.DataGridViewTextBoxColumn

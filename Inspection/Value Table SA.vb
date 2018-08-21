@@ -77,18 +77,16 @@ Public Class Value_Table_SA
         Dim Value, Prefix, Tag As String
         Prefix = ""
         Tag = ""
-
         Dim uTol, lTol As Decimal
         If oType = "Angular" Then
-            Value = Math.Round(oDim.ModelValue * 180 / Math.PI, oDim.Precision)
+            Value = FormatNumber(_invApp.ActiveDocument.UnitsOfMeasure.ConvertUnits(oDim.ModelValue, UnitsTypeEnum.kDatabaseAngleUnits, UnitsTypeEnum.kDefaultDisplayAngleUnits), oDim.Precision)
             Tag = Chr(176)
         Else
-            Select Case Replace(oDim.Text.Text, oDim.ModelValue, "")
+            Value = FormatNumber(_invApp.ActiveDocument.UnitsOfMeasure.ConvertUnits(oDim.ModelValue, UnitsTypeEnum.kDatabaseLengthUnits, UnitsTypeEnum.kDefaultDisplayLengthUnits), oDim.Precision)
+            Select Case Replace(oDim.Text.Text, Value, "")
                 Case "n"
-                    Value = oDim.ModelValue
                     Prefix = Chr(216)
                 Case "R"
-                    Value = oDim.ModelValue
                     Prefix = "R"
             End Select
         End If
@@ -117,8 +115,9 @@ Public Class Value_Table_SA
             dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
             dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
         dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
+        dgvDimValues(dgvDimValues.Columns("Units").Index, dgvDimValues.RowCount - 1).Value = oDim.
         dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-            dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
+        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
             dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
             dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = uTol
             dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = lTol
