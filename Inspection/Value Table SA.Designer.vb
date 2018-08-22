@@ -36,6 +36,7 @@ Partial Class Value_Table_SA
         Me.FitGrade = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Comments = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Button1 = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
         CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -142,14 +143,24 @@ Partial Class Value_Table_SA
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(75, 23)
         Me.Button1.TabIndex = 7
-        Me.Button1.Text = "Button1"
+        Me.Button1.Text = "Add"
         Me.Button1.UseVisualStyleBackColor = True
+        '
+        'Button2
+        '
+        Me.Button2.Location = New System.Drawing.Point(148, 11)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(75, 23)
+        Me.Button2.TabIndex = 8
+        Me.Button2.Text = "Refresh"
+        Me.Button2.UseVisualStyleBackColor = True
         '
         'Value_Table_SA
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(949, 271)
+        Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.dgvDimValues)
         Me.Name = "Value_Table_SA"
@@ -173,4 +184,5 @@ Partial Class Value_Table_SA
     Friend WithEvents FitGrade As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Comments As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Button1 As Windows.Forms.Button
+    Friend WithEvents Button2 As Windows.Forms.Button
 End Class
