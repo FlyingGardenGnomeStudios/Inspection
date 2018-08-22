@@ -1,4 +1,6 @@
-﻿Imports System.Runtime.InteropServices
+﻿
+Imports System.IO
+Imports System.Runtime.InteropServices
 Imports Inspection.Inspection
 Imports Inventor
 Public Class Value_Table_SA
@@ -6,6 +8,7 @@ Public Class Value_Table_SA
     Dim StandardAddinServer As StandardAddInServer
     Private CharacteristicsForm As Settings
     Private WithEvents oSelect As SelectEvents
+
     Public Sub New()
 
         ' This call is required by the designer.
@@ -14,6 +17,7 @@ Public Class Value_Table_SA
         ' Add any initialization after the InitializeComponent() call.
 
     End Sub
+
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim oDoc As DrawingDocument = _invApp.ActiveDocument
         Dim oInteraction As InteractionEvents = _invApp.CommandManager.CreateInteractionEvents
@@ -100,47 +104,47 @@ Public Class Value_Table_SA
             End If
         End If
         If oDim.Tolerance.Upper = 0 AndAlso oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kDefaultTolerance Then
-                'Return deafault upper tol
-                uTol = 0.005
-            Else
-                uTol = oDim.Tolerance.Upper
-            End If
-            If oDim.Tolerance.Lower = 0 Then
-                'Return deafault upper tol
-                lTol = -0.005
-            Else
-                lTol = oDim.Tolerance.Lower
-            End If
-            dgvDimValues.Rows.Add()
-            dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
-            dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
+            'Return deafault upper tol
+            uTol = 0.005
+        Else
+            uTol = oDim.Tolerance.Upper
+        End If
+        If oDim.Tolerance.Lower = 0 Then
+            'Return deafault upper tol
+            lTol = -0.005
+        Else
+            lTol = oDim.Tolerance.Lower
+        End If
+        dgvDimValues.Rows.Add()
+        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
+        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
         dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
         dgvDimValues(dgvDimValues.Columns("Units").Index, dgvDimValues.RowCount - 1).Value = oDim.
         dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
         dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
-            dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
-            dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = uTol
-            dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = lTol
+        dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
+        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = uTol
+        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = lTol
         dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = Value + uTol
         dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = Value + lTol
         If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsLinearTolerance Or
             oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowSizeTolerance Or
             oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowTolerance Or
             oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsStackedTolerance Then
-                If oDim.Tolerance.ShaftTolerance <> "" AndAlso oDim.Tolerance.HoleTolerance <> "" Then
-                    dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance & "/" & oDim.Tolerance.ShaftTolerance
-                    dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
-                    dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
-                    dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
-                    dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
-                ElseIf oDim.Tolerance.ShaftTolerance <> "" Then
-                    dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.ShaftTolerance
-                ElseIf oDim.Tolerance.HoleTolerance <> "" Then
-                    dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance
-                End If
+            If oDim.Tolerance.ShaftTolerance <> "" AndAlso oDim.Tolerance.HoleTolerance <> "" Then
+                dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance & "/" & oDim.Tolerance.ShaftTolerance
+                dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
+            ElseIf oDim.Tolerance.ShaftTolerance <> "" Then
+                dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.ShaftTolerance
+            ElseIf oDim.Tolerance.HoleTolerance <> "" Then
+                dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance
             End If
-            Dim Values As String = RefKey
-            InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
+        End If
+        Dim Values As String = RefKey
+        InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
     End Sub
     Sub parameterInfo()
 
@@ -171,6 +175,44 @@ Public Class Value_Table_SA
         Next
 
     End Sub
+    Public Sub WritePrivate()
+
+        Dim invApp As Inventor.Application = GetObject(, "Inventor.Application")
+        Dim doc As Inventor.Document = invApp.ActiveDocument
+
+        Dim stm As Microsoft.VisualStudio.OLE.Interop.IStream
+        stm = doc.GetPrivateStream("Brian", True)
+
+        Dim data(19) As Byte
+        For i As Integer = 0 To 19
+            data(i) = i
+        Next
+
+        Dim leng As UInteger
+        leng = 20
+        Dim junk As UInteger = 0
+        stm.Write(data, leng, junk)
+        stm.Commit(Microsoft.VisualStudio.OLE.Interop.STGC.STGC_OVERWRITE Or Microsoft.VisualStudio.OLE.Interop.STGC.STGC_DEFAULT)
+    End Sub
+
+    Public Sub ReadPrivate()
+        Dim invApp As Inventor.Application = GetObject(, "Inventor.Application")
+        Dim doc As Inventor.Document = invApp.ActiveDocument
+
+        If doc.HasPrivateStream("Brian") Then
+            Dim stm As Microsoft.VisualStudio.OLE.Interop.IStream
+            stm = doc.GetPrivateStream("Brian", False)
+
+            Dim data(19) As Byte
+            Dim length As UInteger = 20
+            Dim junk As UInteger = 1
+            stm.Read(data, length, junk)
+            For i As Integer = 0 To length
+                data(i) = i
+            Next
+        End If
+    End Sub
+
     Public Sub Note(oDim As DrawingNote, RefKey As String)
         dgvDimValues.Rows.Add()
         dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
