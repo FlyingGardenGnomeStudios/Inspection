@@ -1,8 +1,9 @@
 ﻿
-Imports System.IO
 Imports System.Runtime.InteropServices
 Imports Inspection.Inspection
 Imports Inventor
+Imports System.Linq
+Imports System.IO
 Public Class Value_Table_SA
     Dim _invApp As Inventor.Application
     Dim StandardAddinServer As StandardAddInServer
@@ -15,9 +16,8 @@ Public Class Value_Table_SA
         InitializeComponent()
         _invApp = Marshal.GetActiveObject("Inventor.Application")
         ' Add any initialization after the InitializeComponent() call.
-
+        Refresh()
     End Sub
-
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim oDoc As DrawingDocument = _invApp.ActiveDocument
         Dim oInteraction As InteractionEvents = _invApp.CommandManager.CreateInteractionEvents
@@ -33,6 +33,8 @@ Public Class Value_Table_SA
         Dim RefKeyValue() As Byte = New Byte() {}
         Call SelectedFeature.GetReferenceKey(RefKeyValue)
         Dim RefKey As String = _invApp.ActiveDocument.ReferenceKeyManager.KeyToString(RefKeyValue)
+
+
         Dim Dup As Boolean = False
         For Each row In dgvDimValues.Rows
             If dgvDimValues(dgvDimValues.Columns("Ref").Index, row.index).Value = RefKey Then
@@ -43,39 +45,47 @@ Public Class Value_Table_SA
         If Dup = True Then
             MsgBox("Balloon already exists")
         Else
-            Dim oType As String
-            Select Case SelectedFeature.type
-            'Linear Diametral Radial
-                Case 117474560
-                    oType = "Linear"
-                    LinearDim(SelectedFeature, RefKey, "Linear")
-                Case 117475328
-                    oType = "Diameter"
-                    LinearDim(SelectedFeature, RefKey, "Diameter")
-                Case 117475072
-                    oType = "Radial"
-                    LinearDim(SelectedFeature, RefKey, "Radial")
-                Case 117474816
-                    oType = "Angular"
-                    LinearDim(SelectedFeature, RefKey, "Angular")
-                Case 117483008
-                    FCF(SelectedFeature, RefKey)
-                Case 117471488
-                    HoleTableTag(SelectedFeature, RefKey)
-                Case 117491712
-                    HoleTag(SelectedFeature, RefKey)
-                Case 117473024
-                    Note(SelectedFeature, RefKey)
-                Case 117484032
-                    Surface(SelectedFeature, RefKey)
-                Case 117488384
-                    Chamfer(SelectedFeature, RefKey)
-                Case 117469952
-                    HoleTable(SelectedFeature, RefKey)
-                Case Else
-                    MsgBox("Unknown")
-            End Select
+            DimType(SelectedFeature, RefKey)
+            Dim oDim As GeneralDimension = SelectedFeature
+            InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, RefKey)
+
         End If
+    End Sub
+    Private Sub DimType(SelectedFeature As Object, RefKey As String)
+        Dim oType As String
+        Select Case SelectedFeature.type
+            'Linear Diametral Radial
+            Case 117474560
+                oType = "Linear"
+                LinearDim(SelectedFeature, RefKey, "Linear")
+            Case 117475328
+                oType = "Diameter"
+                LinearDim(SelectedFeature, RefKey, "Diameter")
+            Case 117475072
+                oType = "Radial"
+                LinearDim(SelectedFeature, RefKey, "Radial")
+            Case 117474816
+                oType = "Angular"
+                LinearDim(SelectedFeature, RefKey, "Angular")
+            Case 117483008
+                FCF(SelectedFeature, RefKey)
+            Case 117471488
+                HoleTableTag(SelectedFeature, RefKey)
+            Case 117491712
+                HoleTag(SelectedFeature, RefKey)
+            Case 117473024
+                Note(SelectedFeature, RefKey)
+            Case 117484032
+                Surface(SelectedFeature, RefKey)
+            Case 117488384
+                Chamfer(SelectedFeature, RefKey)
+            Case 117469952
+                HoleTable(SelectedFeature, RefKey)
+            Case Else
+                MsgBox("Unknown")
+
+        End Select
+
     End Sub
     Public Sub LinearDim(oDim As GeneralDimension, RefKey As String, oType As String)
         Dim Value, Prefix, Tag As String
@@ -87,7 +97,7 @@ Public Class Value_Table_SA
             Tag = Chr(176)
         Else
             Value = FormatNumber(_invApp.ActiveDocument.UnitsOfMeasure.ConvertUnits(oDim.ModelValue, UnitsTypeEnum.kDatabaseLengthUnits, UnitsTypeEnum.kDefaultDisplayLengthUnits), oDim.Precision)
-            Select Case Replace(oDim.Text.Text, Value, "")
+            Select Case Strings.Left(oDim.Text.Text, 1)
                 Case "n"
                     Prefix = Chr(216)
                 Case "R"
@@ -119,7 +129,6 @@ Public Class Value_Table_SA
         dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
         dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
         dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
-        dgvDimValues(dgvDimValues.Columns("Units").Index, dgvDimValues.RowCount - 1).Value = oDim.
         dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
         dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
         dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
@@ -143,8 +152,7 @@ Public Class Value_Table_SA
                 dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance
             End If
         End If
-        Dim Values As String = RefKey
-        InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
+
     End Sub
     Sub parameterInfo()
 
@@ -175,44 +183,6 @@ Public Class Value_Table_SA
         Next
 
     End Sub
-    Public Sub WritePrivate()
-
-        Dim invApp As Inventor.Application = GetObject(, "Inventor.Application")
-        Dim doc As Inventor.Document = invApp.ActiveDocument
-
-        Dim stm As Microsoft.VisualStudio.OLE.Interop.IStream
-        stm = doc.GetPrivateStream("Brian", True)
-
-        Dim data(19) As Byte
-        For i As Integer = 0 To 19
-            data(i) = i
-        Next
-
-        Dim leng As UInteger
-        leng = 20
-        Dim junk As UInteger = 0
-        stm.Write(data, leng, junk)
-        stm.Commit(Microsoft.VisualStudio.OLE.Interop.STGC.STGC_OVERWRITE Or Microsoft.VisualStudio.OLE.Interop.STGC.STGC_DEFAULT)
-    End Sub
-
-    Public Sub ReadPrivate()
-        Dim invApp As Inventor.Application = GetObject(, "Inventor.Application")
-        Dim doc As Inventor.Document = invApp.ActiveDocument
-
-        If doc.HasPrivateStream("Brian") Then
-            Dim stm As Microsoft.VisualStudio.OLE.Interop.IStream
-            stm = doc.GetPrivateStream("Brian", False)
-
-            Dim data(19) As Byte
-            Dim length As UInteger = 20
-            Dim junk As UInteger = 1
-            stm.Read(data, length, junk)
-            For i As Integer = 0 To length
-                data(i) = i
-            Next
-        End If
-    End Sub
-
     Public Sub Note(oDim As DrawingNote, RefKey As String)
         dgvDimValues.Rows.Add()
         dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
@@ -310,7 +280,7 @@ Public Class Value_Table_SA
         ' Obtain a sketched symbol definition.
         Dim oSketchedSymbolDef As SketchedSymbolDefinition = Nothing
         For i = 1 To oDrawDoc.SketchedSymbolDefinitions.Count
-            If oDrawDoc.SketchedSymbolDefinitions.Item(i).Name = "mySymbol" Then
+            If oDrawDoc.SketchedSymbolDefinitions.Item(i).Name = "Insp" Then
                 oSketchedSymbolDef = oDrawDoc.SketchedSymbolDefinitions.Item(i)
                 Exit For
             End If
@@ -318,7 +288,7 @@ Public Class Value_Table_SA
         If oSketchedSymbolDef Is Nothing Then
             CreateSketchedSymbolDefinition()
             For i = 1 To oDrawDoc.SketchedSymbolDefinitions.Count
-                If oDrawDoc.SketchedSymbolDefinitions.Item(i).Name = "mySymbol" Then
+                If oDrawDoc.SketchedSymbolDefinitions.Item(i).Name = "Insp" Then
                     oSketchedSymbolDef = oDrawDoc.SketchedSymbolDefinitions.Item(i)
                     Exit For
                 End If
@@ -368,7 +338,7 @@ Public Class Value_Table_SA
 
         ' Create the new sketched symbol definition.
         Dim oSketchedSymbolDef As SketchedSymbolDefinition
-        oSketchedSymbolDef = oDrawDoc.SketchedSymbolDefinitions.Add("mySymbol")
+        oSketchedSymbolDef = oDrawDoc.SketchedSymbolDefinitions.Add("Insp")
 
         ' Open the sketched symbol definition's sketch for edit. This is done by calling the Edit
         ' method of the SketchedSymbolDefinition to obtain a DrawingSketch. This actually creates
@@ -406,4 +376,99 @@ Public Class Value_Table_SA
             Characteristics.dgvProperties.Rows.Add(Column.Title, dgvDimValues(Column.index, e.RowIndex).value)
         Next
     End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Refresh()
+    End Sub
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        'WritePrivate()
+        Dim WriteString(dgvDimValues.RowCount - 1, dgvDimValues.ColumnCount - 1) As String
+        For i = 0 To dgvDimValues.RowCount - 1
+            For j = 0 To dgvDimValues.ColumnCount - 1
+                WriteString(i, j) = dgvDimValues(j, i).Value
+            Next
+        Next
+        Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(IO.Path.Combine(IO.Path.GetTempPath, "InspTable.csv"))
+        Dim str As String = ""
+        For i As Int32 = WriteString.GetLowerBound(0) To WriteString.GetUpperBound(0)
+            For j As Int32 = WriteString.GetLowerBound(1) To WriteString.GetUpperBound(1)
+                str += WriteString(i, j) + ","
+            Next
+            sw.WriteLine(Str)
+            Str = ""
+        Next
+        sw.Flush()
+        sw.Close()
+
+        Dim oleRef As ReferencedOLEFileDescriptor
+        For Each oleRef In _invApp.ActiveDocument.ReferencedOLEFileDescriptors
+            If oleRef.DisplayName = "InspTable" Then
+                oleRef.Delete()
+                Exit For
+            End If
+        Next
+        oleRef = _invApp.ActiveDocument.ReferencedOLEFileDescriptors.Add(IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, "InspTable.csv"), OLEDocumentTypeEnum.kOLEDocumentEmbeddingObject)
+        oleRef.DisplayName = "InspTable"
+        oleRef.BrowserVisible = False
+        oleRef.Visible = False
+        Kill(IO.Path.Combine(IO.Path.GetTempPath, "InspTable.csv"))
+    End Sub
+
+
+    Public Overrides Sub Refresh()
+        Dim oDoc As Document = _invApp.ActiveDocument
+        Dim Ref() As Byte = New Byte() {}
+        For Each oSketch As SketchedSymbol In oDoc.ActiveSheet.SketchedSymbols
+            If oSketch.Name = "Insp" Then
+                Dim key As String = oSketch.GetResultText(oSketch.Definition.Sketch.TextBoxes.Item(2))
+                Call oDoc.ReferenceKeyManager.StringToKey(key, Ref)
+                Dim Refobj As Object = oDoc.ReferenceKeyManager.BindKeyToObject(Ref)
+                oDoc.SelectSet.Clear()
+                Dim oDim As Object = Refobj
+                DimType(oDim, key)
+            End If
+        Next
+
+    End Sub
 End Class
+'Public Sub WritePrivate()
+
+'        Dim invApp As Inventor.Application = GetObject(, "Inventor.Application")
+'        Dim doc As Inventor.Document = invApp.ActiveDocument
+
+'        Dim stm As Microsoft.VisualStudio.OLE.Interop.IStream
+'        stm = doc.GetPrivateStream("Brian", True)
+
+'        Dim data(19) As Byte
+'        For i As Integer = 0 To 19
+'            data(i) = 9
+'        Next
+
+'        Dim leng As UInteger
+'        leng = 20
+'        Dim junk As UInteger = 0
+'        stm.Write(data, leng, junk)
+'        stm.Commit(Microsoft.VisualStudio.OLE.Interop.STGC.STGC_OVERWRITE Or Microsoft.VisualStudio.OLE.Interop.STGC.STGC_DEFAULT)
+'        Marshal.ReleaseComObject(stm)
+'    End Sub
+
+'    Public Sub ReadPrivate()
+'        Dim invApp As Inventor.Application = GetObject(, "Inventor.Application")
+'        Dim doc As Inventor.Document = invApp.ActiveDocument
+
+'        If doc.HasPrivateStream("Brian") Then
+'            Dim stm As Microsoft.VisualStudio.OLE.Interop.IStream
+'            stm = doc.GetPrivateStream("Brian", True)
+
+'            Dim data(19) As Byte
+'            Dim length As UInteger = 20
+'            Dim junk As UInteger = 1
+'            stm.Read(data, length, junk)
+'            For i As Integer = 0 To length
+'                Debug.WriteLine(data(i))
+'            Next
+'        End If
+'    End Sub
+
+
+
