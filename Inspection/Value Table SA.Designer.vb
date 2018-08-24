@@ -23,8 +23,12 @@ Partial Class Value_Table_SA
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.dgvDimValues = New System.Windows.Forms.DataGridView()
-        Me.Balloon = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
+        Me.Button3 = New System.Windows.Forms.Button()
+        Me.Button4 = New System.Windows.Forms.Button()
         Me.Ref = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Balloon = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Value = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Qty = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Type = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -35,10 +39,6 @@ Partial Class Value_Table_SA
         Me.LLimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.FitGrade = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Comments = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
-        Me.Button3 = New System.Windows.Forms.Button()
-        Me.Button4 = New System.Windows.Forms.Button()
         CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -47,7 +47,7 @@ Partial Class Value_Table_SA
         Me.dgvDimValues.AllowUserToAddRows = False
         Me.dgvDimValues.AllowUserToOrderColumns = True
         Me.dgvDimValues.AllowUserToResizeRows = False
-        Me.dgvDimValues.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Balloon, Me.Ref, Me.Value, Me.Qty, Me.Type, Me.SubType, Me.UTol, Me.LTol, Me.ULimit, Me.LLimit, Me.FitGrade, Me.Comments})
+        Me.dgvDimValues.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Ref, Me.Balloon, Me.Value, Me.Qty, Me.Type, Me.SubType, Me.UTol, Me.LTol, Me.ULimit, Me.LLimit, Me.FitGrade, Me.Comments})
         Me.dgvDimValues.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgvDimValues.Location = New System.Drawing.Point(12, 76)
         Me.dgvDimValues.Name = "dgvDimValues"
@@ -56,12 +56,41 @@ Partial Class Value_Table_SA
         Me.dgvDimValues.Size = New System.Drawing.Size(930, 183)
         Me.dgvDimValues.TabIndex = 6
         '
-        'Balloon
+        'Button1
         '
-        Me.Balloon.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
-        Me.Balloon.HeaderText = "Balloon"
-        Me.Balloon.Name = "Balloon"
-        Me.Balloon.Width = 67
+        Me.Button1.Location = New System.Drawing.Point(12, 12)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 7
+        Me.Button1.Text = "Add"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'Button2
+        '
+        Me.Button2.Location = New System.Drawing.Point(148, 11)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(75, 23)
+        Me.Button2.TabIndex = 8
+        Me.Button2.Text = "Refresh"
+        Me.Button2.UseVisualStyleBackColor = True
+        '
+        'Button3
+        '
+        Me.Button3.Location = New System.Drawing.Point(282, 11)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(75, 23)
+        Me.Button3.TabIndex = 9
+        Me.Button3.Text = "Load"
+        Me.Button3.UseVisualStyleBackColor = True
+        '
+        'Button4
+        '
+        Me.Button4.Location = New System.Drawing.Point(455, 11)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(75, 23)
+        Me.Button4.TabIndex = 10
+        Me.Button4.Text = "Save"
+        Me.Button4.UseVisualStyleBackColor = True
         '
         'Ref
         '
@@ -69,6 +98,13 @@ Partial Class Value_Table_SA
         Me.Ref.Name = "Ref"
         Me.Ref.ReadOnly = True
         Me.Ref.Visible = False
+        '
+        'Balloon
+        '
+        Me.Balloon.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
+        Me.Balloon.HeaderText = "Balloon"
+        Me.Balloon.Name = "Balloon"
+        Me.Balloon.Width = 67
         '
         'Value
         '
@@ -139,42 +175,6 @@ Partial Class Value_Table_SA
         Me.Comments.HeaderText = "Comments"
         Me.Comments.Name = "Comments"
         '
-        'Button1
-        '
-        Me.Button1.Location = New System.Drawing.Point(12, 12)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(75, 23)
-        Me.Button1.TabIndex = 7
-        Me.Button1.Text = "Add"
-        Me.Button1.UseVisualStyleBackColor = True
-        '
-        'Button2
-        '
-        Me.Button2.Location = New System.Drawing.Point(148, 11)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(75, 23)
-        Me.Button2.TabIndex = 8
-        Me.Button2.Text = "Refresh"
-        Me.Button2.UseVisualStyleBackColor = True
-        '
-        'Button3
-        '
-        Me.Button3.Location = New System.Drawing.Point(282, 11)
-        Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(75, 23)
-        Me.Button3.TabIndex = 9
-        Me.Button3.Text = "Button3"
-        Me.Button3.UseVisualStyleBackColor = True
-        '
-        'Button4
-        '
-        Me.Button4.Location = New System.Drawing.Point(455, 11)
-        Me.Button4.Name = "Button4"
-        Me.Button4.Size = New System.Drawing.Size(75, 23)
-        Me.Button4.TabIndex = 10
-        Me.Button4.Text = "Button4"
-        Me.Button4.UseVisualStyleBackColor = True
-        '
         'Value_Table_SA
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -193,8 +193,12 @@ Partial Class Value_Table_SA
     End Sub
 
     Friend WithEvents dgvDimValues As Windows.Forms.DataGridView
-    Friend WithEvents Balloon As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents Button1 As Windows.Forms.Button
+    Friend WithEvents Button2 As Windows.Forms.Button
+    Friend WithEvents Button3 As Windows.Forms.Button
+    Friend WithEvents Button4 As Windows.Forms.Button
     Friend WithEvents Ref As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents Balloon As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Value As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Qty As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Type As Windows.Forms.DataGridViewTextBoxColumn
@@ -205,8 +209,4 @@ Partial Class Value_Table_SA
     Friend WithEvents LLimit As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents FitGrade As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Comments As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Button1 As Windows.Forms.Button
-    Friend WithEvents Button2 As Windows.Forms.Button
-    Friend WithEvents Button3 As Windows.Forms.Button
-    Friend WithEvents Button4 As Windows.Forms.Button
 End Class

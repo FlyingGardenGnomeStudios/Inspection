@@ -4,6 +4,8 @@ Imports Inspection.Inspection
 Imports Inventor
 Imports System.Linq
 Imports System.IO
+Imports Microsoft.Office.Interop
+
 Public Class Value_Table_SA
     Dim _invApp As Inventor.Application
     Dim StandardAddinServer As StandardAddInServer
@@ -368,24 +370,25 @@ Public Class Value_Table_SA
         ' oTextBox.FormattedText = "<StyleOverride FontSize='0.08'></StyleOverride>"
         Call oSketchedSymbolDef.ExitEdit(True)
     End Sub
-
     Private Sub dgvDimValues_CellContentClick(sender As Object, e As Windows.Forms.DataGridViewCellEventArgs) Handles dgvDimValues.CellContentClick
         Dim Characteristics = New Characteristics
         ' Characteristics.PopValueTable(Me)
         For Each Column As Column In dgvDimValues.Columns
-            Characteristics.dgvProperties.Rows.Add(Column.Title, dgvDimValues(Column.index, e.RowIndex).value)
+            Characteristics.dgvProperties.Rows.Add(Column.Title, dgvDimValues(Column.index, e.RowIndex).Value)
         Next
     End Sub
-
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         Refresh()
     End Sub
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
         'WritePrivate()
-        Dim WriteString(dgvDimValues.RowCount - 1, dgvDimValues.ColumnCount - 1) As String
+        Dim WriteString(dgvDimValues.RowCount, dgvDimValues.ColumnCount - 1) As String
+        For column = 0 To dgvDimValues.ColumnCount - 1
+            WriteString(0, column) = dgvDimValues.Columns(column).HeaderText
+        Next
         For i = 0 To dgvDimValues.RowCount - 1
             For j = 0 To dgvDimValues.ColumnCount - 1
-                WriteString(i, j) = dgvDimValues(j, i).Value
+                WriteString(i + 1, j) = dgvDimValues(j, i).Value
             Next
         Next
         Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(IO.Path.Combine(IO.Path.GetTempPath, "InspTable.csv"))
@@ -394,8 +397,8 @@ Public Class Value_Table_SA
             For j As Int32 = WriteString.GetLowerBound(1) To WriteString.GetUpperBound(1)
                 str += WriteString(i, j) + ","
             Next
-            sw.WriteLine(Str)
-            Str = ""
+            sw.WriteLine(str)
+            str = ""
         Next
         sw.Flush()
         sw.Close()
@@ -409,12 +412,10 @@ Public Class Value_Table_SA
         Next
         oleRef = _invApp.ActiveDocument.ReferencedOLEFileDescriptors.Add(IO.Path.Combine(My.Computer.FileSystem.SpecialDirectories.Temp, "InspTable.csv"), OLEDocumentTypeEnum.kOLEDocumentEmbeddingObject)
         oleRef.DisplayName = "InspTable"
-        oleRef.BrowserVisible = False
-        oleRef.Visible = False
+        'oleRef.BrowserVisible = False
+        'oleRef.Visible = False
         Kill(IO.Path.Combine(IO.Path.GetTempPath, "InspTable.csv"))
     End Sub
-
-
     Public Overrides Sub Refresh()
         Dim oDoc As Document = _invApp.ActiveDocument
         Dim Ref() As Byte = New Byte() {}
@@ -430,45 +431,47 @@ Public Class Value_Table_SA
         Next
 
     End Sub
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        dgvDimValues.Rows.Clear()
+        Dim oDoc As DrawingDocument = _invApp.ActiveDocument
+        For Each EmbeddedFile As ReferencedOLEFileDescriptor In oDoc.ReferencedOLEFileDescriptors2(OLEDocumentTypeEnum.kOLEDocumentEmbeddingObject)
+            If EmbeddedFile.DisplayName = "InspTable" Then
+                Dim oExcelWB As Excel.Workbook = Nothing
+                Dim osheet As Excel.Worksheet
+                EmbeddedFile.Activate(OLEVerbEnum.kHideOLEVerb, oExcelWB)
+                osheet = oExcelWB.ActiveSheet
+                For Y = 2 To osheet.UsedRange.Rows.Count
+                    dgvDimValues.Rows.Add()
+                    For X = 1 To dgvDimValues.ColumnCount
+                        Select Case osheet.Cells(1, X).value
+                            Case "Reference"
+                                dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).Value
+                            Case "Balloon"
+                                dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                            Case "Value"
+                                dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                            Case "QTY"
+                                dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                            Case "Type"
+                                dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                            Case "Sub-Type"
+                                dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                            Case "Upper Tol"
+                                dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                            Case "Lower Tol"
+                                dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                            Case "Upper Limit"
+                                dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                            Case "Lower Limit"
+                                dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                            Case "Fit Grade"
+                                dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                            Case "Comments"
+                                dgvDimValues(dgvDimValues.Columns("Comments").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                        End Select
+                    Next
+                Next
+            End If
+        Next
+    End Sub
 End Class
-'Public Sub WritePrivate()
-
-'        Dim invApp As Inventor.Application = GetObject(, "Inventor.Application")
-'        Dim doc As Inventor.Document = invApp.ActiveDocument
-
-'        Dim stm As Microsoft.VisualStudio.OLE.Interop.IStream
-'        stm = doc.GetPrivateStream("Brian", True)
-
-'        Dim data(19) As Byte
-'        For i As Integer = 0 To 19
-'            data(i) = 9
-'        Next
-
-'        Dim leng As UInteger
-'        leng = 20
-'        Dim junk As UInteger = 0
-'        stm.Write(data, leng, junk)
-'        stm.Commit(Microsoft.VisualStudio.OLE.Interop.STGC.STGC_OVERWRITE Or Microsoft.VisualStudio.OLE.Interop.STGC.STGC_DEFAULT)
-'        Marshal.ReleaseComObject(stm)
-'    End Sub
-
-'    Public Sub ReadPrivate()
-'        Dim invApp As Inventor.Application = GetObject(, "Inventor.Application")
-'        Dim doc As Inventor.Document = invApp.ActiveDocument
-
-'        If doc.HasPrivateStream("Brian") Then
-'            Dim stm As Microsoft.VisualStudio.OLE.Interop.IStream
-'            stm = doc.GetPrivateStream("Brian", True)
-
-'            Dim data(19) As Byte
-'            Dim length As UInteger = 20
-'            Dim junk As UInteger = 1
-'            stm.Read(data, length, junk)
-'            For i As Integer = 0 To length
-'                Debug.WriteLine(data(i))
-'            Next
-'        End If
-'    End Sub
-
-
-
