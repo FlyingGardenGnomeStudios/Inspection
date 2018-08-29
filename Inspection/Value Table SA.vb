@@ -4,10 +4,17 @@ Imports Inspection.Inspection
 Imports Inventor
 Imports System.Linq
 Imports System.IO
+Imports System.Data
 Imports Microsoft.Office.Interop
+Imports System.Windows.Forms
+Imports System.Collections.Generic
 
 Public Class Value_Table_SA
     Dim _invApp As Inventor.Application
+    Dim ListDim() As String = {"Linear", "Angular", "Diametral", "Radial"}
+    Dim ListTable() As String = {"Hole Table", "Feature Control Frame"}
+    Dim ListNote() As String = {"Note", "Hole Callout", "Chamfer"}
+    Dim ListOther() As String = {"Weld", "Surface Roughness"}
     Dim StandardAddinServer As StandardAddInServer
     Private CharacteristicsForm As Settings
     Private WithEvents oSelect As SelectEvents
@@ -17,6 +24,8 @@ Public Class Value_Table_SA
         ' This call is required by the designer.
         InitializeComponent()
         _invApp = Marshal.GetActiveObject("Inventor.Application")
+        AddHandler dgvDimValues.CellValueChanged, AddressOf Me.dgvDimValues_CellValueChanged
+        AddHandler dgvDimValues.CurrentCellDirtyStateChanged, AddressOf Me.dgvDimValues_CurrentCellDirtyStateChanged
         ' Add any initialization after the InitializeComponent() call.
         Refresh()
     End Sub
@@ -133,6 +142,7 @@ Public Class Value_Table_SA
         dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
         dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
         dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
+        'SubTypeCollection(dgvDimValues.RowCount - 1)
         dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
         dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = uTol
         dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = lTol
@@ -155,6 +165,18 @@ Public Class Value_Table_SA
             End If
         End If
 
+    End Sub
+    Private Sub SubTypeCollection(ByVal Row As Integer)
+        Dim cmbCol As DataGridViewComboBoxColumn = dgvDimValues.Columns.Item(dgvDimValues.Columns("Type").Index + 1)
+        'If dgvDimValues(dgvDimValues.Columns("Type").Index, Row).Value = "Note" Then
+        '    cmbCol.Items.Add("A")
+        '    cmbCol.Items.Add("B")
+        '    cmbCol.Items.Add("C")
+        'Else
+        '    cmbCol.Items.Add("X")
+        '    cmbCol.Items.Add("Y")
+        '    cmbCol.Items.Add("Z")
+        'End If
     End Sub
     Sub parameterInfo()
 
@@ -359,7 +381,7 @@ Public Class Value_Table_SA
         ' Add a prompted text field at the center of the sketch circle.
         Dim sText As String
         sText = "<StyleOverride FontSize='" & My.Settings.BalloonSize / 50 & "'>" & "<Prompt>Number</Prompt>" & "</StyleOverride>"
-        Dim oTextBox As TextBox
+        Dim oTextBox As Inventor.TextBox
         Dim ValueText As String = "<StyleOverride FontSize='" & 0.0001 & "'>" & "<Prompt>Value</Prompt>" & "</StyleOverride>"
 
         oTextBox = oSketch.TextBoxes.AddFitted(oTG.CreatePoint2d(0, 0), sText)
@@ -373,9 +395,9 @@ Public Class Value_Table_SA
     Private Sub dgvDimValues_CellContentClick(sender As Object, e As Windows.Forms.DataGridViewCellEventArgs) Handles dgvDimValues.CellContentClick
         Dim Characteristics = New Characteristics
         ' Characteristics.PopValueTable(Me)
-        For Each Column As Column In dgvDimValues.Columns
-            Characteristics.dgvProperties.Rows.Add(Column.Title, dgvDimValues(Column.index, e.RowIndex).Value)
-        Next
+        'For Each Column As Column In dgvDimValues.Columns
+        '    Characteristics.dgvProperties.Rows.Add(Column.Title, dgvDimValues(Column.index, e.RowIndex).Value)
+        'Next
     End Sub
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         Refresh()
@@ -419,17 +441,19 @@ Public Class Value_Table_SA
     Public Overrides Sub Refresh()
         Dim oDoc As Document = _invApp.ActiveDocument
         Dim Ref() As Byte = New Byte() {}
-        For Each oSketch As SketchedSymbol In oDoc.ActiveSheet.SketchedSymbols
-            If oSketch.Name = "Insp" Then
-                Dim key As String = oSketch.GetResultText(oSketch.Definition.Sketch.TextBoxes.Item(2))
-                Call oDoc.ReferenceKeyManager.StringToKey(key, Ref)
-                Dim Refobj As Object = oDoc.ReferenceKeyManager.BindKeyToObject(Ref)
-                oDoc.SelectSet.Clear()
-                Dim oDim As Object = Refobj
-                DimType(oDim, key)
-            End If
-        Next
-
+        Try
+            For Each oSketch As SketchedSymbol In oDoc.ActiveSheet.SketchedSymbols
+                If oSketch.Name = "Insp" Then
+                    Dim key As String = oSketch.GetResultText(oSketch.Definition.Sketch.TextBoxes.Item(2))
+                    Call oDoc.ReferenceKeyManager.StringToKey(key, Ref)
+                    Dim Refobj As Object = oDoc.ReferenceKeyManager.BindKeyToObject(Ref)
+                    oDoc.SelectSet.Clear()
+                    Dim oDim As Object = Refobj
+                    DimType(oDim, key)
+                End If
+            Next
+        Catch
+        End Try
     End Sub
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         dgvDimValues.Rows.Clear()
@@ -473,5 +497,58 @@ Public Class Value_Table_SA
                 Next
             End If
         Next
+    End Sub
+
+    'Private Sub dgvDimValues_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvDimValues.CellValueChanged
+
+    '    If dgvDimValues.Columns(e.ColumnIndex).HeaderText = "Type" And e.RowIndex >= 0 Then
+    '        Select Case dgvDimValues(e.ColumnIndex, e.RowIndex).Value
+    '            Case "Dimension"
+    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListDim
+    '            Case "Geometric Tol"
+    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListTable
+    '            Case "Note"
+    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListNote
+    '            Case "Other"
+    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListOther
+    '            Case Else
+    '        End Select
+    '    End If
+    'End Sub
+    Private Sub dgvDimValues_CurrentCellDirtyStateChanged(ByVal sender As Object, ByVal e As EventArgs)
+        If Me.dgvDimValues.IsCurrentCellDirty Then
+            ' This fires the cell value changed handler below
+            dgvDimValues.CommitEdit(DataGridViewDataErrorContexts.Commit)
+        End If
+
+    End Sub
+
+    Private Sub dgvDimValues_CellValueChanged(ByVal sender As Object, ByVal e As DataGridViewCellEventArgs)
+        If dgvDimValues.Columns(e.ColumnIndex).HeaderText = "Type" Then
+            Dim cb As DataGridViewComboBoxCell = CType(dgvDimValues.Rows(e.RowIndex).Cells(e.ColumnIndex), DataGridViewComboBoxCell)
+            Dim SubTypeCell As New DataGridViewComboBoxCell
+            SubTypeCell = dgvDimValues.Rows(e.RowIndex).Cells(dgvDimValues.Columns("SubType").Index)
+            SubTypeCell.Items.Clear()
+            Select Case cb.Value
+
+
+                Case "Dimension"
+                    SubTypeCell.Items.AddRange(ListDim)
+                    SubTypeCell.Value = "Diametral"
+                Case "Geometric Tol"
+                    SubTypeCell.Items.AddRange(ListTable)
+                    SubTypeCell.Value = "Hole Table"
+                Case "Note"
+                    SubTypeCell.Items.AddRange(ListNote)
+                    SubTypeCell.Value = "Note"
+                Case "Other"
+                    SubTypeCell.Items.AddRange(ListOther)
+                    SubTypeCell.Value = "Weld"
+                Case Nothing
+
+                Case Else
+            End Select
+            '            dgvDimValues.Invalidate()
+        End If
     End Sub
 End Class

@@ -31,8 +31,8 @@ Partial Class Value_Table_SA
         Me.Balloon = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Value = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Qty = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Type = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.SubType = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Type = New System.Windows.Forms.DataGridViewComboBoxColumn()
+        Me.SubType = New System.Windows.Forms.DataGridViewComboBoxColumn()
         Me.UTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.LTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ULimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -101,79 +101,77 @@ Partial Class Value_Table_SA
         '
         'Balloon
         '
-        Me.Balloon.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
+        Me.Balloon.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Balloon.HeaderText = "Balloon"
         Me.Balloon.Name = "Balloon"
-        Me.Balloon.Width = 67
         '
         'Value
         '
-        Me.Value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
+        Me.Value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Value.HeaderText = "Value"
         Me.Value.Name = "Value"
-        Me.Value.Width = 59
         '
         'Qty
         '
-        Me.Qty.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
+        Me.Qty.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Qty.HeaderText = "QTY"
         Me.Qty.Name = "Qty"
-        Me.Qty.Width = 54
+        Me.Qty.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
         '
         'Type
         '
-        Me.Type.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.Type.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Type.HeaderText = "Type"
+        Me.Type.Items.AddRange(New Object() {"Dimension", "Geometric Tol", "Note", "Other"})
         Me.Type.Name = "Type"
-        Me.Type.Width = 56
+        Me.Type.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.Type.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
         '
         'SubType
         '
-        Me.SubType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.SubType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.SubType.HeaderText = "Sub-Type"
+        Me.SubType.Items.AddRange(New Object() {"Linear", "Angular", "Diametral", "Radial"})
         Me.SubType.Name = "SubType"
-        Me.SubType.Width = 78
+        Me.SubType.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.SubType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
         '
         'UTol
         '
-        Me.UTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
+        Me.UTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.UTol.HeaderText = "Upper Tol"
         Me.UTol.Name = "UTol"
-        Me.UTol.Width = 79
         '
         'LTol
         '
-        Me.LTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
+        Me.LTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.LTol.HeaderText = "Lower Tol"
         Me.LTol.Name = "LTol"
-        Me.LTol.Width = 79
         '
         'ULimit
         '
-        Me.ULimit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
+        Me.ULimit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.ULimit.HeaderText = "Upper Limit"
         Me.ULimit.Name = "ULimit"
-        Me.ULimit.Width = 85
         '
         'LLimit
         '
-        Me.LLimit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
+        Me.LLimit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.LLimit.HeaderText = "Lower Limit"
         Me.LLimit.Name = "LLimit"
-        Me.LLimit.Width = 85
         '
         'FitGrade
         '
-        Me.FitGrade.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader
+        Me.FitGrade.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.FitGrade.HeaderText = "Fit Grade"
         Me.FitGrade.Name = "FitGrade"
-        Me.FitGrade.Width = 75
         '
         'Comments
         '
         Me.Comments.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Comments.HeaderText = "Comments"
         Me.Comments.Name = "Comments"
+        Me.Comments.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
         '
         'Value_Table_SA
         '
@@ -201,8 +199,8 @@ Partial Class Value_Table_SA
     Friend WithEvents Balloon As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Value As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Qty As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Type As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents SubType As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents Type As Windows.Forms.DataGridViewComboBoxColumn
+    Friend WithEvents SubType As Windows.Forms.DataGridViewComboBoxColumn
     Friend WithEvents UTol As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents LTol As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents ULimit As Windows.Forms.DataGridViewTextBoxColumn
