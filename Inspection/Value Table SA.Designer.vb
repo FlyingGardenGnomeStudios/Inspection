@@ -22,39 +22,26 @@ Partial Class Value_Table_SA
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.dgvDimValues = New System.Windows.Forms.DataGridView()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.Button4 = New System.Windows.Forms.Button()
-        Me.Ref = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.tgvDimValues = New AdvancedDataGridView.TreeGridView()
         Me.Balloon = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Ref = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Value = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Qty = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Type = New System.Windows.Forms.DataGridViewComboBoxColumn()
-        Me.SubType = New System.Windows.Forms.DataGridViewComboBoxColumn()
-        Me.UTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ULimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LLimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Units = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.QTY = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Type = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.SubType = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.UpperTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LowerTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.UpperLimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LowerLimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.FitGrade = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Comments = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.tgvDimValues, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'dgvDimValues
-        '
-        Me.dgvDimValues.AllowUserToAddRows = False
-        Me.dgvDimValues.AllowUserToOrderColumns = True
-        Me.dgvDimValues.AllowUserToResizeRows = False
-        Me.dgvDimValues.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Ref, Me.Balloon, Me.Value, Me.Qty, Me.Type, Me.SubType, Me.UTol, Me.LTol, Me.ULimit, Me.LLimit, Me.FitGrade, Me.Comments})
-        Me.dgvDimValues.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
-        Me.dgvDimValues.Location = New System.Drawing.Point(12, 76)
-        Me.dgvDimValues.Name = "dgvDimValues"
-        Me.dgvDimValues.RowHeadersVisible = False
-        Me.dgvDimValues.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
-        Me.dgvDimValues.Size = New System.Drawing.Size(930, 183)
-        Me.dgvDimValues.TabIndex = 6
         '
         'Button1
         '
@@ -92,119 +79,150 @@ Partial Class Value_Table_SA
         Me.Button4.Text = "Save"
         Me.Button4.UseVisualStyleBackColor = True
         '
-        'Ref
+        'tgvDimValues
         '
-        Me.Ref.HeaderText = "Reference"
-        Me.Ref.Name = "Ref"
-        Me.Ref.ReadOnly = True
-        Me.Ref.Visible = False
+        Me.tgvDimValues.AllowUserToAddRows = False
+        Me.tgvDimValues.AllowUserToDeleteRows = False
+        Me.tgvDimValues.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Balloon, Me.Ref, Me.Value, Me.Units, Me.QTY, Me.Type, Me.SubType, Me.UpperTol, Me.LowerTol, Me.UpperLimit, Me.LowerLimit, Me.FitGrade, Me.Comments})
+        Me.tgvDimValues.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically
+        Me.tgvDimValues.ImageList = Nothing
+        Me.tgvDimValues.Location = New System.Drawing.Point(12, 41)
+        Me.tgvDimValues.Name = "tgvDimValues"
+        Me.tgvDimValues.RowHeadersVisible = False
+        Me.tgvDimValues.Size = New System.Drawing.Size(925, 218)
+        Me.tgvDimValues.TabIndex = 11
         '
         'Balloon
         '
         Me.Balloon.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Balloon.HeaderText = "Balloon"
         Me.Balloon.Name = "Balloon"
+        Me.Balloon.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        '
+        'Ref
+        '
+        Me.Ref.HeaderText = "Ref"
+        Me.Ref.Name = "Ref"
+        Me.Ref.ReadOnly = True
+        Me.Ref.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        Me.Ref.Visible = False
         '
         'Value
         '
         Me.Value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Value.HeaderText = "Value"
         Me.Value.Name = "Value"
+        Me.Value.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
-        'Qty
+        'Units
         '
-        Me.Qty.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.Qty.HeaderText = "QTY"
-        Me.Qty.Name = "Qty"
-        Me.Qty.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.Units.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.Units.HeaderText = "Units"
+        Me.Units.Name = "Units"
+        Me.Units.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.Units.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        '
+        'QTY
+        '
+        Me.QTY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.QTY.HeaderText = "Qty"
+        Me.QTY.Name = "QTY"
+        Me.QTY.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.QTY.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'Type
         '
         Me.Type.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Type.HeaderText = "Type"
-        Me.Type.Items.AddRange(New Object() {"Dimension", "Geometric Tol", "Note", "Other"})
         Me.Type.Name = "Type"
         Me.Type.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.Type.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+        Me.Type.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'SubType
         '
         Me.SubType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.SubType.HeaderText = "Sub-Type"
-        Me.SubType.Items.AddRange(New Object() {"Linear", "Angular", "Diametral", "Radial"})
         Me.SubType.Name = "SubType"
         Me.SubType.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.SubType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+        Me.SubType.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
-        'UTol
+        'UpperTol
         '
-        Me.UTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.UTol.HeaderText = "Upper Tol"
-        Me.UTol.Name = "UTol"
+        Me.UpperTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.UpperTol.HeaderText = "Upper Tol"
+        Me.UpperTol.Name = "UpperTol"
+        Me.UpperTol.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.UpperTol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
-        'LTol
+        'LowerTol
         '
-        Me.LTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.LTol.HeaderText = "Lower Tol"
-        Me.LTol.Name = "LTol"
+        Me.LowerTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LowerTol.HeaderText = "Lower Tol"
+        Me.LowerTol.Name = "LowerTol"
+        Me.LowerTol.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.LowerTol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
-        'ULimit
+        'UpperLimit
         '
-        Me.ULimit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.ULimit.HeaderText = "Upper Limit"
-        Me.ULimit.Name = "ULimit"
+        Me.UpperLimit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.UpperLimit.HeaderText = "Upper Limit"
+        Me.UpperLimit.Name = "UpperLimit"
+        Me.UpperLimit.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
-        'LLimit
+        'LowerLimit
         '
-        Me.LLimit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.LLimit.HeaderText = "Lower Limit"
-        Me.LLimit.Name = "LLimit"
+        Me.LowerLimit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LowerLimit.HeaderText = "Lower Limit"
+        Me.LowerLimit.Name = "LowerLimit"
+        Me.LowerLimit.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'FitGrade
         '
         Me.FitGrade.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.FitGrade.HeaderText = "Fit Grade"
         Me.FitGrade.Name = "FitGrade"
+        Me.FitGrade.ReadOnly = True
+        Me.FitGrade.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'Comments
         '
         Me.Comments.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.Comments.HeaderText = "Comments"
         Me.Comments.Name = "Comments"
-        Me.Comments.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.Comments.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
         '
         'Value_Table_SA
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(949, 271)
+        Me.Controls.Add(Me.tgvDimValues)
         Me.Controls.Add(Me.Button4)
         Me.Controls.Add(Me.Button3)
         Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Button1)
-        Me.Controls.Add(Me.dgvDimValues)
         Me.Name = "Value_Table_SA"
         Me.Text = "Value_Table_SA"
-        CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.tgvDimValues, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
-
-    Friend WithEvents dgvDimValues As Windows.Forms.DataGridView
     Friend WithEvents Button1 As Windows.Forms.Button
     Friend WithEvents Button2 As Windows.Forms.Button
     Friend WithEvents Button3 As Windows.Forms.Button
     Friend WithEvents Button4 As Windows.Forms.Button
-    Friend WithEvents Ref As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents tgvDimValues As AdvancedDataGridView.TreeGridView
     Friend WithEvents Balloon As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents Ref As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Value As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Qty As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Type As Windows.Forms.DataGridViewComboBoxColumn
-    Friend WithEvents SubType As Windows.Forms.DataGridViewComboBoxColumn
-    Friend WithEvents UTol As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents LTol As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents ULimit As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents LLimit As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents Units As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents QTY As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents Type As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents SubType As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents UpperTol As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents LowerTol As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents UpperLimit As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents LowerLimit As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents FitGrade As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Comments As Windows.Forms.DataGridViewTextBoxColumn
 End Class

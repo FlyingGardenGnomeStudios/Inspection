@@ -8,6 +8,7 @@ Imports System.Data
 Imports Microsoft.Office.Interop
 Imports System.Windows.Forms
 Imports System.Collections.Generic
+Imports AdvancedDataGridView
 
 Public Class Value_Table_SA
     Dim _invApp As Inventor.Application
@@ -15,6 +16,8 @@ Public Class Value_Table_SA
     Dim ListTable() As String = {"Hole Table", "Feature Control Frame"}
     Dim ListNote() As String = {"Note", "Hole Callout", "Chamfer"}
     Dim ListOther() As String = {"Weld", "Surface Roughness"}
+    Dim ListLength() As String = {"Inch", "Foot", "Centimeter", "Millimeter"}
+    Dim ListAngle() As String = {"Degrees", "Radians"}
     Dim StandardAddinServer As StandardAddInServer
     Private CharacteristicsForm As Settings
     Private WithEvents oSelect As SelectEvents
@@ -24,8 +27,8 @@ Public Class Value_Table_SA
         ' This call is required by the designer.
         InitializeComponent()
         _invApp = Marshal.GetActiveObject("Inventor.Application")
-        AddHandler dgvDimValues.CellValueChanged, AddressOf Me.dgvDimValues_CellValueChanged
-        AddHandler dgvDimValues.CurrentCellDirtyStateChanged, AddressOf Me.dgvDimValues_CurrentCellDirtyStateChanged
+        AddHandler tgvDimValues.CellValueChanged, AddressOf Me.tgvDimValues_CellValueChanged
+        AddHandler tgvDimValues.CurrentCellDirtyStateChanged, AddressOf Me.tgvDimValues_CurrentCellDirtyStateChanged
         ' Add any initialization after the InitializeComponent() call.
         Refresh()
     End Sub
@@ -47,8 +50,8 @@ Public Class Value_Table_SA
 
 
         Dim Dup As Boolean = False
-        For Each row In dgvDimValues.Rows
-            If dgvDimValues(dgvDimValues.Columns("Ref").Index, row.index).Value = RefKey Then
+        For Each row In tgvDimValues.Rows
+            If tgvDimValues(tgvDimValues.Columns("Ref").Index, row.index).Value = RefKey Then
                 Dup = True
                 Exit For
             End If
@@ -136,47 +139,87 @@ Public Class Value_Table_SA
         Else
             lTol = oDim.Tolerance.Lower
         End If
-        dgvDimValues.Rows.Add()
-        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
-        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
-        'SubTypeCollection(dgvDimValues.RowCount - 1)
-        dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
-        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = uTol
-        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = lTol
-        dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = Value + uTol
-        dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = Value + lTol
-        If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsLinearTolerance Or
-            oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowSizeTolerance Or
-            oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowTolerance Or
-            oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsStackedTolerance Then
-            If oDim.Tolerance.ShaftTolerance <> "" AndAlso oDim.Tolerance.HoleTolerance <> "" Then
-                dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance & "/" & oDim.Tolerance.ShaftTolerance
-                dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
-                dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
-                dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
-                dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
-            ElseIf oDim.Tolerance.ShaftTolerance <> "" Then
-                dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.ShaftTolerance
-            ElseIf oDim.Tolerance.HoleTolerance <> "" Then
-                dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance
-            End If
-        End If
+        'Dim BalloonCol, RefCol, ValueCol, QtyCol, TypeCol, STypeCol, UTolCol, LTolCol, ULimitCol, LLimitCol, FitGradeCol, CommentsCol As Integer
+        'Dim i As Integer = Nothing
+        'Dim BalloonRow(tgvDimValues.ColumnCount - 1) As String
+        'For z = 0 To tgvDimValues.ColumnCount - 1
+        '    'For Col = 0 To tgvDimValues.ColumnCount - 1
+        '    Select Case (tgvDimValues.Columns.Item(z).HeaderText)
+        '        Case "Balloon"
+        '            BalloonRow(z) = tgvDimValues.RowCount
+        '        Case "Ref"
+        '            BalloonRow(z) = RefKey
+        '        Case "Value"
+        '            BalloonRow(z) = Prefix & Value & Tag
+        '        Case "Units"
+        '            BalloonRow(z) = "Inch"
+        '        Case "QTY"
+        '            BalloonRow(z) = 1
+        '        Case "Type"
+        '            BalloonRow(z) = "Dimension"
+        '        Case "SubType"
+        '            BalloonRow(z) = oType
+        '        Case "UpperTol"
+        '            BalloonRow(z) = uTol
+        '        Case "LowerTol"
+        '            BalloonRow(z) = lTol
+        '        Case "UpperLimit"
+        '            BalloonRow(z) = Value + uTol
+        '        Case "LowerLimit"
+        '            BalloonRow(z) = Value + lTol
+        '        Case "FitGrade"
+        '            If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsLinearTolerance Or
+        '     oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowSizeTolerance Or
+        '    oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowTolerance Or
+        '    oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsStackedTolerance Then
+        '                If oDim.Tolerance.ShaftTolerance <> "" AndAlso oDim.Tolerance.HoleTolerance <> "" Then
+        '                    BalloonRow(z) = oDim.Tolerance.HoleTolerance & "/" & oDim.Tolerance.ShaftTolerance
+        '                    'tgvDimValues(tgvDimValues.Columns("UTol").Index, tgvDimValues.RowCount - 1).Value = "NA"
+        '                    'tgvDimValues(tgvDimValues.Columns("LTol").Index, tgvDimValues.RowCount - 1).Value = "NA"
+        '                    'tgvDimValues(tgvDimValues.Columns("ULimit").Index, tgvDimValues.RowCount - 1).Value = "NA"
+        '                    'tgvDimValues(tgvDimValues.Columns("LLimit").Index, tgvDimValues.RowCount - 1).Value = "NA"
+        '                ElseIf oDim.Tolerance.ShaftTolerance <> "" Then
+        '                    BalloonRow(z) = oDim.Tolerance.ShaftTolerance
+        '                ElseIf oDim.Tolerance.HoleTolerance <> "" Then
+        '                    BalloonRow(z) = oDim.Tolerance.HoleTolerance
+        '                End If
+        '            End If
+        '        Case "Comments"
+        '            BalloonRow(z) = ""
+        '    End Select
+        'Next
 
-    End Sub
-    Private Sub SubTypeCollection(ByVal Row As Integer)
-        Dim cmbCol As DataGridViewComboBoxColumn = dgvDimValues.Columns.Item(dgvDimValues.Columns("Type").Index + 1)
-        'If dgvDimValues(dgvDimValues.Columns("Type").Index, Row).Value = "Note" Then
-        '    cmbCol.Items.Add("A")
-        '    cmbCol.Items.Add("B")
-        '    cmbCol.Items.Add("C")
-        'Else
-        '    cmbCol.Items.Add("X")
-        '    cmbCol.Items.Add("Y")
-        '    cmbCol.Items.Add("Z")
+        Dim Node As TreeGridNode = Nothing
+        Node = tgvDimValues.Nodes.Add({"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"})
+        'tgvDimValues.Rows.Add()
+        'tgvDimValues(tgvDimValues.Columns("Balloon").Index, tgvDimValues.RowCount - 1).Value = tgvDimValues.RowCount
+        'tgvDimValues(tgvDimValues.Columns("Ref").Index, tgvDimValues.RowCount - 1).Value = RefKey
+        'tgvDimValues(tgvDimValues.Columns("Value").Index, tgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
+        'tgvDimValues(tgvDimValues.Columns("Qty").Index, tgvDimValues.RowCount - 1).Value = "TBD"
+        'tgvDimValues(tgvDimValues.Columns("Type").Index, tgvDimValues.RowCount - 1).Value = "Dimension"
+        ''SubTypeCollection(tgvDimValues.RowCount - 1)
+        'tgvDimValues(tgvDimValues.Columns("SubType").Index, tgvDimValues.RowCount - 1).Value = oType
+        'tgvDimValues(tgvDimValues.Columns("UTol").Index, tgvDimValues.RowCount - 1).Value = uTol
+        'tgvDimValues(tgvDimValues.Columns("LTol").Index, tgvDimValues.RowCount - 1).Value = lTol
+        'tgvDimValues(tgvDimValues.Columns("ULimit").Index, tgvDimValues.RowCount - 1).Value = Value + uTol
+        'tgvDimValues(tgvDimValues.Columns("LLimit").Index, tgvDimValues.RowCount - 1).Value = Value + lTol
+        'If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsLinearTolerance Or
+        '    oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowSizeTolerance Or
+        '    oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowTolerance Or
+        '    oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsStackedTolerance Then
+        '    If oDim.Tolerance.ShaftTolerance <> "" AndAlso oDim.Tolerance.HoleTolerance <> "" Then
+        '        tgvDimValues(tgvDimValues.Columns("FitGrade").Index, tgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance & "/" & oDim.Tolerance.ShaftTolerance
+        '        tgvDimValues(tgvDimValues.Columns("UTol").Index, tgvDimValues.RowCount - 1).Value = "NA"
+        '        tgvDimValues(tgvDimValues.Columns("LTol").Index, tgvDimValues.RowCount - 1).Value = "NA"
+        '        tgvDimValues(tgvDimValues.Columns("ULimit").Index, tgvDimValues.RowCount - 1).Value = "NA"
+        '        tgvDimValues(tgvDimValues.Columns("LLimit").Index, tgvDimValues.RowCount - 1).Value = "NA"
+        '    ElseIf oDim.Tolerance.ShaftTolerance <> "" Then
+        '        tgvDimValues(tgvDimValues.Columns("FitGrade").Index, tgvDimValues.RowCount - 1).Value = oDim.Tolerance.ShaftTolerance
+        '    ElseIf oDim.Tolerance.HoleTolerance <> "" Then
+        '        tgvDimValues(tgvDimValues.Columns("FitGrade").Index, tgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance
+        '    End If
         'End If
+
     End Sub
     Sub parameterInfo()
 
@@ -192,74 +235,74 @@ Public Class Value_Table_SA
 
         For Each para In oDoc.ComponentDefinition.Parameters
 
-            Debug.Print("Expression is " + para.Expression)
+            Debug.Print("Expression Is " + para.Expression)
 
-            Debug.Print("Display unit is " + para.Units)
+            Debug.Print("Display unit Is " + para.Units)
 
-            Debug.Print("ModelVaule is " + para.ModelValue.ToString)
+            Debug.Print("ModelVaule Is " + para.ModelValue.ToString)
 
-            Debug.Print("Value is " + para.Value.ToString)
+            Debug.Print("Value Is " + para.Value.ToString)
 
             Dim displayValue As String
             displayValue = UOM.ConvertUnits(para.Value, UOM.GetTypeFromString(UOM.GetDatabaseUnitsFromExpression(para.Expression, para.Units)), para.Units)
-            Debug.Print("Display value is " + displayValue)
+            Debug.Print("Display value Is " + displayValue)
 
         Next
 
     End Sub
     Public Sub Note(oDim As DrawingNote, RefKey As String)
-        dgvDimValues.Rows.Add()
-        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
-        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
+        tgvDimValues.Rows.Add()
+        tgvDimValues(tgvDimValues.Columns("Balloon").Index, tgvDimValues.RowCount - 1).Value = tgvDimValues.RowCount
+        tgvDimValues(tgvDimValues.Columns("Ref").Index, tgvDimValues.RowCount - 1).Value = RefKey
+        tgvDimValues(tgvDimValues.Columns("Value").Index, tgvDimValues.RowCount - 1).Value = oDim.Text
+        tgvDimValues(tgvDimValues.Columns("Qty").Index, tgvDimValues.RowCount - 1).Value = "TBD"
+        tgvDimValues(tgvDimValues.Columns("Type").Index, tgvDimValues.RowCount - 1).Value = oDim.Type
         Dim Values As String = RefKey
         InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values)
     End Sub
     Public Sub HoleTableTag(oDim As HoleTag, RefKey As String)
-        dgvDimValues.Rows.Add()
-        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
-        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
+        tgvDimValues.Rows.Add()
+        tgvDimValues(tgvDimValues.Columns("Balloon").Index, tgvDimValues.RowCount - 1).Value = tgvDimValues.RowCount
+        tgvDimValues(tgvDimValues.Columns("Ref").Index, tgvDimValues.RowCount - 1).Value = RefKey
+        tgvDimValues(tgvDimValues.Columns("Value").Index, tgvDimValues.RowCount - 1).Value = oDim.Text
+        tgvDimValues(tgvDimValues.Columns("Qty").Index, tgvDimValues.RowCount - 1).Value = "TBD"
+        tgvDimValues(tgvDimValues.Columns("Type").Index, tgvDimValues.RowCount - 1).Value = oDim.Type
         Dim Values As String = RefKey
         InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values)
     End Sub
     Public Sub Surface(oDim As SurfaceTextureSymbol, RefKey As String)
-        dgvDimValues.Rows.Add()
-        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
-        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text.Text
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
-        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = oDim.MaximumRoughness
-        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.MinimumRoughness
+        tgvDimValues.Rows.Add()
+        tgvDimValues(tgvDimValues.Columns("Balloon").Index, tgvDimValues.RowCount - 1).Value = tgvDimValues.RowCount
+        tgvDimValues(tgvDimValues.Columns("Ref").Index, tgvDimValues.RowCount - 1).Value = RefKey
+        tgvDimValues(tgvDimValues.Columns("Value").Index, tgvDimValues.RowCount - 1).Value = oDim.Text.Text
+        tgvDimValues(tgvDimValues.Columns("Qty").Index, tgvDimValues.RowCount - 1).Value = "TBD"
+        tgvDimValues(tgvDimValues.Columns("Type").Index, tgvDimValues.RowCount - 1).Value = oDim.Type
+        tgvDimValues(tgvDimValues.Columns("UTol").Index, tgvDimValues.RowCount - 1).Value = oDim.MaximumRoughness
+        tgvDimValues(tgvDimValues.Columns("LTol").Index, tgvDimValues.RowCount - 1).Value = oDim.MinimumRoughness
         Dim Values As String = RefKey
         InsertSketchedSymbolSample(oDim, oDim.Position, oDim.Position, Values)
     End Sub
     Public Sub HoleTag(oDim As HoleThreadNote, RefKey As String)
-        dgvDimValues.Rows.Add()
-        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
-        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text.Text
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
-        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Upper
-        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Lower
+        tgvDimValues.Rows.Add()
+        tgvDimValues(tgvDimValues.Columns("Balloon").Index, tgvDimValues.RowCount - 1).Value = tgvDimValues.RowCount
+        tgvDimValues(tgvDimValues.Columns("Ref").Index, tgvDimValues.RowCount - 1).Value = RefKey
+        tgvDimValues(tgvDimValues.Columns("Value").Index, tgvDimValues.RowCount - 1).Value = oDim.Text.Text
+        tgvDimValues(tgvDimValues.Columns("Qty").Index, tgvDimValues.RowCount - 1).Value = "TBD"
+        tgvDimValues(tgvDimValues.Columns("Type").Index, tgvDimValues.RowCount - 1).Value = oDim.Type
+        tgvDimValues(tgvDimValues.Columns("UTol").Index, tgvDimValues.RowCount - 1).Value = oDim.Tolerance.Upper
+        tgvDimValues(tgvDimValues.Columns("LTol").Index, tgvDimValues.RowCount - 1).Value = oDim.Tolerance.Lower
         Dim Values As String = RefKey
         InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
     End Sub
     Public Sub Chamfer(oDim As ChamferNote, RefKey As String)
-        dgvDimValues.Rows.Add()
-        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
-        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
-        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
-        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
+        tgvDimValues.Rows.Add()
+        tgvDimValues(tgvDimValues.Columns("Balloon").Index, tgvDimValues.RowCount - 1).Value = tgvDimValues.RowCount
+        tgvDimValues(tgvDimValues.Columns("Ref").Index, tgvDimValues.RowCount - 1).Value = RefKey
+        tgvDimValues(tgvDimValues.Columns("Value").Index, tgvDimValues.RowCount - 1).Value = oDim.Text
+        tgvDimValues(tgvDimValues.Columns("Qty").Index, tgvDimValues.RowCount - 1).Value = "TBD"
+        tgvDimValues(tgvDimValues.Columns("Type").Index, tgvDimValues.RowCount - 1).Value = oDim.Type
+        tgvDimValues(tgvDimValues.Columns("UTol").Index, tgvDimValues.RowCount - 1).Value = "NA"
+        tgvDimValues(tgvDimValues.Columns("LTol").Index, tgvDimValues.RowCount - 1).Value = "NA"
         Dim Values As String = RefKey
         InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values)
     End Sub
@@ -270,7 +313,7 @@ Public Class Value_Table_SA
                 Debug.Print(Row.Item(Col).Text)
             Next
             'Text = Text & item.HoleTag & " " & item. & " " & item.DatumTwo & " " & item.DatumThree & vbNewLine
-            'dgvDimValues.Rows.Add(dgvDimValues.Rows.Count, oDim.GetHashCode, Text, "TBD", oDim.Type, item.Tolerance, item.LowerTolerance)
+            'tgvDimValues.Rows.Add(tgvDimValues.Rows.Count, oDim.GetHashCode, Text, "TBD", oDim.Type, item.Tolerance, item.LowerTolerance)
         Next
         Dim Values As String = RefKey
         InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values)
@@ -280,7 +323,7 @@ Public Class Value_Table_SA
         For Each item As FeatureControlFrameRow In oDim.FeatureControlFrameRows
 
             Text = Text & item.GeometricCharacteristic & " " & item.DatumOne & " " & item.DatumTwo & " " & item.DatumThree & vbNewLine
-            dgvDimValues.Rows.Add(dgvDimValues.Rows.Count, _invApp.ReferenceKeyManager.KeyToString(RefKey), Text, "TBD", oDim.Type, item.Tolerance, item.LowerTolerance)
+            tgvDimValues.Rows.Add(tgvDimValues.Rows.Count, _invApp.ReferenceKeyManager.KeyToString(RefKey), Text, "TBD", oDim.Type, item.Tolerance, item.LowerTolerance)
         Next
         Dim Values As String = RefKey
         InsertSketchedSymbolSample(oDim, oDim.Position, oDim.Position, Values)
@@ -320,7 +363,7 @@ Public Class Value_Table_SA
         End If
         Dim oSheet As Sheet
         oSheet = oDrawDoc.ActiveSheet
-        Dim sPromptStrings() As String = {dgvDimValues.RowCount, Values}
+        Dim sPromptStrings() As String = {tgvDimValues.RowCount, Values}
         ' Create sketched symbol
         Dim oTG As TransientGeometry
         oTG = _invApp.TransientGeometry
@@ -392,11 +435,11 @@ Public Class Value_Table_SA
         ' oTextBox.FormattedText = "<StyleOverride FontSize='0.08'></StyleOverride>"
         Call oSketchedSymbolDef.ExitEdit(True)
     End Sub
-    Private Sub dgvDimValues_CellContentClick(sender As Object, e As Windows.Forms.DataGridViewCellEventArgs) Handles dgvDimValues.CellContentClick
+    Private Sub tgvDimValues_CellContentClick(sender As Object, e As Windows.Forms.DataGridViewCellEventArgs)
         Dim Characteristics = New Characteristics
         ' Characteristics.PopValueTable(Me)
-        'For Each Column As Column In dgvDimValues.Columns
-        '    Characteristics.dgvProperties.Rows.Add(Column.Title, dgvDimValues(Column.index, e.RowIndex).Value)
+        'For Each Column As Column In tgvDimValues.Columns
+        '    Characteristics.tgvProperties.Rows.Add(Column.Title, tgvDimValues(Column.index, e.RowIndex).Value)
         'Next
     End Sub
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
@@ -404,13 +447,13 @@ Public Class Value_Table_SA
     End Sub
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
         'WritePrivate()
-        Dim WriteString(dgvDimValues.RowCount, dgvDimValues.ColumnCount - 1) As String
-        For column = 0 To dgvDimValues.ColumnCount - 1
-            WriteString(0, column) = dgvDimValues.Columns(column).HeaderText
+        Dim WriteString(tgvDimValues.RowCount, tgvDimValues.ColumnCount - 1) As String
+        For column = 0 To tgvDimValues.ColumnCount - 1
+            WriteString(0, column) = tgvDimValues.Columns(column).HeaderText
         Next
-        For i = 0 To dgvDimValues.RowCount - 1
-            For j = 0 To dgvDimValues.ColumnCount - 1
-                WriteString(i + 1, j) = dgvDimValues(j, i).Value
+        For i = 0 To tgvDimValues.RowCount - 1
+            For j = 0 To tgvDimValues.ColumnCount - 1
+                WriteString(i + 1, j) = tgvDimValues(j, i).Value
             Next
         Next
         Dim sw As System.IO.StreamWriter = New System.IO.StreamWriter(IO.Path.Combine(IO.Path.GetTempPath, "InspTable.csv"))
@@ -441,8 +484,8 @@ Public Class Value_Table_SA
     Public Overrides Sub Refresh()
         Dim oDoc As Document = _invApp.ActiveDocument
         Dim Ref() As Byte = New Byte() {}
-        Try
-            For Each oSketch As SketchedSymbol In oDoc.ActiveSheet.SketchedSymbols
+        ' Try
+        For Each oSketch As SketchedSymbol In oDoc.ActiveSheet.SketchedSymbols
                 If oSketch.Name = "Insp" Then
                     Dim key As String = oSketch.GetResultText(oSketch.Definition.Sketch.TextBoxes.Item(2))
                     Call oDoc.ReferenceKeyManager.StringToKey(key, Ref)
@@ -452,11 +495,11 @@ Public Class Value_Table_SA
                     DimType(oDim, key)
                 End If
             Next
-        Catch
-        End Try
+        ' Catch
+        'End Try
     End Sub
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
-        dgvDimValues.Rows.Clear()
+        tgvDimValues.Rows.Clear()
         Dim oDoc As DrawingDocument = _invApp.ActiveDocument
         For Each EmbeddedFile As ReferencedOLEFileDescriptor In oDoc.ReferencedOLEFileDescriptors2(OLEDocumentTypeEnum.kOLEDocumentEmbeddingObject)
             If EmbeddedFile.DisplayName = "InspTable" Then
@@ -465,73 +508,55 @@ Public Class Value_Table_SA
                 EmbeddedFile.Activate(OLEVerbEnum.kHideOLEVerb, oExcelWB)
                 osheet = oExcelWB.ActiveSheet
                 For Y = 2 To osheet.UsedRange.Rows.Count
-                    dgvDimValues.Rows.Add()
-                    For X = 1 To dgvDimValues.ColumnCount
+                    tgvDimValues.Rows.Add()
+                    For X = 1 To tgvDimValues.ColumnCount
                         Select Case osheet.Cells(1, X).value
                             Case "Reference"
-                                dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).Value
+                                tgvDimValues(tgvDimValues.Columns("Ref").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).Value
                             Case "Balloon"
-                                dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("Balloon").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                             Case "Value"
-                                dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("Value").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                             Case "QTY"
-                                dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("Qty").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                             Case "Type"
-                                dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("Type").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                             Case "Sub-Type"
-                                dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("SubType").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                             Case "Upper Tol"
-                                dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("UTol").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                             Case "Lower Tol"
-                                dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("LTol").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                             Case "Upper Limit"
-                                dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("ULimit").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                             Case "Lower Limit"
-                                dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("LLimit").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                             Case "Fit Grade"
-                                dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("FitGrade").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                             Case "Comments"
-                                dgvDimValues(dgvDimValues.Columns("Comments").Index, dgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
+                                tgvDimValues(tgvDimValues.Columns("Comments").Index, tgvDimValues.RowCount - 1).Value = osheet.Cells(Y, X).value
                         End Select
                     Next
                 Next
             End If
         Next
     End Sub
-
-    'Private Sub dgvDimValues_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvDimValues.CellValueChanged
-
-    '    If dgvDimValues.Columns(e.ColumnIndex).HeaderText = "Type" And e.RowIndex >= 0 Then
-    '        Select Case dgvDimValues(e.ColumnIndex, e.RowIndex).Value
-    '            Case "Dimension"
-    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListDim
-    '            Case "Geometric Tol"
-    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListTable
-    '            Case "Note"
-    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListNote
-    '            Case "Other"
-    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListOther
-    '            Case Else
-    '        End Select
-    '    End If
-    'End Sub
-    Private Sub dgvDimValues_CurrentCellDirtyStateChanged(ByVal sender As Object, ByVal e As EventArgs)
-        If Me.dgvDimValues.IsCurrentCellDirty Then
+    Private Sub tgvDimValues_CurrentCellDirtyStateChanged(ByVal sender As Object, ByVal e As EventArgs)
+        If Me.tgvDimValues.IsCurrentCellDirty Then
             ' This fires the cell value changed handler below
-            dgvDimValues.CommitEdit(DataGridViewDataErrorContexts.Commit)
+            tgvDimValues.CommitEdit(DataGridViewDataErrorContexts.Commit)
         End If
 
     End Sub
 
-    Private Sub dgvDimValues_CellValueChanged(ByVal sender As Object, ByVal e As DataGridViewCellEventArgs)
-        If dgvDimValues.Columns(e.ColumnIndex).HeaderText = "Type" Then
-            Dim cb As DataGridViewComboBoxCell = CType(dgvDimValues.Rows(e.RowIndex).Cells(e.ColumnIndex), DataGridViewComboBoxCell)
+    Private Sub tgvDimValues_CellValueChanged(ByVal sender As Object, ByVal e As DataGridViewCellEventArgs)
+        Dim cb As DataGridViewComboBoxCell
+        If tgvDimValues.Columns(e.ColumnIndex).HeaderText = "Type" Then
+            cb = CType(tgvDimValues.Rows(e.RowIndex).Cells(e.ColumnIndex), DataGridViewComboBoxCell)
             Dim SubTypeCell As New DataGridViewComboBoxCell
-            SubTypeCell = dgvDimValues.Rows(e.RowIndex).Cells(dgvDimValues.Columns("SubType").Index)
+            SubTypeCell = tgvDimValues.Rows(e.RowIndex).Cells(tgvDimValues.Columns("SubType").Index)
             SubTypeCell.Items.Clear()
             Select Case cb.Value
-
-
                 Case "Dimension"
                     SubTypeCell.Items.AddRange(ListDim)
                     SubTypeCell.Value = "Diametral"
@@ -548,7 +573,20 @@ Public Class Value_Table_SA
 
                 Case Else
             End Select
-            '            dgvDimValues.Invalidate()
+        ElseIf tgvDimValues.Columns(e.ColumnIndex).HeaderText = "Sub-Type" Then
+            cb = CType(tgvDimValues.Rows(e.RowIndex).Cells(e.ColumnIndex), DataGridViewComboBoxCell)
+            Dim UnitCell As New DataGridViewComboBoxCell
+            UnitCell = tgvDimValues.Rows(e.RowIndex).Cells(tgvDimValues.Columns("Units").Index)
+            UnitCell.Items.Clear()
+            Select Case cb.Value
+                Case "Angle"
+                    UnitCell.Items.AddRange(ListAngle)
+                    UnitCell.Value = "Degrees"
+                Case Else
+                    UnitCell.Items.AddRange(ListLength)
+                    UnitCell.Value = "Inch"
+            End Select
+
         End If
     End Sub
 End Class
