@@ -15,12 +15,13 @@ Public Class Value_Table_SA
     Dim ListTable() As String = {"Hole Table", "Feature Control Frame"}
     Dim ListNote() As String = {"Note", "Hole Callout", "Chamfer"}
     Dim ListOther() As String = {"Weld", "Surface Roughness"}
+    Dim ListLength() As String = {"Inch", "Foot", "Centimeter", "Millimeter"}
+    Dim ListAngle() As String = {"Degrees", "Radians"}
     Dim StandardAddinServer As StandardAddInServer
     Private CharacteristicsForm As Settings
     Private WithEvents oSelect As SelectEvents
 
     Public Sub New()
-
         ' This call is required by the designer.
         InitializeComponent()
         _invApp = Marshal.GetActiveObject("Inventor.Application")
@@ -524,14 +525,13 @@ Public Class Value_Table_SA
     End Sub
 
     Private Sub dgvDimValues_CellValueChanged(ByVal sender As Object, ByVal e As DataGridViewCellEventArgs)
+        Dim cb As DataGridViewComboBoxCell
         If dgvDimValues.Columns(e.ColumnIndex).HeaderText = "Type" Then
-            Dim cb As DataGridViewComboBoxCell = CType(dgvDimValues.Rows(e.RowIndex).Cells(e.ColumnIndex), DataGridViewComboBoxCell)
+            cb = CType(dgvDimValues.Rows(e.RowIndex).Cells(e.ColumnIndex), DataGridViewComboBoxCell)
             Dim SubTypeCell As New DataGridViewComboBoxCell
             SubTypeCell = dgvDimValues.Rows(e.RowIndex).Cells(dgvDimValues.Columns("SubType").Index)
             SubTypeCell.Items.Clear()
             Select Case cb.Value
-
-
                 Case "Dimension"
                     SubTypeCell.Items.AddRange(ListDim)
                     SubTypeCell.Value = "Diametral"
@@ -548,7 +548,20 @@ Public Class Value_Table_SA
 
                 Case Else
             End Select
-            '            dgvDimValues.Invalidate()
+        ElseIf dgvDimValues.Columns(e.ColumnIndex).HeaderText = "Sub-Type" Then
+            cb = CType(dgvDimValues.Rows(e.RowIndex).Cells(e.ColumnIndex), DataGridViewComboBoxCell)
+            Dim UnitCell As New DataGridViewComboBoxCell
+            UnitCell = dgvDimValues.Rows(e.RowIndex).Cells(dgvDimValues.Columns("Units").Index)
+            UnitCell.Items.Clear()
+            Select Case cb.Value
+                Case "Angle"
+                    UnitCell.Items.AddRange(ListAngle)
+                    UnitCell.Value = "Degrees"
+                Case Else
+                    UnitCell.Items.AddRange(ListLength)
+                    UnitCell.Value = "Inch"
+            End Select
+
         End If
     End Sub
 End Class
