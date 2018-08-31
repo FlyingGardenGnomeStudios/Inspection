@@ -137,13 +137,38 @@ Public Class Value_Table_SA
         Else
             lTol = oDim.Tolerance.Lower
         End If
+        Dim QTY As Integer = 5
         dgvDimValues.Rows.Add()
         dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
         dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
         dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
-        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
-        'SubTypeCollection(dgvDimValues.RowCount - 1)
+        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = QTY
+        Dim Skip As Boolean = False
+        If QTY > 1 Then
+            For Each control In Me.Controls
+                If Not control.name.contains("QTY") AndAlso control.top = dgvDimValues.Top + 1 + dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Top Then
+                    Skip = True
+                    Exit For
+                End If
+            Next
+            If Skip = False Then
+                Dim pb As New PictureBox
+                pb.Parent = dgvDimValues
+                pb.Width = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Height - 2
+                pb.Height = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Height - 2
+                pb.Name = "Unlink"
+                pb.Image = My.Resources.unlink
+                pb.Top = dgvDimValues.Top + 1 + dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Top
+                pb.Left = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Right - pb.Width / 2 - 1
+                pb.SizeMode = PictureBoxSizeMode.Zoom
+                pb.BackColor = System.Drawing.Color.White
+                pb.Tag = dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value
+                AddHandler pb.Click, AddressOf Me.ExpandQuantity
+                Me.Controls.Add(pb)
+                pb.BringToFront()
+            End If
+        End If
+            dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
         dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
         dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = uTol
         dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = lTol
@@ -167,17 +192,54 @@ Public Class Value_Table_SA
         End If
 
     End Sub
-    Private Sub SubTypeCollection(ByVal Row As Integer)
-        Dim cmbCol As DataGridViewComboBoxColumn = dgvDimValues.Columns.Item(dgvDimValues.Columns("Type").Index + 1)
-        'If dgvDimValues(dgvDimValues.Columns("Type").Index, Row).Value = "Note" Then
-        '    cmbCol.Items.Add("A")
-        '    cmbCol.Items.Add("B")
-        '    cmbCol.Items.Add("C")
-        'Else
-        '    cmbCol.Items.Add("X")
-        '    cmbCol.Items.Add("Y")
-        '    cmbCol.Items.Add("Z")
-        'End If
+    Private Sub ExpandQuantity()
+        Dim ScreenLoc As Drawing.Point = dgvDimValues.PointToScreen(dgvDimValues.Location)
+        Dim XLoc As Integer = DataGridView.MousePosition.X - ScreenLoc.X + dgvDimValues.Left
+        Dim yLoc As Integer = DataGridView.MousePosition.Y - ScreenLoc.Y + dgvDimValues.Top
+        Dim Hit As DataGridView.HitTestInfo = dgvDimValues.HitTest(XLoc, yLoc)
+        Dim CurrRow As Integer = Hit.RowIndex
+        Dim CurrCol As Integer = Hit.ColumnIndex
+        Dim LinkButton As PictureBox
+        For Each LinkButton In Me.Controls
+            If LinkButton.Tag = dgvDimValues(dgvDimValues.Columns("Ref").Index, CurrRow).Value Then
+                If LinkButton.Name = "Unlink" Then
+                    LinkButton.Image = My.Resources.link
+                Else
+                    LinkButton.Image = My.Resources.unlink
+                End If
+
+                If LinkButton.Name = "Unlink" Then
+                    LinkButton.Name = "Link"
+                    Dim Qty As Integer = dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value
+                    dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value = 1
+                    For X = 1 To Qty - 1
+                        dgvDimValues.Rows.AddCopy(CurrRow)
+                        For I As Integer = 0 To dgvDimValues.ColumnCount - 1
+                            dgvDimValues.Rows.Item(CurrRow + X).Cells(I).Value = dgvDimValues.Rows.Item(CurrRow).Cells(I).Value
+                        Next
+                        dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow + X).Value = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value & "." & X + 1
+                    Next
+                    dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value & ".1"
+                Else
+                    LinkButton.Name = "Unlink"
+                    Dim BalNum As Integer = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value
+                    dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = BalNum
+                    For Row = CurrRow + 1 To dgvDimValues.RowCount - 1
+
+                        If InStr(dgvDimValues(dgvDimValues.Columns("Balloon").Index, Row).Value, BalNum & ".") <> 0 Then
+                            dgvDimValues(dgvDimValues.Columns("QTY").Index, CurrRow).Value = dgvDimValues(dgvDimValues.Columns("QTY").Index, CurrRow).Value + 1
+                        Else
+                            Exit For
+                        End If
+
+                    Next
+                    For Row = CurrRow + dgvDimValues(dgvDimValues.Columns("QTY").Index, CurrRow).Value - 1 To CurrRow + 1 Step -1
+                        dgvDimValues.Rows.RemoveAt(Row)
+                    Next
+                End If
+            End If
+            Exit For
+        Next
     End Sub
     Sub parameterInfo()
 
@@ -393,13 +455,7 @@ Public Class Value_Table_SA
         ' oTextBox.FormattedText = "<StyleOverride FontSize='0.08'></StyleOverride>"
         Call oSketchedSymbolDef.ExitEdit(True)
     End Sub
-    Private Sub dgvDimValues_CellContentClick(sender As Object, e As Windows.Forms.DataGridViewCellEventArgs) Handles dgvDimValues.CellContentClick
-        Dim Characteristics = New Characteristics
-        ' Characteristics.PopValueTable(Me)
-        'For Each Column As Column In dgvDimValues.Columns
-        '    Characteristics.dgvProperties.Rows.Add(Column.Title, dgvDimValues(Column.index, e.RowIndex).Value)
-        'Next
-    End Sub
+
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         Refresh()
     End Sub
@@ -440,6 +496,13 @@ Public Class Value_Table_SA
         Kill(IO.Path.Combine(IO.Path.GetTempPath, "InspTable.csv"))
     End Sub
     Public Overrides Sub Refresh()
+        dgvDimValues.Rows.Clear()
+        For Each control In Me.Controls
+            If control.name.contains("QTY") Then
+                Me.Controls.Remove(control)
+                control.dispose
+            End If
+        Next
         Dim oDoc As Document = _invApp.ActiveDocument
         Dim Ref() As Byte = New Byte() {}
         Try
@@ -499,23 +562,6 @@ Public Class Value_Table_SA
             End If
         Next
     End Sub
-
-    'Private Sub dgvDimValues_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgvDimValues.CellValueChanged
-
-    '    If dgvDimValues.Columns(e.ColumnIndex).HeaderText = "Type" And e.RowIndex >= 0 Then
-    '        Select Case dgvDimValues(e.ColumnIndex, e.RowIndex).Value
-    '            Case "Dimension"
-    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListDim
-    '            Case "Geometric Tol"
-    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListTable
-    '            Case "Note"
-    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListNote
-    '            Case "Other"
-    '                dgvDimValues(dgvDimValues.Columns("SubType").Index, e.RowIndex).Value = ListOther
-    '            Case Else
-    '        End Select
-    '    End If
-    'End Sub
     Private Sub dgvDimValues_CurrentCellDirtyStateChanged(ByVal sender As Object, ByVal e As EventArgs)
         If Me.dgvDimValues.IsCurrentCellDirty Then
             ' This fires the cell value changed handler below
@@ -554,7 +600,7 @@ Public Class Value_Table_SA
             UnitCell = dgvDimValues.Rows(e.RowIndex).Cells(dgvDimValues.Columns("Units").Index)
             UnitCell.Items.Clear()
             Select Case cb.Value
-                Case "Angle"
+                Case "Angular"
                     UnitCell.Items.AddRange(ListAngle)
                     UnitCell.Value = "Degrees"
                 Case Else
