@@ -20,6 +20,7 @@ Public Class Value_Table_SA
     Dim StandardAddinServer As StandardAddInServer
     Private CharacteristicsForm As Settings
     Private WithEvents oSelect As SelectEvents
+    Dim CurrRow As Integer
 
     Public Sub New()
         ' This call is required by the designer.
@@ -144,31 +145,31 @@ Public Class Value_Table_SA
         dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
         dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = QTY
         Dim Skip As Boolean = False
-        If QTY > 1 Then
-            For Each control In Me.Controls
-                If Not control.name.contains("QTY") AndAlso control.top = dgvDimValues.Top + 1 + dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Top Then
-                    Skip = True
-                    Exit For
-                End If
-            Next
-            If Skip = False Then
-                Dim pb As New PictureBox
-                pb.Parent = dgvDimValues
-                pb.Width = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Height - 2
-                pb.Height = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Height - 2
-                pb.Name = "Unlink"
-                pb.Image = My.Resources.unlink
-                pb.Top = dgvDimValues.Top + 1 + dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Top
-                pb.Left = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Right - pb.Width / 2 - 1
-                pb.SizeMode = PictureBoxSizeMode.Zoom
-                pb.BackColor = System.Drawing.Color.White
-                pb.Tag = dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value
-                AddHandler pb.Click, AddressOf Me.ExpandQuantity
-                Me.Controls.Add(pb)
-                pb.BringToFront()
-            End If
-        End If
-            dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
+        'If QTY > 1 Then
+        '    For Each control In Me.Controls
+        '        If Not control.name.contains("QTY") AndAlso control.top = dgvDimValues.Top + 1 + dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Top Then
+        '            Skip = True
+        '            Exit For
+        '        End If
+        '    Next
+        '    If Skip = False Then
+        '        Dim pb As New PictureBox
+        '        pb.Parent = dgvDimValues
+        '        pb.Width = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Height - 2
+        '        pb.Height = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Height - 2
+        '        pb.Name = "Unlink"
+        '        pb.Image = My.Resources.unlink
+        '        pb.Top = dgvDimValues.Top + 1 + dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Top
+        '        pb.Left = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Right - pb.Width / 2 - 1
+        '        pb.SizeMode = PictureBoxSizeMode.Zoom
+        '        pb.BackColor = System.Drawing.Color.White
+        '        pb.Tag = dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value
+        '        AddHandler pb.Click, AddressOf Me.ExpandQuantity
+        '        Me.Controls.Add(pb)
+        '        pb.BringToFront()
+        '    End If
+        'End If
+        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
         dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
         dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = uTol
         dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = lTol
@@ -193,53 +194,55 @@ Public Class Value_Table_SA
 
     End Sub
     Private Sub ExpandQuantity()
-        Dim ScreenLoc As Drawing.Point = dgvDimValues.PointToScreen(dgvDimValues.Location)
-        Dim XLoc As Integer = DataGridView.MousePosition.X - ScreenLoc.X + dgvDimValues.Left
-        Dim yLoc As Integer = DataGridView.MousePosition.Y - ScreenLoc.Y + dgvDimValues.Top
-        Dim Hit As DataGridView.HitTestInfo = dgvDimValues.HitTest(XLoc, yLoc)
-        Dim CurrRow As Integer = Hit.RowIndex
-        Dim CurrCol As Integer = Hit.ColumnIndex
-        Dim LinkButton As PictureBox
-        For Each LinkButton In Me.Controls
-            If LinkButton.Tag = dgvDimValues(dgvDimValues.Columns("Ref").Index, CurrRow).Value Then
-                If LinkButton.Name = "Unlink" Then
-                    LinkButton.Image = My.Resources.link
+        'Dim ScreenLoc As Drawing.Point = dgvDimValues.PointToScreen(dgvDimValues.Location)
+        'Dim XLoc As Integer = DataGridView.MousePosition.X - ScreenLoc.X + dgvDimValues.Left
+        'Dim yLoc As Integer = DataGridView.MousePosition.Y - ScreenLoc.Y + dgvDimValues.Top
+        'Dim Hit As DataGridView.HitTestInfo = dgvDimValues.HitTest(XLoc, yLoc)
+        'Dim CurrRow As Integer = Hit.RowIndex
+        'Dim CurrCol As Integer = Hit.ColumnIndex
+        ' Dim LinkButton As PictureBox
+        'For Each LinkButton In Me.Controls
+        ' If LinkButton.Tag = dgvDimValues(dgvDimValues.Columns("Ref").Index, CurrRow).Value Then
+        If cmsDGVRBC.Items.Item(0).Text = "Unlink Balloons" Then
+            'If LinkButton.Name = "Unlink" Then
+            '    LinkButton.Image = My.Resources.link
+            'Else
+            '    LinkButton.Image = My.Resources.unlink
+            'End If
+
+            'If LinkButton.Name = "Unlink" Then
+            'LinkButton.Name = "Link"
+            Dim Qty As Integer = dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value
+            dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value = 1
+            dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value += (1 / 10)
+            For X = 1 To Qty - 1
+                dgvDimValues.Rows.AddCopy(CurrRow)
+                For I As Integer = 0 To dgvDimValues.ColumnCount - 1
+                    dgvDimValues.Rows.Item(CurrRow + X).Cells(I).Value = dgvDimValues.Rows.Item(CurrRow).Cells(I).Value
+                Next
+                dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow + X).Value += (X / 10)
+            Next
+            'dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value & ".1"
+        Else
+            ' LinkButton.Name = "Unlink"
+            Dim BalNum As Integer = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value
+            dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = BalNum
+            For Row = CurrRow + 1 To dgvDimValues.RowCount - 1
+
+                If InStr(dgvDimValues(dgvDimValues.Columns("Balloon").Index, Row).Value, BalNum & ".") <> 0 Then
+                    dgvDimValues(dgvDimValues.Columns("QTY").Index, CurrRow).Value = dgvDimValues(dgvDimValues.Columns("QTY").Index, CurrRow).Value + 1
                 Else
-                    LinkButton.Image = My.Resources.unlink
+                    Exit For
                 End If
 
-                If LinkButton.Name = "Unlink" Then
-                    LinkButton.Name = "Link"
-                    Dim Qty As Integer = dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value
-                    dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value = 1
-                    For X = 1 To Qty - 1
-                        dgvDimValues.Rows.AddCopy(CurrRow)
-                        For I As Integer = 0 To dgvDimValues.ColumnCount - 1
-                            dgvDimValues.Rows.Item(CurrRow + X).Cells(I).Value = dgvDimValues.Rows.Item(CurrRow).Cells(I).Value
-                        Next
-                        dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow + X).Value = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value & "." & X + 1
-                    Next
-                    dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value & ".1"
-                Else
-                    LinkButton.Name = "Unlink"
-                    Dim BalNum As Integer = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value
-                    dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = BalNum
-                    For Row = CurrRow + 1 To dgvDimValues.RowCount - 1
-
-                        If InStr(dgvDimValues(dgvDimValues.Columns("Balloon").Index, Row).Value, BalNum & ".") <> 0 Then
-                            dgvDimValues(dgvDimValues.Columns("QTY").Index, CurrRow).Value = dgvDimValues(dgvDimValues.Columns("QTY").Index, CurrRow).Value + 1
-                        Else
-                            Exit For
-                        End If
-
-                    Next
-                    For Row = CurrRow + dgvDimValues(dgvDimValues.Columns("QTY").Index, CurrRow).Value - 1 To CurrRow + 1 Step -1
-                        dgvDimValues.Rows.RemoveAt(Row)
-                    Next
-                End If
-            End If
-            Exit For
-        Next
+            Next
+            For Row = CurrRow + dgvDimValues(dgvDimValues.Columns("QTY").Index, CurrRow).Value - 1 To CurrRow + 1 Step -1
+                dgvDimValues.Rows.RemoveAt(Row)
+            Next
+        End If
+        ' End If
+        ' Exit For
+        ' Next
     End Sub
     Sub parameterInfo()
 
@@ -608,6 +611,26 @@ Public Class Value_Table_SA
                     UnitCell.Value = "Inch"
             End Select
 
+        End If
+    End Sub
+
+    Private Sub UnlinkToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UnlinkToolStripMenuItem.Click
+        ExpandQuantity()
+    End Sub
+
+    Private Sub dgvDimValues_CellMouseDown(sender As Object, e As DataGridViewCellMouseEventArgs) Handles dgvDimValues.CellMouseDown
+        If e.Button = MouseButtons.Right Then
+            Dim ScreenLoc As Drawing.Point = dgvDimValues.PointToScreen(dgvDimValues.Location)
+            Dim XLoc As Integer = DataGridView.MousePosition.X - ScreenLoc.X + dgvDimValues.Left
+            Dim yLoc As Integer = DataGridView.MousePosition.Y - ScreenLoc.Y + dgvDimValues.Top
+            Dim Hit As DataGridView.HitTestInfo = dgvDimValues.HitTest(XLoc, yLoc)
+            Dim CurrRow As Integer = Hit.RowIndex
+            Dim CurrCol As Integer = Hit.ColumnIndex
+            If Strings.InStr(dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value, ".") <> 0 Then
+                cmsDGVRBC.Items.Item(0).Text = "Link Balloons"
+            Else
+                cmsDGVRBC.Items.Item(0).Text = "Unlink Balloons"
+            End If
         End If
     End Sub
 End Class

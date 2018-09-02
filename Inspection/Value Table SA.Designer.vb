@@ -22,6 +22,7 @@ Partial Class Value_Table_SA
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.dgvDimValues = New System.Windows.Forms.DataGridView()
         Me.Ref = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Balloon = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -40,7 +41,10 @@ Partial Class Value_Table_SA
         Me.Button2 = New System.Windows.Forms.Button()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.Button4 = New System.Windows.Forms.Button()
+        Me.cmsDGVRBC = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.UnlinkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.cmsDGVRBC.SuspendLayout()
         Me.SuspendLayout()
         '
         'dgvDimValues
@@ -50,11 +54,11 @@ Partial Class Value_Table_SA
         Me.dgvDimValues.AllowUserToResizeRows = False
         Me.dgvDimValues.BackgroundColor = System.Drawing.SystemColors.ControlDark
         Me.dgvDimValues.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Ref, Me.Balloon, Me.Value, Me.Units, Me.Qty, Me.Type, Me.SubType, Me.UTol, Me.LTol, Me.ULimit, Me.LLimit, Me.FitGrade, Me.Comments})
+        Me.dgvDimValues.ContextMenuStrip = Me.cmsDGVRBC
         Me.dgvDimValues.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgvDimValues.Location = New System.Drawing.Point(12, 76)
         Me.dgvDimValues.Name = "dgvDimValues"
         Me.dgvDimValues.RowHeadersVisible = False
-        Me.dgvDimValues.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.Empty
         Me.dgvDimValues.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
         Me.dgvDimValues.Size = New System.Drawing.Size(930, 183)
         Me.dgvDimValues.TabIndex = 6
@@ -181,6 +185,18 @@ Partial Class Value_Table_SA
         Me.Button4.Text = "Save"
         Me.Button4.UseVisualStyleBackColor = True
         '
+        'cmsDGVRBC
+        '
+        Me.cmsDGVRBC.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UnlinkToolStripMenuItem})
+        Me.cmsDGVRBC.Name = "cmsDGVRBC"
+        Me.cmsDGVRBC.Size = New System.Drawing.Size(153, 48)
+        '
+        'UnlinkToolStripMenuItem
+        '
+        Me.UnlinkToolStripMenuItem.Name = "UnlinkToolStripMenuItem"
+        Me.UnlinkToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.UnlinkToolStripMenuItem.Text = "Unlink"
+        '
         'Value_Table_SA
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -195,6 +211,7 @@ Partial Class Value_Table_SA
         Me.Name = "Value_Table_SA"
         Me.Text = "Value_Table_SA"
         CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.cmsDGVRBC.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -217,4 +234,6 @@ Partial Class Value_Table_SA
     Friend WithEvents LLimit As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents FitGrade As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Comments As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents cmsDGVRBC As Windows.Forms.ContextMenuStrip
+    Friend WithEvents UnlinkToolStripMenuItem As Windows.Forms.ToolStripMenuItem
 End Class
