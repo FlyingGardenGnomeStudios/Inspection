@@ -216,7 +216,12 @@ Public Class Value_Table_SA
             dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value = 1
             dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value += (1 / 10)
             For X = 1 To Qty - 1
-                dgvDimValues.Rows.AddCopy(CurrRow)
+                If CurrRow <> dgvDimValues.RowCount Then
+                    dgvDimValues.Rows.InsertCopy(CurrRow, CurrRow + X)
+                Else
+                    dgvDimValues.Rows.AddCopy(CurrRow)
+                End If
+
                 For I As Integer = 0 To dgvDimValues.ColumnCount - 1
                     dgvDimValues.Rows.Item(CurrRow + X).Cells(I).Value = dgvDimValues.Rows.Item(CurrRow).Cells(I).Value
                 Next
@@ -224,6 +229,12 @@ Public Class Value_Table_SA
             Next
             'dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value & ".1"
         Else
+            For Each row In dgvDimValues.Rows
+                If dgvDimValues(dgvDimValues.Columns("Ref").Index, row.index).Value = dgvDimValues(dgvDimValues.Columns("Ref").Index, CurrRow).Value Then
+                    CurrRow = row.index
+                    Exit For
+                End If
+            Next
             ' LinkButton.Name = "Unlink"
             Dim BalNum As Integer = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value
             dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = BalNum
@@ -624,7 +635,7 @@ Public Class Value_Table_SA
             Dim XLoc As Integer = DataGridView.MousePosition.X - ScreenLoc.X + dgvDimValues.Left
             Dim yLoc As Integer = DataGridView.MousePosition.Y - ScreenLoc.Y + dgvDimValues.Top
             Dim Hit As DataGridView.HitTestInfo = dgvDimValues.HitTest(XLoc, yLoc)
-            Dim CurrRow As Integer = Hit.RowIndex
+            CurrRow = Hit.RowIndex
             Dim CurrCol As Integer = Hit.ColumnIndex
             If Strings.InStr(dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value, ".") <> 0 Then
                 cmsDGVRBC.Items.Item(0).Text = "Link Balloons"
