@@ -64,22 +64,8 @@ Partial Class Settings
         Me.ToleranceTab = New System.Windows.Forms.TabControl()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.dgvLTolerance = New System.Windows.Forms.DataGridView()
-        Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn5 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn6 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn7 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
         Me.dgvAngTolerance = New System.Windows.Forms.DataGridView()
-        Me.Precision = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ULTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LLTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LowerLimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.UpperLimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.UATol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LATol = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.gpbUnits = New System.Windows.Forms.GroupBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -90,6 +76,16 @@ Partial Class Settings
         Me.gpbType = New System.Windows.Forms.GroupBox()
         Me.RadioButton2 = New System.Windows.Forms.RadioButton()
         Me.RadioButton1 = New System.Windows.Forms.RadioButton()
+        Me.Precision = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.AngUL = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.AngLL = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.AngUTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.AngLTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LinPrecision = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LinUL = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LinLL = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LinUTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LinLTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ddpGeneralSettings.SuspendLayout()
         Me.CharacteristicsTab.SuspendLayout()
         Me.tbpSettings.SuspendLayout()
@@ -602,56 +598,13 @@ Partial Class Settings
         'dgvLTolerance
         '
         Me.dgvLTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvLTolerance.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewTextBoxColumn1, Me.DataGridViewTextBoxColumn2, Me.DataGridViewTextBoxColumn3, Me.DataGridViewTextBoxColumn4, Me.DataGridViewTextBoxColumn5, Me.DataGridViewTextBoxColumn6, Me.DataGridViewTextBoxColumn7})
+        Me.dgvLTolerance.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.LinPrecision, Me.LinUL, Me.LinLL, Me.LinUTol, Me.LinLTol})
         Me.dgvLTolerance.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvLTolerance.Location = New System.Drawing.Point(3, 3)
         Me.dgvLTolerance.Name = "dgvLTolerance"
         Me.dgvLTolerance.RowHeadersVisible = False
         Me.dgvLTolerance.Size = New System.Drawing.Size(256, 158)
         Me.dgvLTolerance.TabIndex = 1
-        '
-        'DataGridViewTextBoxColumn1
-        '
-        Me.DataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.DataGridViewTextBoxColumn1.HeaderText = "Precision"
-        Me.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
-        Me.DataGridViewTextBoxColumn1.ReadOnly = True
-        '
-        'DataGridViewTextBoxColumn2
-        '
-        Me.DataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.DataGridViewTextBoxColumn2.HeaderText = "+Tolerance"
-        Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
-        '
-        'DataGridViewTextBoxColumn3
-        '
-        Me.DataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.DataGridViewTextBoxColumn3.HeaderText = "-Tolerance"
-        Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
-        '
-        'DataGridViewTextBoxColumn4
-        '
-        Me.DataGridViewTextBoxColumn4.HeaderText = "Lower Limit"
-        Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
-        Me.DataGridViewTextBoxColumn4.Visible = False
-        '
-        'DataGridViewTextBoxColumn5
-        '
-        Me.DataGridViewTextBoxColumn5.HeaderText = "Upper Limit"
-        Me.DataGridViewTextBoxColumn5.Name = "DataGridViewTextBoxColumn5"
-        Me.DataGridViewTextBoxColumn5.Visible = False
-        '
-        'DataGridViewTextBoxColumn6
-        '
-        Me.DataGridViewTextBoxColumn6.HeaderText = "+Tolerance"
-        Me.DataGridViewTextBoxColumn6.Name = "DataGridViewTextBoxColumn6"
-        Me.DataGridViewTextBoxColumn6.Visible = False
-        '
-        'DataGridViewTextBoxColumn7
-        '
-        Me.DataGridViewTextBoxColumn7.HeaderText = "-Tolerance"
-        Me.DataGridViewTextBoxColumn7.Name = "DataGridViewTextBoxColumn7"
-        Me.DataGridViewTextBoxColumn7.Visible = False
         '
         'TabPage3
         '
@@ -667,55 +620,13 @@ Partial Class Settings
         'dgvAngTolerance
         '
         Me.dgvAngTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvAngTolerance.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Precision, Me.ULTol, Me.LLTol, Me.LowerLimit, Me.UpperLimit, Me.UATol, Me.LATol})
-        Me.dgvAngTolerance.Location = New System.Drawing.Point(0, 0)
+        Me.dgvAngTolerance.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Precision, Me.AngUL, Me.AngLL, Me.AngUTol, Me.AngLTol})
+        Me.dgvAngTolerance.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvAngTolerance.Location = New System.Drawing.Point(3, 3)
         Me.dgvAngTolerance.Name = "dgvAngTolerance"
         Me.dgvAngTolerance.RowHeadersVisible = False
-        Me.dgvAngTolerance.Size = New System.Drawing.Size(259, 164)
+        Me.dgvAngTolerance.Size = New System.Drawing.Size(256, 158)
         Me.dgvAngTolerance.TabIndex = 0
-        '
-        'Precision
-        '
-        Me.Precision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.Precision.HeaderText = "Precision"
-        Me.Precision.Name = "Precision"
-        Me.Precision.ReadOnly = True
-        '
-        'ULTol
-        '
-        Me.ULTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.ULTol.HeaderText = "+Tolerance"
-        Me.ULTol.Name = "ULTol"
-        '
-        'LLTol
-        '
-        Me.LLTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.LLTol.HeaderText = "-Tolerance"
-        Me.LLTol.Name = "LLTol"
-        '
-        'LowerLimit
-        '
-        Me.LowerLimit.HeaderText = "Lower Limit"
-        Me.LowerLimit.Name = "LowerLimit"
-        Me.LowerLimit.Visible = False
-        '
-        'UpperLimit
-        '
-        Me.UpperLimit.HeaderText = "Upper Limit"
-        Me.UpperLimit.Name = "UpperLimit"
-        Me.UpperLimit.Visible = False
-        '
-        'UATol
-        '
-        Me.UATol.HeaderText = "+Tolerance"
-        Me.UATol.Name = "UATol"
-        Me.UATol.Visible = False
-        '
-        'LATol
-        '
-        Me.LATol.HeaderText = "-Tolerance"
-        Me.LATol.Name = "LATol"
-        Me.LATol.Visible = False
         '
         'gpbUnits
         '
@@ -828,6 +739,68 @@ Partial Class Settings
         Me.RadioButton1.Text = "By Precision"
         Me.RadioButton1.UseVisualStyleBackColor = True
         '
+        'Precision
+        '
+        Me.Precision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.Precision.HeaderText = "Precision"
+        Me.Precision.Name = "Precision"
+        Me.Precision.ReadOnly = True
+        '
+        'AngUL
+        '
+        Me.AngUL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.AngUL.HeaderText = "Upper Limit"
+        Me.AngUL.Name = "AngUL"
+        '
+        'AngLL
+        '
+        Me.AngLL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.AngLL.HeaderText = "Lower Limit"
+        Me.AngLL.Name = "AngLL"
+        '
+        'AngUTol
+        '
+        Me.AngUTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.AngUTol.HeaderText = "+Tolerance"
+        Me.AngUTol.Name = "AngUTol"
+        '
+        'AngLTol
+        '
+        Me.AngLTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.AngLTol.HeaderText = "-Tolerance"
+        Me.AngLTol.Name = "AngLTol"
+        '
+        'LinPrecision
+        '
+        Me.LinPrecision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LinPrecision.HeaderText = "Precision"
+        Me.LinPrecision.Name = "LinPrecision"
+        Me.LinPrecision.ReadOnly = True
+        '
+        'LinUL
+        '
+        Me.LinUL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LinUL.HeaderText = "Upper Limit"
+        Me.LinUL.Name = "LinUL"
+        '
+        'LinLL
+        '
+        Me.LinLL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LinLL.HeaderText = "Lower Limit"
+        Me.LinLL.Name = "LinLL"
+        '
+        'LinUTol
+        '
+        Me.LinUTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LinUTol.HeaderText = "+Tolerance"
+        Me.LinUTol.Name = "LinUTol"
+        '
+        'LinLTol
+        '
+        Me.LinLTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LinLTol.HeaderText = "-Tolerance"
+        Me.LinLTol.Name = "LinLTol"
+        '
         'Settings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -912,23 +885,19 @@ Partial Class Settings
     Friend WithEvents dgvAngTolerance As Windows.Forms.DataGridView
     Friend WithEvents cmbAngle As Windows.Forms.ComboBox
     Friend WithEvents dgvLTolerance As Windows.Forms.DataGridView
-    Friend WithEvents DataGridViewTextBoxColumn1 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn2 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn3 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn4 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn5 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn6 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn7 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Precision As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents ULTol As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents LLTol As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents LowerLimit As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents UpperLimit As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents UATol As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents LATol As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Label3 As Windows.Forms.Label
     Friend WithEvents Label2 As Windows.Forms.Label
     Friend WithEvents Label1 As Windows.Forms.Label
     Friend WithEvents Label4 As Windows.Forms.Label
     Friend WithEvents Label5 As Windows.Forms.Label
+    Friend WithEvents LinPrecision As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents LinUL As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents LinLL As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents LinUTol As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents LinLTol As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents Precision As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents AngUL As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents AngLL As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents AngUTol As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents AngLTol As Windows.Forms.DataGridViewTextBoxColumn
 End Class

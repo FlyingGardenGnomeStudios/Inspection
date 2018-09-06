@@ -24,6 +24,12 @@ Partial Class Value_Table_SA
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.dgvDimValues = New System.Windows.Forms.DataGridView()
+        Me.cmsDGVRBC = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.UnlinkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
+        Me.Button3 = New System.Windows.Forms.Button()
+        Me.Button4 = New System.Windows.Forms.Button()
         Me.Ref = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Balloon = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Value = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -37,12 +43,6 @@ Partial Class Value_Table_SA
         Me.LLimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.FitGrade = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Comments = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
-        Me.Button3 = New System.Windows.Forms.Button()
-        Me.Button4 = New System.Windows.Forms.Button()
-        Me.cmsDGVRBC = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.UnlinkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.cmsDGVRBC.SuspendLayout()
         Me.SuspendLayout()
@@ -62,6 +62,54 @@ Partial Class Value_Table_SA
         Me.dgvDimValues.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
         Me.dgvDimValues.Size = New System.Drawing.Size(930, 183)
         Me.dgvDimValues.TabIndex = 6
+        '
+        'cmsDGVRBC
+        '
+        Me.cmsDGVRBC.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UnlinkToolStripMenuItem})
+        Me.cmsDGVRBC.Name = "cmsDGVRBC"
+        Me.cmsDGVRBC.Size = New System.Drawing.Size(109, 26)
+        '
+        'UnlinkToolStripMenuItem
+        '
+        Me.UnlinkToolStripMenuItem.Name = "UnlinkToolStripMenuItem"
+        Me.UnlinkToolStripMenuItem.Size = New System.Drawing.Size(108, 22)
+        Me.UnlinkToolStripMenuItem.Text = "Unlink"
+        '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(12, 12)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 7
+        Me.Button1.Text = "Add"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'Button2
+        '
+        Me.Button2.Location = New System.Drawing.Point(148, 11)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(75, 23)
+        Me.Button2.TabIndex = 8
+        Me.Button2.Text = "Refresh"
+        Me.Button2.UseVisualStyleBackColor = True
+        '
+        'Button3
+        '
+        Me.Button3.Location = New System.Drawing.Point(282, 11)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(75, 23)
+        Me.Button3.TabIndex = 9
+        Me.Button3.Text = "Load"
+        Me.Button3.UseVisualStyleBackColor = True
+        '
+        'Button4
+        '
+        Me.Button4.Location = New System.Drawing.Point(455, 11)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(75, 23)
+        Me.Button4.TabIndex = 10
+        Me.Button4.Text = "Save"
+        Me.Button4.UseVisualStyleBackColor = True
         '
         'Ref
         '
@@ -149,54 +197,6 @@ Partial Class Value_Table_SA
         Me.Comments.Name = "Comments"
         Me.Comments.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
         '
-        'Button1
-        '
-        Me.Button1.Location = New System.Drawing.Point(12, 12)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(75, 23)
-        Me.Button1.TabIndex = 7
-        Me.Button1.Text = "Add"
-        Me.Button1.UseVisualStyleBackColor = True
-        '
-        'Button2
-        '
-        Me.Button2.Location = New System.Drawing.Point(148, 11)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(75, 23)
-        Me.Button2.TabIndex = 8
-        Me.Button2.Text = "Refresh"
-        Me.Button2.UseVisualStyleBackColor = True
-        '
-        'Button3
-        '
-        Me.Button3.Location = New System.Drawing.Point(282, 11)
-        Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(75, 23)
-        Me.Button3.TabIndex = 9
-        Me.Button3.Text = "Load"
-        Me.Button3.UseVisualStyleBackColor = True
-        '
-        'Button4
-        '
-        Me.Button4.Location = New System.Drawing.Point(455, 11)
-        Me.Button4.Name = "Button4"
-        Me.Button4.Size = New System.Drawing.Size(75, 23)
-        Me.Button4.TabIndex = 10
-        Me.Button4.Text = "Save"
-        Me.Button4.UseVisualStyleBackColor = True
-        '
-        'cmsDGVRBC
-        '
-        Me.cmsDGVRBC.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UnlinkToolStripMenuItem})
-        Me.cmsDGVRBC.Name = "cmsDGVRBC"
-        Me.cmsDGVRBC.Size = New System.Drawing.Size(153, 48)
-        '
-        'UnlinkToolStripMenuItem
-        '
-        Me.UnlinkToolStripMenuItem.Name = "UnlinkToolStripMenuItem"
-        Me.UnlinkToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
-        Me.UnlinkToolStripMenuItem.Text = "Unlink"
-        '
         'Value_Table_SA
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -221,6 +221,8 @@ Partial Class Value_Table_SA
     Friend WithEvents Button2 As Windows.Forms.Button
     Friend WithEvents Button3 As Windows.Forms.Button
     Friend WithEvents Button4 As Windows.Forms.Button
+    Friend WithEvents cmsDGVRBC As Windows.Forms.ContextMenuStrip
+    Friend WithEvents UnlinkToolStripMenuItem As Windows.Forms.ToolStripMenuItem
     Friend WithEvents Ref As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Balloon As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Value As Windows.Forms.DataGridViewTextBoxColumn
@@ -234,6 +236,4 @@ Partial Class Value_Table_SA
     Friend WithEvents LLimit As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents FitGrade As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Comments As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents cmsDGVRBC As Windows.Forms.ContextMenuStrip
-    Friend WithEvents UnlinkToolStripMenuItem As Windows.Forms.ToolStripMenuItem
 End Class

@@ -2,61 +2,61 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
   <Profiles />
   <Settings>
-    <Setting Name="BalloonPos" Type="System.String" Scope="User">
+    <Setting Name="BalloonPos" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">315</Value>
     </Setting>
-    <Setting Name="BalloonSize" Type="System.String" Scope="User">
+    <Setting Name="BalloonSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
-    <Setting Name="BalloonStyle" Type="System.String" Scope="User">
+    <Setting Name="BalloonStyle" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="LinP0" Type="System.String" Scope="User">
+    <Setting Name="LinP0" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">0.03125</Value>
     </Setting>
-    <Setting Name="LinP1" Type="System.String" Scope="User">
+    <Setting Name="LinP1" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">0.03</Value>
     </Setting>
-    <Setting Name="LinP2" Type="System.String" Scope="User">
+    <Setting Name="LinP2" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">0.01</Value>
     </Setting>
-    <Setting Name="LinP3" Type="System.String" Scope="User">
+    <Setting Name="LinP3" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">0.005</Value>
     </Setting>
-    <Setting Name="LinP4" Type="System.String" Scope="User">
+    <Setting Name="LinP4" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">0.001</Value>
     </Setting>
-    <Setting Name="LinN0" Type="System.String" Scope="User">
+    <Setting Name="LinN0" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-0.03125</Value>
     </Setting>
-    <Setting Name="LinN1" Type="System.String" Scope="User">
+    <Setting Name="LinN1" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-0.03</Value>
     </Setting>
-    <Setting Name="LinN2" Type="System.String" Scope="User">
+    <Setting Name="LinN2" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-0.01</Value>
     </Setting>
-    <Setting Name="LinN3" Type="System.String" Scope="User">
+    <Setting Name="LinN3" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-0.005</Value>
     </Setting>
-    <Setting Name="LinN4" Type="System.String" Scope="User">
+    <Setting Name="LinN4" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-0.001</Value>
     </Setting>
-    <Setting Name="AngP0" Type="System.String" Scope="User">
+    <Setting Name="AngP0" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">0.5</Value>
     </Setting>
-    <Setting Name="AngP1" Type="System.String" Scope="User">
+    <Setting Name="AngP1" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">0.25</Value>
     </Setting>
-    <Setting Name="AngP2" Type="System.String" Scope="User">
+    <Setting Name="AngP2" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">0.1</Value>
     </Setting>
-    <Setting Name="AngN0" Type="System.String" Scope="User">
+    <Setting Name="AngN0" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-0.5</Value>
     </Setting>
-    <Setting Name="AngN1" Type="System.String" Scope="User">
+    <Setting Name="AngN1" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-0.25</Value>
     </Setting>
-    <Setting Name="AngN2" Type="System.String" Scope="User">
+    <Setting Name="AngN2" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-0.1</Value>
     </Setting>
     <Setting Name="PUoM" Type="System.String" Scope="User">

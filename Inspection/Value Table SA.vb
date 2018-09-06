@@ -15,10 +15,10 @@ Public Class Value_Table_SA
     Dim ListTable() As String = {"Hole Table", "Feature Control Frame"}
     Dim ListNote() As String = {"Note", "Hole Callout", "Chamfer"}
     Dim ListOther() As String = {"Weld", "Surface Roughness"}
-    Dim ListLength() As String = {"Inch", "Foot", "Centimeter", "Millimeter"}
+    Dim ListLength() As String = {"Inch", "Foot", "Mile", "Micron", "Millimeter", "Centimeter", "Meter"}
     Dim ListAngle() As String = {"Degrees", "Radians"}
     Dim StandardAddinServer As StandardAddInServer
-    Private CharacteristicsForm As Settings
+    Private Settings As Settings
     Private WithEvents oSelect As SelectEvents
     Dim CurrRow As Integer
 
@@ -73,7 +73,7 @@ Public Class Value_Table_SA
                 LinearDim(SelectedFeature, RefKey, "Linear")
             Case 117475328
                 oType = "Diameter"
-                LinearDim(SelectedFeature, RefKey, "Diameter")
+                LinearDim(SelectedFeature, RefKey, "Diametral")
             Case 117475072
                 oType = "Radial"
                 LinearDim(SelectedFeature, RefKey, "Radial")
@@ -85,7 +85,7 @@ Public Class Value_Table_SA
             Case 117471488
                 HoleTableTag(SelectedFeature, RefKey)
             Case 117491712
-                HoleTag(SelectedFeature, RefKey)
+                ThreadNote(SelectedFeature, RefKey)
             Case 117473024
                 Note(SelectedFeature, RefKey)
             Case 117484032
@@ -96,20 +96,55 @@ Public Class Value_Table_SA
                 HoleTable(SelectedFeature, RefKey)
             Case Else
                 MsgBox("Unknown")
-
         End Select
-
     End Sub
     Public Sub LinearDim(oDim As GeneralDimension, RefKey As String, oType As String)
         Dim Value, Prefix, Tag As String
         Prefix = ""
         Tag = ""
         Dim uTol, lTol As Decimal
+        Dim StringValue As String = ""
+        dgvDimValues.Rows.Add()
+        Dim Units As String = "Centimeter"
+        Dim TolMod As Decimal = 1
         If oType = "Angular" Then
-            Value = FormatNumber(_invApp.ActiveDocument.UnitsOfMeasure.ConvertUnits(oDim.ModelValue, UnitsTypeEnum.kDatabaseAngleUnits, UnitsTypeEnum.kDefaultDisplayAngleUnits), oDim.Precision)
+            Value = FormatNumber(_invApp.ActiveDocument.UnitsOfMeasure.ConvertUnits(oDim.ModelValue, UnitsTypeEnum.kDefaultDisplayAngleUnits, UnitsTypeEnum.kDefaultDisplayAngleUnits), 8)
             Tag = Chr(176)
         Else
-            Value = FormatNumber(_invApp.ActiveDocument.UnitsOfMeasure.ConvertUnits(oDim.ModelValue, UnitsTypeEnum.kDatabaseLengthUnits, UnitsTypeEnum.kDefaultDisplayLengthUnits), oDim.Precision)
+            Value = FormatNumber(_invApp.ActiveDocument.UnitsOfMeasure.ConvertUnits(oDim.ModelValue, UnitsTypeEnum.kDefaultDisplayLengthUnits, UnitsTypeEnum.kDefaultDisplayLengthUnits), 8)
+            StringValue = Value
+            Select Case oDim.Style.LinearUnits
+                Case UnitsTypeEnum.kMillimeterLengthUnits
+                    Units = "Millimeter"
+                    StringValue = Math.Round(Value * 10, oDim.Precision)
+                Case UnitsTypeEnum.kCentimeterLengthUnits
+                    Units = "Centimeter"
+                    StringValue = Math.Round(Value * 1, oDim.Precision)
+                Case UnitsTypeEnum.kMeterLengthUnits
+                    Units = "Meter"
+                    StringValue = Math.Round(Value / 10, oDim.Precision)
+                Case UnitsTypeEnum.kMicronLengthUnits
+                    Units = "Micron"
+                    StringValue = Math.Round(Value * 10000, oDim.Precision)
+                Case UnitsTypeEnum.kInchLengthUnits
+                    Units = "Inch"
+                    TolMod = 2.54
+                    Value = Math.Round(Value / 2.54, oDim.Precision)
+                    If Not oDim.Style.DisplayFormat = DisplayFormatEnum.kDecimalFormat Then
+                        StringValue = GetFraction(Value, oDim.Style.LinearPrecision)
+                    Else
+                        StringValue = FormatNumber(Value, oDim.Precision)
+                    End If
+                Case UnitsTypeEnum.kFootLengthUnits
+                    Units = "Foot"
+                    StringValue = Math.Round(Value / 2.54 * 12, oDim.Precision)
+                Case UnitsTypeEnum.kMileLengthUnits
+                    Units = "Mile"
+                    StringValue = Math.Round(Value / 2.54 / 12 / 5280, oDim.Precision)
+            End Select
+            Dim Divider As String = Nothing
+            Dim Pretext As String = Nothing
+            Dim PostText As String = Nothing
             Select Case Strings.Left(oDim.Text.Text, 1)
                 Case "n"
                     Prefix = Chr(216)
@@ -117,101 +152,157 @@ Public Class Value_Table_SA
                     Prefix = "R"
             End Select
         End If
-        If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kMaxTolerance OrElse oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kMinTolerance Then
-            If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kMaxTolerance Then
-                lTol = uTol + lTol
-                uTol = 0
-            Else
-                uTol = uTol + lTol
-                lTol = 0
-            End If
-        End If
-        If oDim.Tolerance.Upper = 0 AndAlso oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kDefaultTolerance Then
-            'Return deafault upper tol
-            uTol = 0.005
+        If oDim.Style.DisplayFormat = DisplayFormatEnum.kDecimalFormat Then
+            Select Case oDim.Tolerance.ToleranceType
+                Case ToleranceTypeEnum.kMaxTolerance
+                    lTol = Math.Abs(My.Settings("LinN" & oDim.Precision)) + My.Settings("LinP" & oDim.Precision)
+                    uTol = 0
+                Case ToleranceTypeEnum.kMinTolerance
+                    uTol = My.Settings("LinP" & oDim.Precision) + Math.Abs(My.Settings("LinN" & oDim.Precision))
+                    lTol = 0
+                Case ToleranceTypeEnum.kSymmetricTolerance
+                    lTol = oDim.Tolerance.Upper / TolMod
+                    uTol = lTol
+                Case ToleranceTypeEnum.kDefaultTolerance, ToleranceTypeEnum.kBasicTolerance
+                    If oDim.Tolerance.Upper = 0 Then
+                        uTol = My.Settings("LinP" & oDim.Precision)
+                    Else
+                        uTol = oDim.Tolerance.Upper / TolMod
+                    End If
+                    If oDim.Tolerance.Lower = 0 Then
+                        lTol = My.Settings("LinN" & oDim.Precision)
+                    Else
+                        lTol = oDim.Tolerance.Lower / TolMod
+                    End If
+                Case ToleranceTypeEnum.kDeviationTolerance,
+                     ToleranceTypeEnum.kLimitLinearTolerance,
+                     ToleranceTypeEnum.kLimitsStackedTolerance,
+                     ToleranceTypeEnum.kLimitsFitsShowTolerance,
+                     ToleranceTypeEnum.kLimitsFitsShowSizeTolerance,
+                     ToleranceTypeEnum.kLimitsFitsLinearTolerance,
+                     ToleranceTypeEnum.kLimitsFitsStackedTolerance
+                    uTol = oDim.Tolerance.Upper / TolMod
+                    lTol = oDim.Tolerance.Lower / TolMod
+            End Select
         Else
-            uTol = oDim.Tolerance.Upper
+            uTol = My.Settings.LinP0
+            lTol = My.Settings.LinN0
         End If
-        If oDim.Tolerance.Lower = 0 Then
-            'Return deafault upper tol
-            lTol = -0.005
-        Else
-            lTol = oDim.Tolerance.Lower
-        End If
-        Dim QTY As Integer = 5
-        dgvDimValues.Rows.Add()
         dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
         dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & Value & Tag
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = QTY
-        Dim Skip As Boolean = False
-        'If QTY > 1 Then
-        '    For Each control In Me.Controls
-        '        If Not control.name.contains("QTY") AndAlso control.top = dgvDimValues.Top + 1 + dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Top Then
-        '            Skip = True
-        '            Exit For
-        '        End If
-        '    Next
-        '    If Skip = False Then
-        '        Dim pb As New PictureBox
-        '        pb.Parent = dgvDimValues
-        '        pb.Width = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Height - 2
-        '        pb.Height = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Height - 2
-        '        pb.Name = "Unlink"
-        '        pb.Image = My.Resources.unlink
-        '        pb.Top = dgvDimValues.Top + 1 + dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Top
-        '        pb.Left = dgvDimValues.GetCellDisplayRectangle(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1, dgvDimValues.RowCount - 1).Right - pb.Width / 2 - 1
-        '        pb.SizeMode = PictureBoxSizeMode.Zoom
-        '        pb.BackColor = System.Drawing.Color.White
-        '        pb.Tag = dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value
-        '        AddHandler pb.Click, AddressOf Me.ExpandQuantity
-        '        Me.Controls.Add(pb)
-        '        pb.BringToFront()
-        '    End If
-        'End If
+        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = Prefix & StringValue & Tag
+        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = 1
         dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Dimension"
         dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
-        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = uTol
-        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = lTol
-        dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = Value + uTol
-        dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = Value + lTol
+        dgvDimValues(dgvDimValues.Columns("Units").Index, dgvDimValues.RowCount - 1).Value = Units
+        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = FormatNumber(uTol, oDim.TolerancePrecision)
+        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = FormatNumber(lTol, oDim.TolerancePrecision)
+        dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = FormatNumber(Value + uTol, oDim.Precision)
+        dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = FormatNumber(Value + lTol, oDim.Precision)
         If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsLinearTolerance Or
             oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowSizeTolerance Or
             oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsShowTolerance Or
             oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsStackedTolerance Then
             If oDim.Tolerance.ShaftTolerance <> "" AndAlso oDim.Tolerance.HoleTolerance <> "" Then
                 dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance & "/" & oDim.Tolerance.ShaftTolerance
-                dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
-                dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
-                dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
-                dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                'dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                'dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                'dgvDimValues(dgvDimValues.Columns("ULimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
+                'dgvDimValues(dgvDimValues.Columns("LLimit").Index, dgvDimValues.RowCount - 1).Value = "NA"
             ElseIf oDim.Tolerance.ShaftTolerance <> "" Then
                 dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.ShaftTolerance
             ElseIf oDim.Tolerance.HoleTolerance <> "" Then
                 dgvDimValues(dgvDimValues.Columns("FitGrade").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.HoleTolerance
             End If
         End If
-
+        dgvDimValues(dgvDimValues.Columns("Comments").Index, dgvDimValues.RowCount - 1).Value = Strings.Replace(Strings.Replace(oDim.Text.FormattedText, "<DimensionValue/>", ""), "<Br/>", " " & vbCrLf & " ")
     End Sub
-    Private Sub ExpandQuantity()
-        'Dim ScreenLoc As Drawing.Point = dgvDimValues.PointToScreen(dgvDimValues.Location)
-        'Dim XLoc As Integer = DataGridView.MousePosition.X - ScreenLoc.X + dgvDimValues.Left
-        'Dim yLoc As Integer = DataGridView.MousePosition.Y - ScreenLoc.Y + dgvDimValues.Top
-        'Dim Hit As DataGridView.HitTestInfo = dgvDimValues.HitTest(XLoc, yLoc)
-        'Dim CurrRow As Integer = Hit.RowIndex
-        'Dim CurrCol As Integer = Hit.ColumnIndex
-        ' Dim LinkButton As PictureBox
-        'For Each LinkButton In Me.Controls
-        ' If LinkButton.Tag = dgvDimValues(dgvDimValues.Columns("Ref").Index, CurrRow).Value Then
-        If cmsDGVRBC.Items.Item(0).Text = "Unlink Balloons" Then
-            'If LinkButton.Name = "Unlink" Then
-            '    LinkButton.Image = My.Resources.link
-            'Else
-            '    LinkButton.Image = My.Resources.unlink
-            'End If
+#Region "FractionParsing"
+    Private Function GetFraction(ByVal Input As Decimal, ByVal Accuracy As LinearPrecisionEnum) As String
+        Dim Whole As Integer = Math.Floor(Input)
+        Dim Remainder As Decimal = Input - Whole
+        Select Case Accuracy
+            Case LinearPrecisionEnum.kZeroFractionalLinearPrecision
+                Return Whole
+            Case LinearPrecisionEnum.kHalfFractionalLinearPrecision
+                Remainder = Math.Round(Remainder * 2)
+                If Not Remainder = 0 Then
+                    Return Whole & " " & ReduceFraction(Remainder, 2, "/")
+                Else
+                    Return Whole
+                End If
+            Case LinearPrecisionEnum.kQuarterFractionalLinearPrecision
+                If Not Remainder = 0 Then
+                    Remainder = Math.Round(Remainder * 4)
+                    Return Whole & " " & ReduceFraction(Remainder, 4, "/")
+                Else
+                    Return Whole
+                End If
+            Case LinearPrecisionEnum.kEighthsFractionalLinearPrecision
+                If Not Remainder = 0 Then
+                    Remainder = Math.Round(Remainder * 8)
 
-            'If LinkButton.Name = "Unlink" Then
-            'LinkButton.Name = "Link"
+                    Return Whole & " " & ReduceFraction(Remainder, 8, "/")
+                Else
+                    Return Whole
+                End If
+            Case LinearPrecisionEnum.kSixteenthsFractionalLinearPrecision
+                If Not Remainder = 0 Then
+                    Remainder = Math.Round(Remainder * 16)
+                    Return Whole & " " & ReduceFraction(Remainder, 16, "/")
+                Else
+                    Return Whole
+                End If
+            Case LinearPrecisionEnum.kThirtySecondsFractionalLinearPrecision
+                If Not Remainder = 0 Then
+                    Remainder = Math.Round(Remainder * 32)
+                    Return Whole & " " & ReduceFraction(Remainder, 32, "/")
+                Else
+                    Return Whole
+                End If
+            Case LinearPrecisionEnum.kSixtyFourthsFractionalLinearPrecision
+                If Not Remainder = 0 Then
+                    Remainder = Math.Round(Remainder * 64)
+                    Return Whole & " " & ReduceFraction(Remainder, 64, "/")
+                Else
+                    Return Whole
+                End If
+            Case LinearPrecisionEnum.kOneTwentyEighthsFractionalLinearPrecision
+                If Not Remainder = 0 Then
+                    Remainder = Math.Round(Remainder * 128)
+                    Return Whole & " " & ReduceFraction(Remainder, 128, "/")
+                Else
+                    Return Whole
+                End If
+        End Select
+    End Function
+    Public Shared Function ReduceFraction(ByVal Numerator As Integer, ByVal Demoninator As Integer, Optional ByVal Splitter As String = "/") As String
+        Return ReduceNumerator(Numerator, Demoninator) & Splitter & ReduceDenominator(Numerator, Demoninator)
+    End Function
+    Public Shared Function ReduceNumerator(ByVal Numerator As Integer, ByVal Denominator As Integer) As Long
+        Return Numerator / Factor(Numerator, Denominator)
+    End Function
+
+    Public Shared Function ReduceDenominator(ByVal Numerator As Integer, ByVal Denominator As Integer) As Long
+        Return Denominator / Factor(Numerator, Denominator)
+    End Function
+
+    Public Shared Function Factor(ByVal Numerator As Integer, ByVal Denominator As Integer) As Long
+
+        Dim Temp As Long
+
+        Do While Denominator > 0
+            Temp = Denominator
+            Denominator = Numerator Mod Denominator
+            Numerator = Temp
+        Loop
+
+        Return Numerator
+
+    End Function
+#End Region
+    Private Sub ExpandQuantity()
+        If cmsDGVRBC.Items.Item(0).Text = "Unlink Balloons" Then
             Dim Qty As Integer = dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value
             dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value = 1
             dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value += (1 / 10)
@@ -227,7 +318,6 @@ Public Class Value_Table_SA
                 Next
                 dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow + X).Value += (X / 10)
             Next
-            'dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value & ".1"
         Else
             For Each row In dgvDimValues.Rows
                 If dgvDimValues(dgvDimValues.Columns("Ref").Index, row.index).Value = dgvDimValues(dgvDimValues.Columns("Ref").Index, CurrRow).Value Then
@@ -235,7 +325,6 @@ Public Class Value_Table_SA
                     Exit For
                 End If
             Next
-            ' LinkButton.Name = "Unlink"
             Dim BalNum As Integer = dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value
             dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = BalNum
             For Row = CurrRow + 1 To dgvDimValues.RowCount - 1
@@ -251,38 +340,6 @@ Public Class Value_Table_SA
                 dgvDimValues.Rows.RemoveAt(Row)
             Next
         End If
-        ' End If
-        ' Exit For
-        ' Next
-    End Sub
-    Sub parameterInfo()
-
-        Dim oDoc As PartDocument
-
-        oDoc = _invApp.ActiveDocument
-
-        Dim para As Parameter
-
-        Dim UOM As UnitsOfMeasure
-
-        UOM = oDoc.UnitsOfMeasure
-
-        For Each para In oDoc.ComponentDefinition.Parameters
-
-            Debug.Print("Expression is " + para.Expression)
-
-            Debug.Print("Display unit is " + para.Units)
-
-            Debug.Print("ModelVaule is " + para.ModelValue.ToString)
-
-            Debug.Print("Value is " + para.Value.ToString)
-
-            Dim displayValue As String
-            displayValue = UOM.ConvertUnits(para.Value, UOM.GetTypeFromString(UOM.GetDatabaseUnitsFromExpression(para.Expression, para.Units)), para.Units)
-            Debug.Print("Display value is " + displayValue)
-
-        Next
-
     End Sub
     Public Sub Note(oDim As DrawingNote, RefKey As String)
         dgvDimValues.Rows.Add()
@@ -316,17 +373,29 @@ Public Class Value_Table_SA
         Dim Values As String = RefKey
         InsertSketchedSymbolSample(oDim, oDim.Position, oDim.Position, Values)
     End Sub
-    Public Sub HoleTag(oDim As HoleThreadNote, RefKey As String)
+    Public Sub HoleTag(oDim As HoleTag, RefKey As String)
         dgvDimValues.Rows.Add()
         dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
         dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text.Text
-        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
+        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text
+        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = oDim.Type.kBOMQuantityObject
         dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
         dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Upper
         dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Lower
         Dim Values As String = RefKey
-        InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, Values)
+        InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values)
+    End Sub
+    Public Sub ThreadNote(oDim As HoleThreadNote, RefKey As String)
+        dgvDimValues.Rows.Add()
+        dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = dgvDimValues.RowCount
+        dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
+        dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text
+        dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = oDim.qu
+        dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
+        dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Upper
+        dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Lower
+        Dim Values As String = RefKey
+        InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values)
     End Sub
     Public Sub Chamfer(oDim As ChamferNote, RefKey As String)
         dgvDimValues.Rows.Add()
@@ -458,7 +527,7 @@ Public Class Value_Table_SA
         ' Add a prompted text field at the center of the sketch circle.
         Dim sText As String
         sText = "<StyleOverride FontSize='" & My.Settings.BalloonSize / 50 & "'>" & "<Prompt>Number</Prompt>" & "</StyleOverride>"
-        Dim oTextBox As Inventor.TextBox
+                    Dim oTextBox As Inventor.TextBox
         Dim ValueText As String = "<StyleOverride FontSize='" & 0.0001 & "'>" & "<Prompt>Value</Prompt>" & "</StyleOverride>"
 
         oTextBox = oSketch.TextBoxes.AddFitted(oTG.CreatePoint2d(0, 0), sText)
@@ -631,6 +700,7 @@ Public Class Value_Table_SA
 
     Private Sub dgvDimValues_CellMouseDown(sender As Object, e As DataGridViewCellMouseEventArgs) Handles dgvDimValues.CellMouseDown
         If e.Button = MouseButtons.Right Then
+            dgvDimValues.ClearSelection()
             Dim ScreenLoc As Drawing.Point = dgvDimValues.PointToScreen(dgvDimValues.Location)
             Dim XLoc As Integer = DataGridView.MousePosition.X - ScreenLoc.X + dgvDimValues.Left
             Dim yLoc As Integer = DataGridView.MousePosition.Y - ScreenLoc.Y + dgvDimValues.Top
