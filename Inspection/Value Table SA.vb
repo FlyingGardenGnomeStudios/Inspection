@@ -223,11 +223,11 @@ Public Class Value_Table_SA
         dgvDimValues(dgvDimValues.Columns("Units").Index, CurrRow).Value = Units
         If oType = "Angular" Then
             If oDim.Style.AngularFormatIsDecimalDegrees = False Then
-                dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & ReturnDegreesMinutesSecondsFromDecimalDegrees(StringValue, oDim.Style.AngularPrecision) & Tag
-                dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(linuTol, oDim.Style.ToleranceAngularPrecision)
-                dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(linlTol, oDim.Style.ToleranceAngularPrecision)
-                dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(Value + linuTol, oDim.Style.AngularPrecision)
-                dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(Value + linlTol, oDim.Style.AngularPrecision)
+                dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & ReturnDegreesMinutesSecondsFromDecimalDegrees(StringValue, oDim.Precision) & Tag
+                dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(linuTol, oDim.TolerancePrecision)
+                dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(linlTol, oDim.TolerancePrecision)
+                dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(Value + linuTol, oDim.Precision)
+                dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(Value + linlTol, oDim.Precision)
             Else
                 dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & FormatNumber(StringValue, oDim.Precision) & Tag
                 dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = FormatNumber(linuTol, oDim.TolerancePrecision)
@@ -264,7 +264,7 @@ Public Class Value_Table_SA
 #Region "DimensionParsing"
     Function ReturnDegreesMinutesSecondsFromDecimalDegrees(ByVal DecimalDegrees As Decimal, Precision As AngularPrecisionEnum) As String
         Dim DecDegAbs As Decimal = Math.Abs(DecimalDegrees)
-        Dim ReturnValue As String = "'"
+        Dim ReturnValue As String = ""
         Dim DegreeSymbol As String = "°"
         Dim MinutesSymbol As String = "’"
         Dim SecondsSymbol As String = Chr(34)
@@ -272,22 +272,22 @@ Public Class Value_Table_SA
         Dim MinutesDecimal As Decimal = (DecDegAbs - Math.Truncate(DecDegAbs)) * 60
         Dim SecondsDecimal As Decimal = (MinutesDecimal - Math.Truncate(MinutesDecimal))
         Dim Minutes As String = Math.Truncate(MinutesDecimal) & MinutesSymbol
-        Dim Seconds As String = String.Format("{0:##.0000}", (SecondsDecimal * 60)) & SecondsSymbol
+        Dim Seconds As String = String.Format("{0:##0.0000}", (SecondsDecimal * 60)) & SecondsSymbol
         ReturnValue = Degrees & " " & Minutes & " " & Seconds
         Select Case Precision
-            Case AngularPrecisionEnum.kDegreesAngularPrecision
+            Case AngularPrecisionEnum.kDegreesAngularPrecision, 0
                 ReturnValue = Strings.Left(ReturnValue, InStr(ReturnValue, "°"))
-            Case AngularPrecisionEnum.kMinutesAngularPrecision
-                ReturnValue = Strings.Left(ReturnValue, InStr(ReturnValue, "'"))
-            Case AngularPrecisionEnum.kSecondsAngularPrecision
+            Case AngularPrecisionEnum.kMinutesAngularPrecision, 1
+                ReturnValue = Strings.Left(ReturnValue, InStr(ReturnValue, "’"))
+            Case AngularPrecisionEnum.kSecondsAngularPrecision, 2
                 ReturnValue = Strings.Left(ReturnValue, InStr(ReturnValue, ".") - 1)
-            Case AngularPrecisionEnum.kSecondsOneDecimalPlaceAngularPrecision
+            Case AngularPrecisionEnum.kSecondsOneDecimalPlaceAngularPrecision, 3
                 ReturnValue = Strings.Left(ReturnValue, InStr(ReturnValue, ".") + 1)
-            Case AngularPrecisionEnum.kSecondsTwoDecimalPlaceAngularPrecision
+            Case AngularPrecisionEnum.kSecondsTwoDecimalPlaceAngularPrecision, 4
                 ReturnValue = Strings.Left(ReturnValue, InStr(ReturnValue, ".") + 2)
-            Case AngularPrecisionEnum.kSecondsThreeDecimalPlaceAngularPrecision
+            Case AngularPrecisionEnum.kSecondsThreeDecimalPlaceAngularPrecision, 5
                 ReturnValue = Strings.Left(ReturnValue, InStr(ReturnValue, ".") + 3)
-            Case AngularPrecisionEnum.kSecondsFourDecimalPlaceAngularPrecision
+            Case AngularPrecisionEnum.kSecondsFourDecimalPlaceAngularPrecision, 6
                 ReturnValue = Strings.Left(ReturnValue, InStr(ReturnValue, ".") + 4)
         End Select
         Return ReturnValue
