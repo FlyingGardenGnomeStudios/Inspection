@@ -64,8 +64,18 @@ Partial Class Settings
         Me.ToleranceTab = New System.Windows.Forms.TabControl()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.dgvLTolerance = New System.Windows.Forms.DataGridView()
+        Me.LinPrecision = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LinUL = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LinLL = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LinUTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.LinLTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
         Me.dgvAngTolerance = New System.Windows.Forms.DataGridView()
+        Me.Precision = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.AngUL = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.AngLL = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.AngUTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.AngLTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.gpbUnits = New System.Windows.Forms.GroupBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -76,16 +86,11 @@ Partial Class Settings
         Me.gpbType = New System.Windows.Forms.GroupBox()
         Me.RadioButton2 = New System.Windows.Forms.RadioButton()
         Me.RadioButton1 = New System.Windows.Forms.RadioButton()
-        Me.Precision = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.AngUL = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.AngLL = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.AngUTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.AngLTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LinPrecision = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LinUL = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LinLL = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LinUTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LinLTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.CheckBox8 = New System.Windows.Forms.CheckBox()
+        Me.ddpExtractionVariables = New ScrewTurn.DropDownPanel()
+        Me.DataGridView1 = New System.Windows.Forms.DataGridView()
+        Me.Variable = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Value = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ddpGeneralSettings.SuspendLayout()
         Me.CharacteristicsTab.SuspendLayout()
         Me.tbpSettings.SuspendLayout()
@@ -103,6 +108,8 @@ Partial Class Settings
         CType(Me.dgvAngTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gpbUnits.SuspendLayout()
         Me.gpbType.SuspendLayout()
+        Me.ddpExtractionVariables.SuspendLayout()
+        CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'ddpGeneralSettings
@@ -363,6 +370,7 @@ Partial Class Settings
         '
         'tbpExtSettings
         '
+        Me.tbpExtSettings.Controls.Add(Me.ddpExtractionVariables)
         Me.tbpExtSettings.Controls.Add(Me.ddpHoleCallout)
         Me.tbpExtSettings.Controls.Add(Me.ddpNotes)
         Me.tbpExtSettings.Controls.Add(Me.ddpDimensions)
@@ -377,6 +385,7 @@ Partial Class Settings
         'ddpHoleCallout
         '
         Me.ddpHoleCallout.AutoCollapseDelay = -1
+        Me.ddpHoleCallout.Controls.Add(Me.CheckBox8)
         Me.ddpHoleCallout.Controls.Add(Me.CheckBox5)
         Me.ddpHoleCallout.Controls.Add(Me.rtbHoleCallout)
         Me.ddpHoleCallout.Controls.Add(Me.CheckBox7)
@@ -395,13 +404,13 @@ Partial Class Settings
         Me.ddpHoleCallout.Moveable = False
         Me.ddpHoleCallout.Name = "ddpHoleCallout"
         Me.ddpHoleCallout.RoundedCorners = False
-        Me.ddpHoleCallout.Size = New System.Drawing.Size(279, 112)
+        Me.ddpHoleCallout.Size = New System.Drawing.Size(279, 135)
         Me.ddpHoleCallout.TabIndex = 2
         '
         'CheckBox5
         '
         Me.CheckBox5.AutoSize = True
-        Me.CheckBox5.Location = New System.Drawing.Point(3, 87)
+        Me.CheckBox5.Location = New System.Drawing.Point(3, 115)
         Me.CheckBox5.Name = "CheckBox5"
         Me.CheckBox5.Size = New System.Drawing.Size(71, 17)
         Me.CheckBox5.TabIndex = 5
@@ -411,7 +420,7 @@ Partial Class Settings
         'rtbHoleCallout
         '
         Me.rtbHoleCallout.Enabled = False
-        Me.rtbHoleCallout.Location = New System.Drawing.Point(3, 42)
+        Me.rtbHoleCallout.Location = New System.Drawing.Point(3, 70)
         Me.rtbHoleCallout.Name = "rtbHoleCallout"
         Me.rtbHoleCallout.Size = New System.Drawing.Size(267, 44)
         Me.rtbHoleCallout.TabIndex = 2
@@ -422,7 +431,7 @@ Partial Class Settings
         Me.CheckBox7.AutoSize = True
         Me.CheckBox7.Checked = True
         Me.CheckBox7.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBox7.Location = New System.Drawing.Point(3, 25)
+        Me.CheckBox7.Location = New System.Drawing.Point(6, 47)
         Me.CheckBox7.Name = "CheckBox7"
         Me.CheckBox7.Size = New System.Drawing.Size(80, 17)
         Me.CheckBox7.TabIndex = 1
@@ -606,6 +615,37 @@ Partial Class Settings
         Me.dgvLTolerance.Size = New System.Drawing.Size(256, 158)
         Me.dgvLTolerance.TabIndex = 1
         '
+        'LinPrecision
+        '
+        Me.LinPrecision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LinPrecision.HeaderText = "Precision"
+        Me.LinPrecision.Name = "LinPrecision"
+        Me.LinPrecision.ReadOnly = True
+        '
+        'LinUL
+        '
+        Me.LinUL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LinUL.HeaderText = "Upper Limit"
+        Me.LinUL.Name = "LinUL"
+        '
+        'LinLL
+        '
+        Me.LinLL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LinLL.HeaderText = "Lower Limit"
+        Me.LinLL.Name = "LinLL"
+        '
+        'LinUTol
+        '
+        Me.LinUTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LinUTol.HeaderText = "+Tolerance"
+        Me.LinUTol.Name = "LinUTol"
+        '
+        'LinLTol
+        '
+        Me.LinLTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.LinLTol.HeaderText = "-Tolerance"
+        Me.LinLTol.Name = "LinLTol"
+        '
         'TabPage3
         '
         Me.TabPage3.Controls.Add(Me.dgvAngTolerance)
@@ -627,6 +667,37 @@ Partial Class Settings
         Me.dgvAngTolerance.RowHeadersVisible = False
         Me.dgvAngTolerance.Size = New System.Drawing.Size(256, 158)
         Me.dgvAngTolerance.TabIndex = 0
+        '
+        'Precision
+        '
+        Me.Precision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.Precision.HeaderText = "Precision"
+        Me.Precision.Name = "Precision"
+        Me.Precision.ReadOnly = True
+        '
+        'AngUL
+        '
+        Me.AngUL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.AngUL.HeaderText = "Upper Limit"
+        Me.AngUL.Name = "AngUL"
+        '
+        'AngLL
+        '
+        Me.AngLL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.AngLL.HeaderText = "Lower Limit"
+        Me.AngLL.Name = "AngLL"
+        '
+        'AngUTol
+        '
+        Me.AngUTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.AngUTol.HeaderText = "+Tolerance"
+        Me.AngUTol.Name = "AngUTol"
+        '
+        'AngLTol
+        '
+        Me.AngLTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.AngLTol.HeaderText = "-Tolerance"
+        Me.AngLTol.Name = "AngLTol"
         '
         'gpbUnits
         '
@@ -739,67 +810,62 @@ Partial Class Settings
         Me.RadioButton1.Text = "By Precision"
         Me.RadioButton1.UseVisualStyleBackColor = True
         '
-        'Precision
+        'CheckBox8
         '
-        Me.Precision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.Precision.HeaderText = "Precision"
-        Me.Precision.Name = "Precision"
-        Me.Precision.ReadOnly = True
+        Me.CheckBox8.AutoSize = True
+        Me.CheckBox8.Checked = True
+        Me.CheckBox8.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CheckBox8.Location = New System.Drawing.Point(6, 26)
+        Me.CheckBox8.Name = "CheckBox8"
+        Me.CheckBox8.Size = New System.Drawing.Size(156, 17)
+        Me.CheckBox8.TabIndex = 6
+        Me.CheckBox8.Text = "Separate Hole Components"
+        Me.CheckBox8.UseVisualStyleBackColor = True
         '
-        'AngUL
+        'ddpExtractionVariables
         '
-        Me.AngUL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.AngUL.HeaderText = "Upper Limit"
-        Me.AngUL.Name = "AngUL"
+        Me.ddpExtractionVariables.AutoCollapseDelay = -1
+        Me.ddpExtractionVariables.Controls.Add(Me.DataGridView1)
+        Me.ddpExtractionVariables.EnableHeaderMenu = True
+        Me.ddpExtractionVariables.ExpandAnimationSpeed = ScrewTurn.AnimationSpeed.Medium
+        Me.ddpExtractionVariables.Expanded = True
+        Me.ddpExtractionVariables.HeaderFont = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ddpExtractionVariables.HeaderHeight = 20
+        Me.ddpExtractionVariables.HeaderIconNormal = Nothing
+        Me.ddpExtractionVariables.HeaderIconOver = Nothing
+        Me.ddpExtractionVariables.HeaderText = "Extraction Variables"
+        Me.ddpExtractionVariables.HomeLocation = New System.Drawing.Point(-1, 359)
+        Me.ddpExtractionVariables.HotTrackStyle = ScrewTurn.HotTrackStyle.Both
+        Me.ddpExtractionVariables.Location = New System.Drawing.Point(-1, 359)
+        Me.ddpExtractionVariables.ManageControls = False
+        Me.ddpExtractionVariables.Moveable = False
+        Me.ddpExtractionVariables.Name = "ddpExtractionVariables"
+        Me.ddpExtractionVariables.RoundedCorners = False
+        Me.ddpExtractionVariables.Size = New System.Drawing.Size(280, 112)
+        Me.ddpExtractionVariables.TabIndex = 5
         '
-        'AngLL
+        'DataGridView1
         '
-        Me.AngLL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.AngLL.HeaderText = "Lower Limit"
-        Me.AngLL.Name = "AngLL"
+        Me.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.DataGridView1.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Variable, Me.Value})
+        Me.DataGridView1.Location = New System.Drawing.Point(3, 21)
+        Me.DataGridView1.Name = "DataGridView1"
+        Me.DataGridView1.RowHeadersVisible = False
+        Me.DataGridView1.Size = New System.Drawing.Size(278, 88)
+        Me.DataGridView1.TabIndex = 1
         '
-        'AngUTol
+        'Variable
         '
-        Me.AngUTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.AngUTol.HeaderText = "+Tolerance"
-        Me.AngUTol.Name = "AngUTol"
+        Me.Variable.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.Variable.HeaderText = "Variable"
+        Me.Variable.Name = "Variable"
+        Me.Variable.ReadOnly = True
         '
-        'AngLTol
+        'Value
         '
-        Me.AngLTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.AngLTol.HeaderText = "-Tolerance"
-        Me.AngLTol.Name = "AngLTol"
-        '
-        'LinPrecision
-        '
-        Me.LinPrecision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.LinPrecision.HeaderText = "Precision"
-        Me.LinPrecision.Name = "LinPrecision"
-        Me.LinPrecision.ReadOnly = True
-        '
-        'LinUL
-        '
-        Me.LinUL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.LinUL.HeaderText = "Upper Limit"
-        Me.LinUL.Name = "LinUL"
-        '
-        'LinLL
-        '
-        Me.LinLL.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.LinLL.HeaderText = "Lower Limit"
-        Me.LinLL.Name = "LinLL"
-        '
-        'LinUTol
-        '
-        Me.LinUTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.LinUTol.HeaderText = "+Tolerance"
-        Me.LinUTol.Name = "LinUTol"
-        '
-        'LinLTol
-        '
-        Me.LinLTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.LinLTol.HeaderText = "-Tolerance"
-        Me.LinLTol.Name = "LinLTol"
+        Me.Value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.Value.HeaderText = "Value"
+        Me.Value.Name = "Value"
         '
         'Settings
         '
@@ -832,6 +898,8 @@ Partial Class Settings
         Me.gpbUnits.PerformLayout()
         Me.gpbType.ResumeLayout(False)
         Me.gpbType.PerformLayout()
+        Me.ddpExtractionVariables.ResumeLayout(False)
+        CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -900,4 +968,9 @@ Partial Class Settings
     Friend WithEvents AngLL As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents AngUTol As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents AngLTol As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents CheckBox8 As Windows.Forms.CheckBox
+    Friend WithEvents ddpExtractionVariables As ScrewTurn.DropDownPanel
+    Friend WithEvents DataGridView1 As Windows.Forms.DataGridView
+    Friend WithEvents Variable As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents Value As Windows.Forms.DataGridViewTextBoxColumn
 End Class
