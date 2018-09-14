@@ -47,7 +47,12 @@ Partial Class Settings
         Me.txtSampleSize = New System.Windows.Forms.TextBox()
         Me.txtLotSize = New System.Windows.Forms.TextBox()
         Me.tbpExtSettings = New System.Windows.Forms.TabPage()
+        Me.ddpExtractionVariables = New ScrewTurn.DropDownPanel()
+        Me.DataGridView1 = New System.Windows.Forms.DataGridView()
+        Me.Variable = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Value = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ddpHoleCallout = New ScrewTurn.DropDownPanel()
+        Me.chkSpearateComponents = New System.Windows.Forms.CheckBox()
         Me.CheckBox5 = New System.Windows.Forms.CheckBox()
         Me.rtbHoleCallout = New System.Windows.Forms.RichTextBox()
         Me.CheckBox7 = New System.Windows.Forms.CheckBox()
@@ -86,16 +91,13 @@ Partial Class Settings
         Me.gpbType = New System.Windows.Forms.GroupBox()
         Me.RadioButton2 = New System.Windows.Forms.RadioButton()
         Me.RadioButton1 = New System.Windows.Forms.RadioButton()
-        Me.CheckBox8 = New System.Windows.Forms.CheckBox()
-        Me.ddpExtractionVariables = New ScrewTurn.DropDownPanel()
-        Me.DataGridView1 = New System.Windows.Forms.DataGridView()
-        Me.Variable = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Value = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ddpGeneralSettings.SuspendLayout()
         Me.CharacteristicsTab.SuspendLayout()
         Me.tbpSettings.SuspendLayout()
         Me.ddpSampleing.SuspendLayout()
         Me.tbpExtSettings.SuspendLayout()
+        Me.ddpExtractionVariables.SuspendLayout()
+        CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ddpHoleCallout.SuspendLayout()
         Me.ddpNotes.SuspendLayout()
         Me.ddpDimensions.SuspendLayout()
@@ -108,8 +110,6 @@ Partial Class Settings
         CType(Me.dgvAngTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gpbUnits.SuspendLayout()
         Me.gpbType.SuspendLayout()
-        Me.ddpExtractionVariables.SuspendLayout()
-        CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'ddpGeneralSettings
@@ -382,10 +382,55 @@ Partial Class Settings
         Me.tbpExtSettings.Text = "Extraction Settings"
         Me.tbpExtSettings.UseVisualStyleBackColor = True
         '
+        'ddpExtractionVariables
+        '
+        Me.ddpExtractionVariables.AutoCollapseDelay = -1
+        Me.ddpExtractionVariables.Controls.Add(Me.DataGridView1)
+        Me.ddpExtractionVariables.EnableHeaderMenu = True
+        Me.ddpExtractionVariables.ExpandAnimationSpeed = ScrewTurn.AnimationSpeed.Medium
+        Me.ddpExtractionVariables.Expanded = True
+        Me.ddpExtractionVariables.HeaderFont = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ddpExtractionVariables.HeaderHeight = 20
+        Me.ddpExtractionVariables.HeaderIconNormal = Nothing
+        Me.ddpExtractionVariables.HeaderIconOver = Nothing
+        Me.ddpExtractionVariables.HeaderText = "Extraction Variables"
+        Me.ddpExtractionVariables.HomeLocation = New System.Drawing.Point(-1, 359)
+        Me.ddpExtractionVariables.HotTrackStyle = ScrewTurn.HotTrackStyle.Both
+        Me.ddpExtractionVariables.Location = New System.Drawing.Point(-1, 359)
+        Me.ddpExtractionVariables.ManageControls = False
+        Me.ddpExtractionVariables.Moveable = False
+        Me.ddpExtractionVariables.Name = "ddpExtractionVariables"
+        Me.ddpExtractionVariables.RoundedCorners = False
+        Me.ddpExtractionVariables.Size = New System.Drawing.Size(280, 112)
+        Me.ddpExtractionVariables.TabIndex = 5
+        '
+        'DataGridView1
+        '
+        Me.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.DataGridView1.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Variable, Me.Value})
+        Me.DataGridView1.Location = New System.Drawing.Point(3, 21)
+        Me.DataGridView1.Name = "DataGridView1"
+        Me.DataGridView1.RowHeadersVisible = False
+        Me.DataGridView1.Size = New System.Drawing.Size(278, 88)
+        Me.DataGridView1.TabIndex = 1
+        '
+        'Variable
+        '
+        Me.Variable.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.Variable.HeaderText = "Variable"
+        Me.Variable.Name = "Variable"
+        Me.Variable.ReadOnly = True
+        '
+        'Value
+        '
+        Me.Value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.Value.HeaderText = "Value"
+        Me.Value.Name = "Value"
+        '
         'ddpHoleCallout
         '
         Me.ddpHoleCallout.AutoCollapseDelay = -1
-        Me.ddpHoleCallout.Controls.Add(Me.CheckBox8)
+        Me.ddpHoleCallout.Controls.Add(Me.chkSpearateComponents)
         Me.ddpHoleCallout.Controls.Add(Me.CheckBox5)
         Me.ddpHoleCallout.Controls.Add(Me.rtbHoleCallout)
         Me.ddpHoleCallout.Controls.Add(Me.CheckBox7)
@@ -406,6 +451,18 @@ Partial Class Settings
         Me.ddpHoleCallout.RoundedCorners = False
         Me.ddpHoleCallout.Size = New System.Drawing.Size(279, 135)
         Me.ddpHoleCallout.TabIndex = 2
+        '
+        'chkSpearateComponents
+        '
+        Me.chkSpearateComponents.AutoSize = True
+        Me.chkSpearateComponents.Checked = True
+        Me.chkSpearateComponents.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkSpearateComponents.Location = New System.Drawing.Point(6, 26)
+        Me.chkSpearateComponents.Name = "chkSpearateComponents"
+        Me.chkSpearateComponents.Size = New System.Drawing.Size(156, 17)
+        Me.chkSpearateComponents.TabIndex = 6
+        Me.chkSpearateComponents.Text = "Separate Hole Components"
+        Me.chkSpearateComponents.UseVisualStyleBackColor = True
         '
         'CheckBox5
         '
@@ -810,63 +867,6 @@ Partial Class Settings
         Me.RadioButton1.Text = "By Precision"
         Me.RadioButton1.UseVisualStyleBackColor = True
         '
-        'CheckBox8
-        '
-        Me.CheckBox8.AutoSize = True
-        Me.CheckBox8.Checked = True
-        Me.CheckBox8.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBox8.Location = New System.Drawing.Point(6, 26)
-        Me.CheckBox8.Name = "CheckBox8"
-        Me.CheckBox8.Size = New System.Drawing.Size(156, 17)
-        Me.CheckBox8.TabIndex = 6
-        Me.CheckBox8.Text = "Separate Hole Components"
-        Me.CheckBox8.UseVisualStyleBackColor = True
-        '
-        'ddpExtractionVariables
-        '
-        Me.ddpExtractionVariables.AutoCollapseDelay = -1
-        Me.ddpExtractionVariables.Controls.Add(Me.DataGridView1)
-        Me.ddpExtractionVariables.EnableHeaderMenu = True
-        Me.ddpExtractionVariables.ExpandAnimationSpeed = ScrewTurn.AnimationSpeed.Medium
-        Me.ddpExtractionVariables.Expanded = True
-        Me.ddpExtractionVariables.HeaderFont = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ddpExtractionVariables.HeaderHeight = 20
-        Me.ddpExtractionVariables.HeaderIconNormal = Nothing
-        Me.ddpExtractionVariables.HeaderIconOver = Nothing
-        Me.ddpExtractionVariables.HeaderText = "Extraction Variables"
-        Me.ddpExtractionVariables.HomeLocation = New System.Drawing.Point(-1, 359)
-        Me.ddpExtractionVariables.HotTrackStyle = ScrewTurn.HotTrackStyle.Both
-        Me.ddpExtractionVariables.Location = New System.Drawing.Point(-1, 359)
-        Me.ddpExtractionVariables.ManageControls = False
-        Me.ddpExtractionVariables.Moveable = False
-        Me.ddpExtractionVariables.Name = "ddpExtractionVariables"
-        Me.ddpExtractionVariables.RoundedCorners = False
-        Me.ddpExtractionVariables.Size = New System.Drawing.Size(280, 112)
-        Me.ddpExtractionVariables.TabIndex = 5
-        '
-        'DataGridView1
-        '
-        Me.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView1.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Variable, Me.Value})
-        Me.DataGridView1.Location = New System.Drawing.Point(3, 21)
-        Me.DataGridView1.Name = "DataGridView1"
-        Me.DataGridView1.RowHeadersVisible = False
-        Me.DataGridView1.Size = New System.Drawing.Size(278, 88)
-        Me.DataGridView1.TabIndex = 1
-        '
-        'Variable
-        '
-        Me.Variable.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.Variable.HeaderText = "Variable"
-        Me.Variable.Name = "Variable"
-        Me.Variable.ReadOnly = True
-        '
-        'Value
-        '
-        Me.Value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.Value.HeaderText = "Value"
-        Me.Value.Name = "Value"
-        '
         'Settings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -881,6 +881,8 @@ Partial Class Settings
         Me.ddpSampleing.ResumeLayout(False)
         Me.ddpSampleing.PerformLayout()
         Me.tbpExtSettings.ResumeLayout(False)
+        Me.ddpExtractionVariables.ResumeLayout(False)
+        CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ddpHoleCallout.ResumeLayout(False)
         Me.ddpHoleCallout.PerformLayout()
         Me.ddpNotes.ResumeLayout(False)
@@ -898,8 +900,6 @@ Partial Class Settings
         Me.gpbUnits.PerformLayout()
         Me.gpbType.ResumeLayout(False)
         Me.gpbType.PerformLayout()
-        Me.ddpExtractionVariables.ResumeLayout(False)
-        CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -968,7 +968,7 @@ Partial Class Settings
     Friend WithEvents AngLL As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents AngUTol As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents AngLTol As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents CheckBox8 As Windows.Forms.CheckBox
+    Friend WithEvents chkSpearateComponents As Windows.Forms.CheckBox
     Friend WithEvents ddpExtractionVariables As ScrewTurn.DropDownPanel
     Friend WithEvents DataGridView1 As Windows.Forms.DataGridView
     Friend WithEvents Variable As Windows.Forms.DataGridViewTextBoxColumn

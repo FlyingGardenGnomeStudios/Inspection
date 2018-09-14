@@ -77,6 +77,9 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Autodesk.Inventor.Interop\v4.0_23.0.0.0__d84147f8b4276564\autodesk.inventor.interop.dll</HintPath>
     </Reference>
+    <Reference Include="DataGridViewRichTextBox">
+      <HintPath>Resources\DataGridViewRichTextBox.dll</HintPath>
+    </Reference>
     <Reference Include="DropDownPanel">
       <HintPath>Resources\DropDownPanel.dll</HintPath>
     </Reference>
@@ -131,6 +134,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="StandardAddInServer.vb" />
+    <Compile Include="UserControl1.Designer.vb">
+      <DependentUpon>UserControl1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl1.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Value Table SA.Designer.vb">
       <DependentUpon>Value Table SA.vb</DependentUpon>
     </Compile>
