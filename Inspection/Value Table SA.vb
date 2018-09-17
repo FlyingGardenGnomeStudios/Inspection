@@ -325,6 +325,7 @@ Public Class Value_Table_SA
     End Sub
     Private Sub Parse_Units(ByVal oDim As GeneralDimension, ByVal oType As String, ByRef Units As String, ByVal Value As String, ByVal StringValue As String,
                             ByRef Tolmod As Decimal, ByRef Prefix As String, ByVal Precision As Integer)
+        Tag = ""
         If oType = "Angular" Then
             Units = "Degrees"
             Value = FormatNumber(_invApp.ActiveDocument.UnitsOfMeasure.ConvertUnits(oDim.ModelValue, UnitsTypeEnum.kRadianAngleUnits, UnitsTypeEnum.kDefaultDisplayAngleUnits), 8)
@@ -467,17 +468,27 @@ Public Class Value_Table_SA
             End If
         Else
             If Not oDim.Style.DisplayFormat = DisplayFormatEnum.kDecimalFormat Then
-                dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & GetFraction(Value, Precision) & Tag
-                dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = GetFraction(linuTol, TolPrecision)
-                dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = GetFraction(linlTol, TolPrecision)
-                dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = GetFraction(Value + linuTol, Precision)
-                dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = GetFraction(Value + linlTol, Precision)
+                If UCase(Value) = LCase(Value) Then
+                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & GetFraction(Value, Precision) & Tag
+                    dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = GetFraction(linuTol, TolPrecision)
+                    dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = GetFraction(linlTol, TolPrecision)
+                    dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = GetFraction(Value + linuTol, Precision)
+                    dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = GetFraction(Value + linlTol, Precision)
+                Else
+                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & Value & Tag
+                End If
+
             Else
-                dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & FormatNumber(StringValue, Precision) & Tag
-                dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = FormatNumber(linuTol, TolPrecision)
-                dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = FormatNumber(linlTol, TolPrecision)
-                dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = FormatNumber(Value + linuTol, Precision)
-                dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = FormatNumber(Value + linlTol, Precision)
+                If UCase(Value) = LCase(Value) Then
+                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & GetFraction(StringValue, Precision) & Tag
+                    dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = FormatNumber(linuTol, TolPrecision)
+                    dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = FormatNumber(linlTol, TolPrecision)
+                    dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = FormatNumber(Value + linuTol, Precision)
+                    dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = FormatNumber(Value + linlTol, Precision)
+                Else
+                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & StringValue & Tag
+                End If
+
             End If
         End If
         If oDim.Tolerance.ToleranceType = ToleranceTypeEnum.kLimitsFitsLinearTolerance Or
@@ -599,84 +610,99 @@ Public Class Value_Table_SA
 
             If TestCompare.Contains("SetTolerances") = False AndAlso TestCompare.Contains("SetTolerances=") = False Then
                 Dim DimValue As String = TestCompare
+                Debug.Print(oDim.FormattedHoleThreadNote)
                 If DimValue.Contains("True") = True Then
-                    oDim.FormattedHoleThreadNote = Replace(DimValue, "True", " SetTolerances='True")
+                    TestCompare = Replace(DimValue, "True", " SetTolerances='True")
+                    oDim.FormattedHoleThreadNote = TestCompare
                 ElseIf DimValue.Contains("False") = True Then
-                    oDim.FormattedHoleThreadNote = Replace(DimValue, "False", " SetTolerances='False")
+                    TestCompare = Replace(DimValue, "False", " SetTolerances='False")
+                    oDim.FormattedHoleThreadNote = TestCompare
                 Else
                     oDim.FormattedHoleThreadNote = TestCompare
                 End If
             Else
                 oDim.FormattedHoleThreadNote = TestCompare
             End If
-
             Dim FindString As String = "ToleranceType='"
             Dim Y As Integer = Strings.InStr(TestCompare, FindString) + Len(FindString)
             Dim Z As Integer = Strings.InStr(Y, TestCompare, "'")
-            Dim Tolerance As Integer
-            Debug.Print(Strings.Mid(TestCompare, Y, Z - Y))
             Dim TolType As ToleranceTypeEnum
-            'Dim RegexTest As Regex = New Regex("(?<=\D)\d")
             Dim RegexTest As Regex = New Regex("^\d")
             Dim RegexTest2 As Regex = New Regex("\\|`")
-            Select Case Strings.Mid(TestCompare, Y, Z - Y)
-                Case "kDeviationTolerance"
-                    TolType = ToleranceTypeEnum.kDeviationTolerance
-                    Debug.Print(RegexTest.Match(oDim.Text.Text).Index)
-                    Value = Strings.Right(oDim.Text.Text, Len(oDim.Text.Text) - RegexTest.Match(oDim.Text.Text).Index)
-                    'Value = Strings.Left(Value, RegexTest2.Match(Value).Index)
-                    If Value.Contains("\") Or Value.Contains("`") Then Value = Strings.Left(Value, RegexTest2.Match(Value).Index)
-                    If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                Case "kSymmetricTolerance"
-                    TolType = ToleranceTypeEnum.kSymmetricTolerance
-                    Value = Strings.Right(oDim.Text.Text, Len(oDim.Text.Text) - RegexTest.Match(oDim.Text.Text).Index)
-                    If Value.Contains("\") Or Value.Contains("`") Then Value = Strings.Left(Value, RegexTest2.Match(Value).Index)
-                    If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                Case "kLimitsStackedTolerance"
-                    TolType = ToleranceTypeEnum.kLimitsStackedTolerance
-                    oDim.FormattedHoleThreadNote = Replace(TestCompare, "kLimitsStackedTolerance", "kSymmetricTolerance")
-                    Value = Strings.Right(oDim.Text.Text, Len(oDim.Text.Text) - RegexTest.Match(oDim.Text.Text).Index)
-                    'Value = Strings.Left(Value, RegexTest2.Match(Value).Index)
-                    If Value.Contains("\") Or Value.Contains("`") Then Value = Strings.Left(Value, RegexTest2.Match(Value).Index)
-                    If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                Case "kMaxTolerance"
-                    TolType = ToleranceTypeEnum.kMaxTolerance
-                    Value = Strings.Right(oDim.Text.Text, Len(oDim.Text.Text) - RegexTest.Match(oDim.Text.Text).Index)
-                    'Value = Strings.Left(Value, InStr(Value, "MAX") - 1)
-                    If Value.Contains("\") Or Value.Contains("`") Then Value = Strings.Left(Value, RegexTest2.Match(Value).Index)
-                    If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                Case "kMinTolerance"
-                    TolType = ToleranceTypeEnum.kMinTolerance
-                    Value = Strings.Right(oDim.Text.Text, Len(oDim.Text.Text) - RegexTest.Match(oDim.Text.Text).Index)
-                    'Value = Strings.Left(Value, InStr(Value, "MAX") - 1)
-                    If Value.Contains("\") Or Value.Contains("`") Then Value = Strings.Left(Value, RegexTest2.Match(Value).Index)
-                    If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                    ''''needs to be finished
-            End Select
-
-
-            If TolType = ToleranceTypeEnum.kLimitsStackedTolerance Then _invApp.CommandManager.ControlDefinitions.Item("AppUndoCmd").Execute()
+            Try
+                Select Case Strings.Mid(TestCompare, Y, Z - Y)
+                    Case "kDeviationTolerance"
+                        TolType = ToleranceTypeEnum.kDeviationTolerance
+                        Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                        If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                    Case "kSymmetricTolerance"
+                        TolType = ToleranceTypeEnum.kSymmetricTolerance
+                        Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                        If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                    Case "kLimitsStackedTolerance"
+                        TolType = ToleranceTypeEnum.kLimitsStackedTolerance
+                        Try
+                            TestCompare = Replace(TestCompare, "kLimitsStackedTolerance", "kSymmetricTolerance")
+                            Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                            If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                        Catch ex As Exception
+                        Finally
+                            _invApp.CommandManager.ControlDefinitions.Item("AppUndoCmd").Execute()
+                        End Try
+                    Case "kMaxTolerance"
+                        TolType = ToleranceTypeEnum.kMaxTolerance
+                        Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                        Value = Strings.Replace(Value, "MAX", "")
+                        If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                    Case "kMinTolerance"
+                        TolType = ToleranceTypeEnum.kMinTolerance
+                        Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                        Value = Strings.Replace(Value, "MIN", "")
+                        If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                    Case Else
+                        TolType = ToleranceTypeEnum.kDefaultTolerance
+                        Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                        If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                End Select
+            Catch ex As Exception
+                If Value Is Nothing Then GoTo Novalue
+            End Try
+            Dim Precision, TolPrecision, UTol, lTol As Decimal
+            StringValue = Value
             FindString = " Precision='"
-            Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
-            Z = Strings.InStr(Y, TestCompare, "'")
-            Dim Precision As Decimal = Strings.Mid(TestCompare, Y, Z - Y)
-
+            If TestCompare.Contains(FindString) Then
+                Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
+                Z = Strings.InStr(Y, TestCompare, "'")
+                Precision = Strings.Mid(TestCompare, Y, Z - Y)
+            Else
+                Precision = 2
+            End If
             FindString = "TolerancePrecision='"
-            Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
-            Z = Strings.InStr(Y, TestCompare, "'")
-            Dim TolPrecision As Decimal = Strings.Mid(TestCompare, Y, Z - Y)
+                If TestCompare.Contains(FindString) Then
+                Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
+                Z = Strings.InStr(Y, TestCompare, "'")
+                    TolPrecision = Strings.Mid(TestCompare, Y, Z - Y)
+                Else
+                    TolPrecision = 2
+                End If
 
             FindString = "UpperTolerance='"
-            Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
-            Z = Strings.InStr(Y, TestCompare, "'")
-            Debug.Print(Strings.Mid(TestCompare, Y, Z - Y))
-            Dim UTol As Decimal = Strings.Mid(TestCompare, Y, Z - Y)
+            If TestCompare.Contains(FindString) Then
+                Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
+                Z = Strings.InStr(Y, TestCompare, "'")
+                UTol = Strings.Mid(TestCompare, Y, Z - Y)
+            Else
+                TolPrecision = 2
+            End If
 
             FindString = "LowerTolerance='"
-            Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
-            Z = Strings.InStr(Y, TestCompare, "'")
-            Dim lTol As Decimal
-            lTol = Strings.Mid(TestCompare, Y, Z - Y)
+            If TestCompare.Contains(FindString) Then
+                Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
+                Z = Strings.InStr(Y, TestCompare, "'")
+                lTol = Strings.Mid(TestCompare, Y, Z - Y)
+            Else
+                TolPrecision = 2
+            End If
 
             dgvDimValues.Rows.Add()
             Prefix = ""
@@ -756,22 +782,26 @@ Public Class Value_Table_SA
 #End Region
             Parse_Units(oDim, oType, Units, Value, StringValue, TolMod, Prefix, Precision)
             Parse_Tolerances(oDim, anglTol, anguTol, linlTol, linuTol, TolMod, TolType, oDim.Precision, TolPrecision, UTol, lTol)
-            Add_To_Table(oType, RefKey, oDim, Prefix, Value, Precision, TolPrecision, linuTol, linlTol, Value, Balloon & Convert.ToChar(x + 65), "Note", Units, Comment)
-            'dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = Balloon & Convert.ToChar(x + 65)
-            'dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
-            'dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = QTY
-            'dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = "Note"
-            'dgvDimValues(dgvDimValues.Columns("SubType").Index, dgvDimValues.RowCount - 1).Value = oType
-
-            'dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.Tolerance.Lower
-
-            'dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value =
-            'dgvDimValues(dgvDimValues.Columns("Comments").Index, dgvDimValues.RowCount - 1).Value = Comment
+            Add_To_Table(oType, RefKey, oDim, Prefix, CStr(Value), Precision, TolPrecision, linuTol, linlTol, Value, Balloon & Convert.ToChar(x + 65), "Note", Units, Comment)
             _invApp.CommandManager.ControlDefinitions.Item("AppUndoCmd").Execute()
 
             CurrRow += 1
+Novalue:
         Next
     End Sub
+    Private Function StripValue(oDim As GeneralDimension, TestCompare As String, ByRef Value As String, RegexTest2 As Regex) As String
+        Try
+            oDim.FormattedHoleThreadNote = Mid(TestCompare, InStr(TestCompare, "<HoleProperty"), InStrRev(TestCompare, "</HoleProperty>") - InStr(TestCompare, "<HoleProperty") + 15)
+            Value = oDim.Text.Text
+            If Value.Contains("\") Or Value.Contains("`") Then Value = Strings.Left(Value, RegexTest2.Match(Value).Index)
+            Value = Replace(Value, "°", "")
+            If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+        Catch ex As Exception
+        Finally
+            _invApp.CommandManager.ControlDefinitions.Item("AppUndoCmd").Execute()
+        End Try
+        Return Value
+    End Function
     Public Sub Chamfer(oDim As ChamferNote, RefKey As String, oType As String, insert As Boolean, Balloon As Integer)
         If Read = False Then InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, RefKey, Balloon)
         dgvDimValues.Rows.Add()
