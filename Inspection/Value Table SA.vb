@@ -610,4 +610,12 @@ Public Class Value_Table_SA
 
         End If
     End Sub
+
+    Private Sub Value_Table_SA_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'TODO: This line of code loads data into the 'TolerancesDataSet._Default_Precision_Angular' table. You can move, or remove it, as needed.
+        Me.Default_Precision_AngularTableAdapter.Fill(Me.TolerancesDataSet._Default_Precision_Angular)
+        'TODO: This line of code loads data into the 'TolerancesDataSet._Default_Precision_Linear' table. You can move, or remove it, as needed.
+        Me.Default_Precision_LinearTableAdapter.Fill(Me.TolerancesDataSet._Default_Precision_Linear)
+
+    End Sub
 End Class
