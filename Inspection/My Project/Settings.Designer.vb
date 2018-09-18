@@ -212,7 +212,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0.5")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("1")>  _
         Public Property AngP0() As Decimal
             Get
                 Return CType(Me("AngP0"),Decimal)
@@ -224,7 +224,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0.25")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.5")>  _
         Public Property AngP1() As Decimal
             Get
                 Return CType(Me("AngP1"),Decimal)
@@ -236,7 +236,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0.1")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.25")>  _
         Public Property AngP2() As Decimal
             Get
                 Return CType(Me("AngP2"),Decimal)
@@ -248,7 +248,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("-0.5")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-1")>  _
         Public Property AngN0() As Decimal
             Get
                 Return CType(Me("AngN0"),Decimal)
@@ -260,7 +260,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("-0.25")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.5")>  _
         Public Property AngN1() As Decimal
             Get
                 Return CType(Me("AngN1"),Decimal)
@@ -272,7 +272,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("-0.1")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.25")>  _
         Public Property AngN2() As Decimal
             Get
                 Return CType(Me("AngN2"),Decimal)
@@ -416,7 +416,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0.05")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.1")>  _
         Public Property AngP3() As Decimal
             Get
                 Return CType(Me("AngP3"),Decimal)
@@ -428,7 +428,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0.025")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.05")>  _
         Public Property AngP4() As Decimal
             Get
                 Return CType(Me("AngP4"),Decimal)
@@ -440,7 +440,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0.0125")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.025")>  _
         Public Property AngP5() As Decimal
             Get
                 Return CType(Me("AngP5"),Decimal)
@@ -452,7 +452,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0.00625")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.0125")>  _
         Public Property AngP6() As Decimal
             Get
                 Return CType(Me("AngP6"),Decimal)
@@ -464,7 +464,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("0.003125")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0.005")>  _
         Public Property AngP7() As Decimal
             Get
                 Return CType(Me("AngP7"),Decimal)
@@ -488,7 +488,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("-0.05")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.1")>  _
         Public Property AngN3() As Decimal
             Get
                 Return CType(Me("AngN3"),Decimal)
@@ -500,7 +500,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("-0.025")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.05")>  _
         Public Property AngN4() As Decimal
             Get
                 Return CType(Me("AngN4"),Decimal)
@@ -512,7 +512,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("-0.0125")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.025")>  _
         Public Property AngN5() As Decimal
             Get
                 Return CType(Me("AngN5"),Decimal)
@@ -524,7 +524,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("-0.00625")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.0125")>  _
         Public Property AngN6() As Decimal
             Get
                 Return CType(Me("AngN6"),Decimal)
@@ -536,7 +536,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("-0.003125")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("-0.005")>  _
         Public Property AngN7() As Decimal
             Get
                 Return CType(Me("AngN7"),Decimal)

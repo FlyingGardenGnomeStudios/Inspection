@@ -14,16 +14,24 @@ Public Class Value_Table_SA
     Dim _invApp As Inventor.Application
     Dim ListDim() As String = {"Linear", "Angular", "Diametral", "Radial"}
     Dim ListTable() As String = {"Hole Table", "Feature Control Frame"}
-    Dim ListNote() As String = {"Note", "Hole Callout", "Chamfer"}
+    Dim ListNote() As String = {"Note", "Hole Callout", "Chamfer", "CSink"}
     Dim ListOther() As String = {"Weld", "Surface Roughness"}
     Dim ListLength() As String = {"Inch", "Foot", "Yard", "Mile", "Micron", "Millimeter", "Centimeter", "Meter"}
     Dim ListAngle() As String = {"Degrees", "Radians"}
     Dim StandardAddinServer As StandardAddInServer
-    Private Settings As Settings
     Private WithEvents oSelect As SelectEvents
     Dim CurrRow As Integer
     Dim BalVal As String
     Dim Read As Boolean = False
+    Dim WithEvents m_AppEvents As ApplicationEvents
+    Private WithEvents m_uiEvents As UserInterfaceEvents
+    Private WithEvents m_AddNew As ButtonDefinition
+    Private WithEvents m_Show As ButtonDefinition
+    Private WithEvents m_Hide As ButtonDefinition
+    Dim oUserIntrerfaceMgr As UserInterfaceManager
+    Dim oWindowValue_Table As DockableWindow
+    Dim oWindowCharacteristics As DockableWindow
+    Private CharacteristicsForm As Settings
 
     Public Sub New()
         ' This call is required by the designer.
@@ -324,14 +332,12 @@ Public Class Value_Table_SA
         End If
     End Sub
     Private Sub Parse_Units(ByVal oDim As GeneralDimension, ByVal oType As String, ByRef Units As String, ByVal Value As String, ByVal StringValue As String,
-                            ByRef Tolmod As Decimal, ByRef Prefix As String, ByVal Precision As Integer)
-        Tag = ""
-        If oType = "Angular" Then
+                            ByRef Tolmod As Decimal, ByRef Prefix As String, ByVal Precision As Integer, ByVal Suffix As String)
+        If Suffix = "⁰" Then
             Units = "Degrees"
             Value = FormatNumber(_invApp.ActiveDocument.UnitsOfMeasure.ConvertUnits(oDim.ModelValue, UnitsTypeEnum.kRadianAngleUnits, UnitsTypeEnum.kDefaultDisplayAngleUnits), 8)
             If oDim.Style.AngularFormatIsDecimalDegrees = True Then
                 StringValue = Value
-                Tag = Chr(176)
             Else
                 StringValue = Value
             End If
@@ -393,100 +399,100 @@ Public Class Value_Table_SA
     End Sub
     Private Sub Parse_Tolerances(ByVal oDim As GeneralDimension, ByRef anglTol As Decimal, ByRef anguTol As Decimal, ByRef linlTol As Decimal,
                                  ByRef linuTol As Decimal, ByRef TolMod As Decimal, ByVal TolType As ToleranceTypeEnum, ByVal angPrecision As AngularPrecisionEnum,
-                                 ByVal linPrecision As LinearPrecisionEnum, ByVal uTol As Decimal, lTol As Decimal)
-        If oDim.Style.DisplayFormat = DisplayFormatEnum.kDecimalFormat Then
-            Select Case TolType 'oDim.Tolerance.ToleranceType
-                Case ToleranceTypeEnum.kMaxTolerance
-                    anglTol = Math.Abs(My.Settings("AngN" & linPrecision)) + My.Settings("AngP" & linPrecision)
-                    anguTol = 0
-                    linlTol = Math.Abs(My.Settings("LinN" & linPrecision)) + My.Settings("LinP" & linPrecision)
-                    linuTol = 0
-                Case ToleranceTypeEnum.kMinTolerance
-                    linuTol = My.Settings("LinP" & linPrecision) + Math.Abs(My.Settings("LinN" & linPrecision))
-                    linlTol = 0
-                    anguTol = My.Settings("AngP" & linPrecision) + Math.Abs(My.Settings("AngN" & linPrecision))
-                    anglTol = 0
-                Case ToleranceTypeEnum.kSymmetricTolerance
-                    anguTol = uTol / TolMod
-                    anglTol = anguTol * -1
+                                 ByVal linPrecision As LinearPrecisionEnum, ByVal uTol As Decimal, lTol As Decimal, ByVal Value As String)
+        'If oDim.Style.DisplayFormat = DisplayFormatEnum.kDecimalFormat Then
+        Select Case TolType 'oDim.Tolerance.ToleranceType
+            Case ToleranceTypeEnum.kMaxTolerance
+                anglTol = Math.Abs(My.Settings("AngN" & angPrecision)) + My.Settings("AngP" & angPrecision)
+                anguTol = 0
+                linlTol = Math.Abs(My.Settings("LinN" & linPrecision)) + My.Settings("LinP" & linPrecision)
+                linuTol = 0
+            Case ToleranceTypeEnum.kMinTolerance
+                linuTol = My.Settings("LinP" & linPrecision) + Math.Abs(My.Settings("LinN" & linPrecision))
+                linlTol = 0
+                anguTol = My.Settings("AngP" & angPrecision) + Math.Abs(My.Settings("AngN" & angPrecision))
+                anglTol = 0
+            Case ToleranceTypeEnum.kSymmetricTolerance
+                anguTol = uTol / TolMod
+                anglTol = anguTol * -1
+                linuTol = uTol / TolMod
+                linlTol = linuTol * -1
+            Case ToleranceTypeEnum.kDefaultTolerance, ToleranceTypeEnum.kBasicTolerance
+                If uTol = 0 Then
+                    linuTol = My.Settings("LinP" & linPrecision)
+                    anguTol = My.Settings("AngP" & angPrecision)
+                Else
                     linuTol = uTol / TolMod
-                    linlTol = linuTol * -1
-                Case ToleranceTypeEnum.kDefaultTolerance, ToleranceTypeEnum.kBasicTolerance
-                    If uTol = 0 Then
-                        linuTol = My.Settings("LinP" & linPrecision)
-                        anguTol = My.Settings("AngP" & linPrecision)
-                    Else
-                        linuTol = uTol / TolMod
-                        anguTol = uTol / TolMod
-                    End If
-                    If lTol = 0 Then
-                        linlTol = My.Settings("LinN" & linPrecision)
-                        anglTol = My.Settings("AngN" & linPrecision)
-                    Else
-                        linlTol = lTol / TolMod
-                        anglTol = lTol / TolMod
-                    End If
-                Case ToleranceTypeEnum.kDeviationTolerance,
+                    anguTol = uTol / TolMod
+                End If
+                If lTol = 0 Then
+                    linlTol = My.Settings("LinN" & linPrecision)
+                    anglTol = My.Settings("AngN" & angPrecision)
+                Else
+                    linlTol = lTol / TolMod
+                    anglTol = lTol / TolMod
+                End If
+            Case ToleranceTypeEnum.kDeviationTolerance,
                      ToleranceTypeEnum.kLimitLinearTolerance,
                      ToleranceTypeEnum.kLimitsStackedTolerance,
                      ToleranceTypeEnum.kLimitsFitsShowTolerance,
                      ToleranceTypeEnum.kLimitsFitsShowSizeTolerance,
                      ToleranceTypeEnum.kLimitsFitsLinearTolerance,
                      ToleranceTypeEnum.kLimitsFitsStackedTolerance
-                    linuTol = uTol / TolMod
-                    linlTol = lTol / TolMod
-            End Select
-        Else
-            linuTol = My.Settings.LinP0
-            linlTol = My.Settings.LinN0
-            anguTol = My.Settings.AngP0
-            anglTol = My.Settings.AngN0
-        End If
+                linuTol = uTol / TolMod
+                linlTol = lTol / TolMod
+        End Select
+        'Else
+        '    linuTol = My.Settings.LinP0
+        '    linlTol = My.Settings.LinN0
+        '    anguTol = My.Settings.AngP0
+        '    anglTol = My.Settings.AngN0
+        'End If
     End Sub
     Private Sub Add_To_Table(ByVal oType As String, ByVal RefKey As String, ByVal oDim As GeneralDimension, ByVal Prefix As String, ByVal StringValue As String, ByVal Precision As Integer,
                             ByVal TolPrecision As Integer, ByVal linuTol As Decimal, ByVal linlTol As Decimal, ByVal Value As String, ByVal Balloon As String, ByVal Type As String, ByVal Units As String,
-                            ByVal Comment As String)
+                            ByVal Comment As String, ByVal anguTol As Decimal, ByVal anglTol As Decimal, ByVal Suffix As String)
         dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = Balloon
         dgvDimValues(dgvDimValues.Columns("Ref").Index, CurrRow).Value = RefKey
         dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value = 1
         dgvDimValues(dgvDimValues.Columns("Type").Index, CurrRow).Value = Type
         dgvDimValues(dgvDimValues.Columns("SubType").Index, CurrRow).Value = oType
         dgvDimValues(dgvDimValues.Columns("Units").Index, CurrRow).Value = Units
-        If oType = "Angular" Then
+        If Units = "Degrees" Or Units = "Radians" Then
             If oDim.Style.AngularFormatIsDecimalDegrees = False Then
-                dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & ReturnDegreesMinutesSecondsFromDecimalDegrees(StringValue, Precision) & Tag
-                dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(linuTol, TolPrecision)
-                dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(linlTol, TolPrecision)
-                dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(Value + linuTol, Precision)
-                dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(Value + linlTol, Precision)
+                dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & ReturnDegreesMinutesSecondsFromDecimalDegrees(StringValue, Precision) & Suffix
+                dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(anguTol, TolPrecision) & Suffix
+                dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(anglTol, TolPrecision) & Suffix
+                dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(Value + anguTol, Precision) & Suffix
+                dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(Value + anglTol, Precision) & Suffix
             Else
-                dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & FormatNumber(StringValue, Precision) & Tag
-                dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = FormatNumber(linuTol, TolPrecision)
-                dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = FormatNumber(linlTol, TolPrecision)
-                dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = FormatNumber(Value + linuTol, Precision)
-                dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = FormatNumber(Value + linlTol, Precision)
+                dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & FormatNumber(StringValue, Precision) & Suffix
+                dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = FormatNumber(anguTol, TolPrecision) & Suffix
+                dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = FormatNumber(anglTol, TolPrecision) & Suffix
+                dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = FormatNumber(Value + anguTol, Precision) & Suffix
+                dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = FormatNumber(Value + anglTol, Precision) & Suffix
             End If
         Else
             If Not oDim.Style.DisplayFormat = DisplayFormatEnum.kDecimalFormat Then
                 If UCase(Value) = LCase(Value) Then
-                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & GetFraction(Value, Precision) & Tag
+                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & GetFraction(Value, Precision) & Suffix
                     dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = GetFraction(linuTol, TolPrecision)
                     dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = GetFraction(linlTol, TolPrecision)
                     dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = GetFraction(Value + linuTol, Precision)
                     dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = GetFraction(Value + linlTol, Precision)
                 Else
-                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & Value & Tag
+                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & Value & Suffix
                 End If
 
             Else
                 If UCase(Value) = LCase(Value) Then
-                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & GetFraction(StringValue, Precision) & Tag
+                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & GetFraction(StringValue, Precision) & Suffix
                     dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = FormatNumber(linuTol, TolPrecision)
                     dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = FormatNumber(linlTol, TolPrecision)
                     dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = FormatNumber(Value + linuTol, Precision)
                     dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = FormatNumber(Value + linlTol, Precision)
                 Else
-                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & StringValue & Tag
+                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & StringValue & Suffix
                 End If
 
             End If
@@ -511,19 +517,19 @@ Public Class Value_Table_SA
     End Sub
     Public Sub LinearDim(oDim As GeneralDimension, RefKey As String, oType As String, Insert As Boolean, Balloon As Integer)
         If Read = False Then InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, RefKey, Balloon)
-        Dim Value, Prefix, Tag As String
+        Dim Value, Prefix, Suffix As String
         Prefix = ""
-        Tag = ""
+        Suffix = ""
         Value = ""
         Dim linuTol, linlTol, anglTol, anguTol As Decimal
         Dim StringValue As String = ""
         dgvDimValues.Rows.Insert(CurrRow)
         Dim Units As String = "Centimeter"
         Dim TolMod As Decimal = 1
-        Parse_Units(oDim, oType, Units, Value, StringValue, TolMod, Prefix, oDim.Precision)
-        Parse_Tolerances(oDim, anglTol, anguTol, linlTol, linuTol, TolMod, oDim.Tolerance.ToleranceType, oDim.TolerancePrecision, oDim.TolerancePrecision, oDim.Tolerance.Upper, oDim.Tolerance.Lower)
+        Parse_Units(oDim, oType, Units, Value, StringValue, TolMod, Prefix, oDim.Precision, Suffix)
+        Parse_Tolerances(oDim, anglTol, anguTol, linlTol, linuTol, TolMod, oDim.Tolerance.ToleranceType, oDim.TolerancePrecision, oDim.TolerancePrecision, oDim.Tolerance.Upper, oDim.Tolerance.Lower, Value)
         Add_To_Table(oType, RefKey, oDim, Prefix, StringValue, oDim.Precision, oDim.TolerancePrecision, linuTol, linlTol, Value, Balloon, "Dimension", Units,
-                     Strings.Replace(Strings.Replace(oDim.Text.FormattedText, "<DimensionValue/>", ""), "<Br/>", " " & vbCrLf & " "))
+                     Strings.Replace(Strings.Replace(oDim.Text.FormattedText, "<DimensionValue/>", ""), "<Br/>", " " & vbCrLf & " "), anguTol, anglTol, Suffix)
         'dgvDimValues(dgvDimValues.Columns("Comments").Index, CurrRow).Value = Strings.Replace(Strings.Replace(oDim.Text.FormattedText, "<DimensionValue/>", ""), "<Br/>", " " & vbCrLf & " ")
         CurrRow += 1
     End Sub
@@ -593,10 +599,13 @@ Public Class Value_Table_SA
         'Setup single hole
         ' End If
         Dim DimProps() As String = Strings.Split(SavedNote, "</HoleProperty>")
-        Debug.Print(oDim.Text.Text)
-        oDim.FormattedHoleThreadNote = "<QuantityNote/>"
-        Dim QTY As Integer = Replace(oDim.Text.Text, "X", "")
-        _invApp.CommandManager.ControlDefinitions.Item("AppUndoCmd").Execute()
+        Try
+            oDim.FormattedHoleThreadNote = "<QuantityNote/>"
+            Dim QTY As Integer = Replace(oDim.Text.Text, "X", "")
+        Catch ex As Exception
+        Finally
+            _invApp.CommandManager.ControlDefinitions.Item("AppUndoCmd").Execute()
+        End Try
         For x As Integer = 0 To DimProps.Length - 2
             Dim TestCompare As String = Strings.Right(DimProps(x), Len(DimProps(x)) - InStr(DimProps(x), "<") + 1)
             TestCompare = Strings.Replace(TestCompare, "<QuantityNote/>", "")
@@ -610,183 +619,181 @@ Public Class Value_Table_SA
 
             If TestCompare.Contains("SetTolerances") = False AndAlso TestCompare.Contains("SetTolerances=") = False Then
                 Dim DimValue As String = TestCompare
-                Debug.Print(oDim.FormattedHoleThreadNote)
                 If DimValue.Contains("True") = True Then
                     TestCompare = Replace(DimValue, "True", " SetTolerances='True")
-                    oDim.FormattedHoleThreadNote = TestCompare
+                    'oDim.FormattedHoleThreadNote = TestCompare
                 ElseIf DimValue.Contains("False") = True Then
                     TestCompare = Replace(DimValue, "False", " SetTolerances='False")
-                    oDim.FormattedHoleThreadNote = TestCompare
+                    'oDim.FormattedHoleThreadNote = TestCompare
                 Else
-                    oDim.FormattedHoleThreadNote = TestCompare
+                    ' oDim.FormattedHoleThreadNote = TestCompare
                 End If
             Else
-                oDim.FormattedHoleThreadNote = TestCompare
+                'oDim.FormattedHoleThreadNote = TestCompare
             End If
-            Dim FindString As String = "ToleranceType='"
-            Dim Y As Integer = Strings.InStr(TestCompare, FindString) + Len(FindString)
-            Dim Z As Integer = Strings.InStr(Y, TestCompare, "'")
-            Dim TolType As ToleranceTypeEnum
-            Dim RegexTest As Regex = New Regex("^\d")
-            Dim RegexTest2 As Regex = New Regex("\\|`")
             Try
-                Select Case Strings.Mid(TestCompare, Y, Z - Y)
-                    Case "kDeviationTolerance"
-                        TolType = ToleranceTypeEnum.kDeviationTolerance
-                        Value = StripValue(oDim, TestCompare, Value, RegexTest2)
-                        If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                    Case "kSymmetricTolerance"
-                        TolType = ToleranceTypeEnum.kSymmetricTolerance
-                        Value = StripValue(oDim, TestCompare, Value, RegexTest2)
-                        If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                    Case "kLimitsStackedTolerance"
-                        TolType = ToleranceTypeEnum.kLimitsStackedTolerance
-                        Try
+                oDim.FormattedHoleThreadNote = TestCompare
+                Dim FindString As String = "ToleranceType='"
+                Dim Y As Integer = Strings.InStr(TestCompare, FindString) + Len(FindString)
+                Dim Z As Integer = Strings.InStr(Y, TestCompare, "'")
+                Dim TolType As ToleranceTypeEnum
+                Dim RegexTest As Regex = New Regex("^\d")
+                Dim RegexTest2 As Regex = New Regex("\\|`")
+                Try
+                    Select Case Strings.Mid(TestCompare, Y, Z - Y)
+                        Case "kDeviationTolerance"
+                            TolType = ToleranceTypeEnum.kDeviationTolerance
+                            Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                            If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                        Case "kSymmetricTolerance"
+                            TolType = ToleranceTypeEnum.kSymmetricTolerance
+                            Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                            If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                        Case "kLimitsStackedTolerance"
+                            TolType = ToleranceTypeEnum.kLimitsStackedTolerance
                             TestCompare = Replace(TestCompare, "kLimitsStackedTolerance", "kSymmetricTolerance")
                             Value = StripValue(oDim, TestCompare, Value, RegexTest2)
                             If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                        Catch ex As Exception
-                        Finally
-                            _invApp.CommandManager.ControlDefinitions.Item("AppUndoCmd").Execute()
-                        End Try
-                    Case "kMaxTolerance"
-                        TolType = ToleranceTypeEnum.kMaxTolerance
-                        Value = StripValue(oDim, TestCompare, Value, RegexTest2)
-                        Value = Strings.Replace(Value, "MAX", "")
-                        If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                    Case "kMinTolerance"
-                        TolType = ToleranceTypeEnum.kMinTolerance
-                        Value = StripValue(oDim, TestCompare, Value, RegexTest2)
-                        Value = Strings.Replace(Value, "MIN", "")
-                        If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                    Case Else
-                        TolType = ToleranceTypeEnum.kDefaultTolerance
-                        Value = StripValue(oDim, TestCompare, Value, RegexTest2)
-                        If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
-                End Select
-            Catch ex As Exception
-                If Value Is Nothing Then GoTo Novalue
-            End Try
-            Dim Precision, TolPrecision, UTol, lTol As Decimal
-            StringValue = Value
-            FindString = " Precision='"
-            If TestCompare.Contains(FindString) Then
-                Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
-                Z = Strings.InStr(Y, TestCompare, "'")
-                Precision = Strings.Mid(TestCompare, Y, Z - Y)
-            Else
-                Precision = 2
-            End If
-            FindString = "TolerancePrecision='"
+                        Case "kMaxTolerance"
+                            TolType = ToleranceTypeEnum.kMaxTolerance
+                            Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                            Value = Strings.Replace(Value, "MAX", "")
+                            If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                        Case "kMinTolerance"
+                            TolType = ToleranceTypeEnum.kMinTolerance
+                            Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                            Value = Strings.Replace(Value, "MIN", "")
+                            If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                        Case Else
+                            TolType = ToleranceTypeEnum.kDefaultTolerance
+                            Value = StripValue(oDim, TestCompare, Value, RegexTest2)
+                            If Value.Contains("/") = True Then Value = Fraction_To_Decimal(Value)
+                    End Select
+                Catch ex As Exception
+                    If Value Is Nothing Then GoTo Novalue
+                End Try
+                Dim Precision, TolPrecision, UTol, lTol As Decimal
+                StringValue = Value
+                FindString = "Precision='"
                 If TestCompare.Contains(FindString) Then
-                Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
-                Z = Strings.InStr(Y, TestCompare, "'")
+                    Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
+                    Z = Strings.InStr(Y, TestCompare, "'")
+                    Precision = Strings.Mid(TestCompare, Y, Z - Y)
+                Else
+                    Precision = oDim.Precision
+                End If
+                FindString = "TolerancePrecision='"
+                If TestCompare.Contains(FindString) Then
+                    Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
+                    Z = Strings.InStr(Y, TestCompare, "'")
                     TolPrecision = Strings.Mid(TestCompare, Y, Z - Y)
                 Else
-                    TolPrecision = 2
+                    TolPrecision = oDim.Style.ToleranceLinearPrecision
                 End If
 
-            FindString = "UpperTolerance='"
-            If TestCompare.Contains(FindString) Then
-                Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
-                Z = Strings.InStr(Y, TestCompare, "'")
-                UTol = Strings.Mid(TestCompare, Y, Z - Y)
-            Else
-                TolPrecision = 2
-            End If
+                FindString = "UpperTolerance='"
+                If TestCompare.Contains(FindString) Then
+                    Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
+                    Z = Strings.InStr(Y, TestCompare, "'")
+                    UTol = Strings.Mid(TestCompare, Y, Z - Y)
+                Else
+                    UTol = 0
+                End If
 
-            FindString = "LowerTolerance='"
-            If TestCompare.Contains(FindString) Then
-                Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
-                Z = Strings.InStr(Y, TestCompare, "'")
-                lTol = Strings.Mid(TestCompare, Y, Z - Y)
-            Else
-                TolPrecision = 2
-            End If
+                FindString = "LowerTolerance='"
+                If TestCompare.Contains(FindString) Then
+                    Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
+                    Z = Strings.InStr(Y, TestCompare, "'")
+                    lTol = Strings.Mid(TestCompare, Y, Z - Y)
+                Else
+                    lTol = 0
+                End If
 
-            dgvDimValues.Rows.Add()
-            Prefix = ""
-            Dim Suffix As String = ""
-            Dim Comment As String = ""
-            oType = "Hole Callout"
+                dgvDimValues.Rows.Add()
+                Prefix = ""
+                Dim Suffix As String = ""
+                Dim Comment As String = ""
+                oType = "Hole Callout"
 #Region "Select Hole Case"
-            Y = Strings.InStr(TestCompare, "HolePropertyID='") + 16
-            Z = Strings.InStrRev(TestCompare, "HoleProperty'") + 12
-            Select Case Strings.Mid(TestCompare, Y, Z - Y)
-                Case "kHoleDiameterHoleProperty"
-                    Prefix = ""
-                    Suffix = ""
-                    Comment = "Hole Diameter"
-                Case "kHoleDepthHoleProperty"
-                    Prefix = ""
-                    Suffix = ""
-                    Comment = "Hole Depth"
-                Case "kCBoreDiameterHoleProperty"
-                    Prefix = ""
-                    Suffix = ""
-                    Comment = "CBore Diameter"
-                Case "kCSinkDiameterHoleProperty"
-                    Prefix = ""
-                    Suffix = ""
-                    Comment = "CSink Diameter"
-                Case "kCSinkAngleHoleProperty"
-                    Prefix = "X"
-                    Suffix = "⁰"
-                    Comment = "CSink Angle"
-                    oType = "Angular"
-                Case "kCSinkDepthHoleProperty"
-                    Prefix = ""
-                    Suffix = ""
-                    Comment = "CSink Angle"
-                Case "kCBoreDepthHoleProperty"
-                    Prefix = ""
-                    Suffix = ""
-                    Comment = "CBore Depth"
-                Case "kThreadDesignationHoleProperty"
-                    Prefix = ""
-                    Suffix = ""
-                    Comment = "Thread Designation"
-                Case "kCustomDesignationProperty"
-                    Prefix = ""
-                    Suffix = ""
-                    Comment = "Custome Designation"
-                Case "kThreadPitchHoleProperty"
-                    Prefix = ""
-                    Suffix = "TPI"
-                    Comment = "Thread Pitch"
-                Case "kThreadClassHoleProperty"
-                    Comment = "Thread Class"
-                    Prefix = ""
-                    Suffix = ""
-                Case "kThreadDepthHoleProperty"
-                    Comment = "Thread Depth"
-                    Prefix = ""
-                    Suffix = ""
-                Case "kTapDrillDiameterHoleProperty"
-                    Comment = "Tap Drill Diameter"
-                    Prefix = ""
-                    Suffix = ""
-                Case "kFastenerTypeHoleProperty"
-                    Comment = "Fastener Type"
-                    Prefix = ""
-                    Suffix = ""
-                Case "kFasternerSizeHoleProperty"
-                    Comment = "Fastener Size"
-                    Prefix = ""
-                    Suffix = ""
-                Case "kFasternerFitHoleProperty"
-                    Comment = "Fastener Fit"
-                    Prefix = ""
-                    Suffix = ""
-            End Select
+                Y = Strings.InStr(TestCompare, "HolePropertyID='") + 16
+                Z = Strings.InStrRev(TestCompare, "HoleProperty'") + 12
+                Select Case Strings.Mid(TestCompare, Y, Z - Y)
+                    Case "kHoleDiameterHoleProperty"
+                        Prefix = ""
+                        Suffix = ""
+                        Comment = "Hole Diameter"
+                    Case "kHoleDepthHoleProperty"
+                        Prefix = ""
+                        Suffix = ""
+                        Comment = "Hole Depth"
+                    Case "kCBoreDiameterHoleProperty"
+                        Prefix = ""
+                        Suffix = ""
+                        Comment = "CBore Diameter"
+                    Case "kCSinkDiameterHoleProperty"
+                        Prefix = ""
+                        Suffix = ""
+                        Comment = "CSink Diameter"
+                    Case "kCSinkAngleHoleProperty"
+                        Prefix = "X"
+                        Suffix = "⁰"
+                        Comment = "CSink Angle"
+                    Case "kCSinkDepthHoleProperty"
+                        Prefix = ""
+                        Suffix = ""
+                        Comment = "CSink Angle"
+                    Case "kCBoreDepthHoleProperty"
+                        Prefix = ""
+                        Suffix = ""
+                        Comment = "CBore Depth"
+                    Case "kThreadDesignationHoleProperty"
+                        Prefix = ""
+                        Suffix = ""
+                        Comment = "Thread Designation"
+                    Case "kCustomDesignationProperty"
+                        Prefix = ""
+                        Suffix = ""
+                        Comment = "Custome Designation"
+                    Case "kThreadPitchHoleProperty"
+                        Prefix = ""
+                        Suffix = "TPI"
+                        Comment = "Thread Pitch"
+                    Case "kThreadClassHoleProperty"
+                        Comment = "Thread Class"
+                        Prefix = ""
+                        Suffix = ""
+                    Case "kThreadDepthHoleProperty"
+                        Comment = "Thread Depth"
+                        Prefix = ""
+                        Suffix = ""
+                    Case "kTapDrillDiameterHoleProperty"
+                        Comment = "Tap Drill Diameter"
+                        Prefix = ""
+                        Suffix = ""
+                    Case "kFastenerTypeHoleProperty"
+                        Comment = "Fastener Type"
+                        Prefix = ""
+                        Suffix = ""
+                    Case "kFasternerSizeHoleProperty"
+                        Comment = "Fastener Size"
+                        Prefix = ""
+                        Suffix = ""
+                    Case "kFasternerFitHoleProperty"
+                        Comment = "Fastener Fit"
+                        Prefix = ""
+                        Suffix = ""
+                End Select
 #End Region
-            Parse_Units(oDim, oType, Units, Value, StringValue, TolMod, Prefix, Precision)
-            Parse_Tolerances(oDim, anglTol, anguTol, linlTol, linuTol, TolMod, TolType, oDim.Precision, TolPrecision, UTol, lTol)
-            Add_To_Table(oType, RefKey, oDim, Prefix, CStr(Value), Precision, TolPrecision, linuTol, linlTol, Value, Balloon & Convert.ToChar(x + 65), "Note", Units, Comment)
-            _invApp.CommandManager.ControlDefinitions.Item("AppUndoCmd").Execute()
-
-            CurrRow += 1
+                Parse_Units(oDim, oType, Units, Value, StringValue, TolMod, Prefix, Precision, Suffix)
+                Parse_Tolerances(oDim, anglTol, anguTol, linlTol, linuTol, 1, TolType, Precision, TolPrecision, UTol, lTol, Value)
+                Add_To_Table(oType, RefKey, oDim, Prefix, CStr(Value), Precision, TolPrecision, UTol, lTol, Value, Balloon & Convert.ToChar(x + 65),
+                         "Note", Units, Comment, UTol, lTol, Suffix)
+                CurrRow += 1
 Novalue:
+            Catch ex As Exception
+            Finally
+                _invApp.CommandManager.ControlDefinitions.Item("AppUndoCmd").Execute()
+            End Try
         Next
     End Sub
     Private Function StripValue(oDim As GeneralDimension, TestCompare As String, ByRef Value As String, RegexTest2 As Regex) As String
@@ -1088,6 +1095,10 @@ Novalue:
             Select Case cb.Value
                 Case "Angular"
                     UnitCell.Items.AddRange(ListAngle)
+                    UnitCell.Value = "Degrees"
+                Case "Hole Callout"
+                    UnitCell.Items.AddRange(ListAngle)
+                    UnitCell.Items.AddRange(ListLength)
                     UnitCell.Value = "Degrees"
                 Case Else
                     UnitCell.Items.AddRange(ListLength)

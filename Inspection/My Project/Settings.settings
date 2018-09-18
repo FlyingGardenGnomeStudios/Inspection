@@ -42,22 +42,22 @@
       <Value Profile="(Default)">-0.001</Value>
     </Setting>
     <Setting Name="AngP0" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">0.5</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="AngP1" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">0.25</Value>
+      <Value Profile="(Default)">0.5</Value>
     </Setting>
     <Setting Name="AngP2" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">0.1</Value>
+      <Value Profile="(Default)">0.25</Value>
     </Setting>
     <Setting Name="AngN0" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">-0.5</Value>
+      <Value Profile="(Default)">-1</Value>
     </Setting>
     <Setting Name="AngN1" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">-0.25</Value>
+      <Value Profile="(Default)">-0.5</Value>
     </Setting>
     <Setting Name="AngN2" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">-0.1</Value>
+      <Value Profile="(Default)">-0.25</Value>
     </Setting>
     <Setting Name="PUoM" Type="System.String" Scope="User">
       <Value Profile="(Default)">Inch</Value>
@@ -93,37 +93,37 @@
       <Value Profile="(Default)">-0.00001</Value>
     </Setting>
     <Setting Name="AngP3" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">0.05</Value>
+      <Value Profile="(Default)">0.1</Value>
     </Setting>
     <Setting Name="AngP4" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">0.025</Value>
+      <Value Profile="(Default)">0.05</Value>
     </Setting>
     <Setting Name="AngP5" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">0.0125</Value>
+      <Value Profile="(Default)">0.025</Value>
     </Setting>
     <Setting Name="AngP6" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">0.00625</Value>
+      <Value Profile="(Default)">0.0125</Value>
     </Setting>
     <Setting Name="AngP7" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">0.003125</Value>
+      <Value Profile="(Default)">0.005</Value>
     </Setting>
     <Setting Name="AngP8" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">0.001</Value>
     </Setting>
     <Setting Name="AngN3" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">-0.05</Value>
+      <Value Profile="(Default)">-0.1</Value>
     </Setting>
     <Setting Name="AngN4" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">-0.025</Value>
+      <Value Profile="(Default)">-0.05</Value>
     </Setting>
     <Setting Name="AngN5" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">-0.0125</Value>
+      <Value Profile="(Default)">-0.025</Value>
     </Setting>
     <Setting Name="AngN6" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">-0.00625</Value>
+      <Value Profile="(Default)">-0.0125</Value>
     </Setting>
     <Setting Name="AngN7" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">-0.003125</Value>
+      <Value Profile="(Default)">-0.005</Value>
     </Setting>
     <Setting Name="AngN8" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-0.001</Value>
