@@ -64,22 +64,8 @@ Partial Class Settings
         Me.ToleranceTab = New System.Windows.Forms.TabControl()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.dgvLTolerance = New System.Windows.Forms.DataGridView()
-        Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn5 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn6 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DataGridViewTextBoxColumn7 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
         Me.dgvAngTolerance = New System.Windows.Forms.DataGridView()
-        Me.Precision = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ULTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LLTol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LowerLimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.UpperLimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.UATol = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.LATol = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.gpbUnits = New System.Windows.Forms.GroupBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -90,6 +76,10 @@ Partial Class Settings
         Me.gpbType = New System.Windows.Forms.GroupBox()
         Me.RadioButton2 = New System.Windows.Forms.RadioButton()
         Me.RadioButton1 = New System.Windows.Forms.RadioButton()
+        Me.btnOK = New System.Windows.Forms.Button()
+        Me.btnCancel = New System.Windows.Forms.Button()
+        Me.btnLoad = New System.Windows.Forms.Button()
+        Me.btnSave = New System.Windows.Forms.Button()
         Me.ddpGeneralSettings.SuspendLayout()
         Me.CharacteristicsTab.SuspendLayout()
         Me.tbpSettings.SuspendLayout()
@@ -287,11 +277,11 @@ Partial Class Settings
         Me.CharacteristicsTab.Controls.Add(Me.tbpSettings)
         Me.CharacteristicsTab.Controls.Add(Me.tbpExtSettings)
         Me.CharacteristicsTab.Controls.Add(Me.TabPage1)
-        Me.CharacteristicsTab.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.CharacteristicsTab.Dock = System.Windows.Forms.DockStyle.Top
         Me.CharacteristicsTab.Location = New System.Drawing.Point(0, 0)
         Me.CharacteristicsTab.Name = "CharacteristicsTab"
         Me.CharacteristicsTab.SelectedIndex = 0
-        Me.CharacteristicsTab.Size = New System.Drawing.Size(287, 497)
+        Me.CharacteristicsTab.Size = New System.Drawing.Size(293, 436)
         Me.CharacteristicsTab.TabIndex = 2
         '
         'tbpSettings
@@ -301,7 +291,7 @@ Partial Class Settings
         Me.tbpSettings.Location = New System.Drawing.Point(4, 22)
         Me.tbpSettings.Name = "tbpSettings"
         Me.tbpSettings.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbpSettings.Size = New System.Drawing.Size(279, 471)
+        Me.tbpSettings.Size = New System.Drawing.Size(285, 410)
         Me.tbpSettings.TabIndex = 0
         Me.tbpSettings.Text = "Settings"
         Me.tbpSettings.UseVisualStyleBackColor = True
@@ -373,7 +363,7 @@ Partial Class Settings
         Me.tbpExtSettings.Location = New System.Drawing.Point(4, 22)
         Me.tbpExtSettings.Name = "tbpExtSettings"
         Me.tbpExtSettings.Padding = New System.Windows.Forms.Padding(3)
-        Me.tbpExtSettings.Size = New System.Drawing.Size(279, 471)
+        Me.tbpExtSettings.Size = New System.Drawing.Size(279, 440)
         Me.tbpExtSettings.TabIndex = 1
         Me.tbpExtSettings.Text = "Extraction Settings"
         Me.tbpExtSettings.UseVisualStyleBackColor = True
@@ -548,7 +538,7 @@ Partial Class Settings
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(279, 471)
+        Me.TabPage1.Size = New System.Drawing.Size(285, 410)
         Me.TabPage1.TabIndex = 2
         Me.TabPage1.Text = "Tolerance Settings"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -575,7 +565,7 @@ Partial Class Settings
         Me.ddpTolerance.Moveable = False
         Me.ddpTolerance.Name = "ddpTolerance"
         Me.ddpTolerance.RoundedCorners = False
-        Me.ddpTolerance.Size = New System.Drawing.Size(273, 465)
+        Me.ddpTolerance.Size = New System.Drawing.Size(279, 404)
         Me.ddpTolerance.TabIndex = 1
         '
         'ToleranceTab
@@ -602,56 +592,12 @@ Partial Class Settings
         'dgvLTolerance
         '
         Me.dgvLTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvLTolerance.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewTextBoxColumn1, Me.DataGridViewTextBoxColumn2, Me.DataGridViewTextBoxColumn3, Me.DataGridViewTextBoxColumn4, Me.DataGridViewTextBoxColumn5, Me.DataGridViewTextBoxColumn6, Me.DataGridViewTextBoxColumn7})
         Me.dgvLTolerance.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvLTolerance.Location = New System.Drawing.Point(3, 3)
         Me.dgvLTolerance.Name = "dgvLTolerance"
         Me.dgvLTolerance.RowHeadersVisible = False
         Me.dgvLTolerance.Size = New System.Drawing.Size(256, 158)
         Me.dgvLTolerance.TabIndex = 1
-        '
-        'DataGridViewTextBoxColumn1
-        '
-        Me.DataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.DataGridViewTextBoxColumn1.HeaderText = "Precision"
-        Me.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
-        Me.DataGridViewTextBoxColumn1.ReadOnly = True
-        '
-        'DataGridViewTextBoxColumn2
-        '
-        Me.DataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.DataGridViewTextBoxColumn2.HeaderText = "+Tolerance"
-        Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
-        '
-        'DataGridViewTextBoxColumn3
-        '
-        Me.DataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.DataGridViewTextBoxColumn3.HeaderText = "-Tolerance"
-        Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
-        '
-        'DataGridViewTextBoxColumn4
-        '
-        Me.DataGridViewTextBoxColumn4.HeaderText = "Lower Limit"
-        Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
-        Me.DataGridViewTextBoxColumn4.Visible = False
-        '
-        'DataGridViewTextBoxColumn5
-        '
-        Me.DataGridViewTextBoxColumn5.HeaderText = "Upper Limit"
-        Me.DataGridViewTextBoxColumn5.Name = "DataGridViewTextBoxColumn5"
-        Me.DataGridViewTextBoxColumn5.Visible = False
-        '
-        'DataGridViewTextBoxColumn6
-        '
-        Me.DataGridViewTextBoxColumn6.HeaderText = "+Tolerance"
-        Me.DataGridViewTextBoxColumn6.Name = "DataGridViewTextBoxColumn6"
-        Me.DataGridViewTextBoxColumn6.Visible = False
-        '
-        'DataGridViewTextBoxColumn7
-        '
-        Me.DataGridViewTextBoxColumn7.HeaderText = "-Tolerance"
-        Me.DataGridViewTextBoxColumn7.Name = "DataGridViewTextBoxColumn7"
-        Me.DataGridViewTextBoxColumn7.Visible = False
         '
         'TabPage3
         '
@@ -667,55 +613,11 @@ Partial Class Settings
         'dgvAngTolerance
         '
         Me.dgvAngTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvAngTolerance.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Precision, Me.ULTol, Me.LLTol, Me.LowerLimit, Me.UpperLimit, Me.UATol, Me.LATol})
         Me.dgvAngTolerance.Location = New System.Drawing.Point(0, 0)
         Me.dgvAngTolerance.Name = "dgvAngTolerance"
         Me.dgvAngTolerance.RowHeadersVisible = False
         Me.dgvAngTolerance.Size = New System.Drawing.Size(259, 164)
         Me.dgvAngTolerance.TabIndex = 0
-        '
-        'Precision
-        '
-        Me.Precision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.Precision.HeaderText = "Precision"
-        Me.Precision.Name = "Precision"
-        Me.Precision.ReadOnly = True
-        '
-        'ULTol
-        '
-        Me.ULTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.ULTol.HeaderText = "+Tolerance"
-        Me.ULTol.Name = "ULTol"
-        '
-        'LLTol
-        '
-        Me.LLTol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.LLTol.HeaderText = "-Tolerance"
-        Me.LLTol.Name = "LLTol"
-        '
-        'LowerLimit
-        '
-        Me.LowerLimit.HeaderText = "Lower Limit"
-        Me.LowerLimit.Name = "LowerLimit"
-        Me.LowerLimit.Visible = False
-        '
-        'UpperLimit
-        '
-        Me.UpperLimit.HeaderText = "Upper Limit"
-        Me.UpperLimit.Name = "UpperLimit"
-        Me.UpperLimit.Visible = False
-        '
-        'UATol
-        '
-        Me.UATol.HeaderText = "+Tolerance"
-        Me.UATol.Name = "UATol"
-        Me.UATol.Visible = False
-        '
-        'LATol
-        '
-        Me.LATol.HeaderText = "-Tolerance"
-        Me.LATol.Name = "LATol"
-        Me.LATol.Visible = False
         '
         'gpbUnits
         '
@@ -785,6 +687,7 @@ Partial Class Settings
         '
         'cmbPrimary
         '
+        Me.cmbPrimary.DisplayMember = "Inch"
         Me.cmbPrimary.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cmbPrimary.FormattingEnabled = True
         Me.cmbPrimary.Items.AddRange(New Object() {"Inch", "Foot", "Centimeter", "Millimeter", "Meter", "Micron"})
@@ -828,13 +731,54 @@ Partial Class Settings
         Me.RadioButton1.Text = "By Precision"
         Me.RadioButton1.UseVisualStyleBackColor = True
         '
+        'btnOK
+        '
+        Me.btnOK.Location = New System.Drawing.Point(90, 471)
+        Me.btnOK.Name = "btnOK"
+        Me.btnOK.Size = New System.Drawing.Size(81, 23)
+        Me.btnOK.TabIndex = 3
+        Me.btnOK.Text = "OK"
+        Me.btnOK.UseVisualStyleBackColor = True
+        '
+        'btnCancel
+        '
+        Me.btnCancel.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnCancel.Location = New System.Drawing.Point(90, 442)
+        Me.btnCancel.Name = "btnCancel"
+        Me.btnCancel.Size = New System.Drawing.Size(81, 23)
+        Me.btnCancel.TabIndex = 4
+        Me.btnCancel.Text = "Cancel"
+        Me.btnCancel.UseVisualStyleBackColor = True
+        '
+        'btnLoad
+        '
+        Me.btnLoad.Location = New System.Drawing.Point(3, 442)
+        Me.btnLoad.Name = "btnLoad"
+        Me.btnLoad.Size = New System.Drawing.Size(81, 23)
+        Me.btnLoad.TabIndex = 5
+        Me.btnLoad.Text = "Load Settings"
+        Me.btnLoad.UseVisualStyleBackColor = True
+        '
+        'btnSave
+        '
+        Me.btnSave.Location = New System.Drawing.Point(3, 471)
+        Me.btnSave.Name = "btnSave"
+        Me.btnSave.Size = New System.Drawing.Size(81, 23)
+        Me.btnSave.TabIndex = 6
+        Me.btnSave.Text = "Save Settings"
+        Me.btnSave.UseVisualStyleBackColor = True
+        '
         'Settings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.Controls.Add(Me.btnSave)
+        Me.Controls.Add(Me.btnLoad)
+        Me.Controls.Add(Me.btnCancel)
+        Me.Controls.Add(Me.btnOK)
         Me.Controls.Add(Me.CharacteristicsTab)
         Me.Name = "Settings"
-        Me.Size = New System.Drawing.Size(287, 497)
+        Me.Size = New System.Drawing.Size(293, 497)
         Me.ddpGeneralSettings.ResumeLayout(False)
         Me.ddpGeneralSettings.PerformLayout()
         Me.CharacteristicsTab.ResumeLayout(False)
@@ -912,23 +856,13 @@ Partial Class Settings
     Friend WithEvents dgvAngTolerance As Windows.Forms.DataGridView
     Friend WithEvents cmbAngle As Windows.Forms.ComboBox
     Friend WithEvents dgvLTolerance As Windows.Forms.DataGridView
-    Friend WithEvents DataGridViewTextBoxColumn1 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn2 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn3 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn4 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn5 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn6 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents DataGridViewTextBoxColumn7 As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents Precision As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents ULTol As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents LLTol As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents LowerLimit As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents UpperLimit As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents UATol As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents LATol As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Label3 As Windows.Forms.Label
     Friend WithEvents Label2 As Windows.Forms.Label
     Friend WithEvents Label1 As Windows.Forms.Label
     Friend WithEvents Label4 As Windows.Forms.Label
     Friend WithEvents Label5 As Windows.Forms.Label
+    Friend WithEvents btnOK As Windows.Forms.Button
+    Friend WithEvents btnCancel As Windows.Forms.Button
+    Friend WithEvents btnLoad As Windows.Forms.Button
+    Friend WithEvents btnSave As Windows.Forms.Button
 End Class

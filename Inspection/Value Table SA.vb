@@ -8,6 +8,8 @@ Imports System.Data
 Imports Microsoft.Office.Interop
 Imports System.Windows.Forms
 Imports System.Collections.Generic
+Imports System.Configuration
+Imports System.Data.OleDb
 
 Public Class Value_Table_SA
     Dim _invApp As Inventor.Application
@@ -20,6 +22,15 @@ Public Class Value_Table_SA
     Dim StandardAddinServer As StandardAddInServer
     Private CharacteristicsForm As Settings
     Private WithEvents oSelect As SelectEvents
+    Dim oUserIntrerfaceMgr As UserInterfaceManager
+    Dim oWindowValue_Table As DockableWindow
+    Dim oWindowCharacteristics As DockableWindow
+    Dim WithEvents m_AppEvents As ApplicationEvents
+    Private WithEvents m_uiEvents As UserInterfaceEvents
+    Private WithEvents m_AddNew As ButtonDefinition
+    Private WithEvents m_Show As ButtonDefinition
+    Private WithEvents m_Hide As ButtonDefinition
+    Private WithEvents oInteraction As InteractionEvents
 
     Public Sub New()
         ' This call is required by the designer.
@@ -28,8 +39,26 @@ Public Class Value_Table_SA
         AddHandler dgvDimValues.CellValueChanged, AddressOf Me.dgvDimValues_CellValueChanged
         AddHandler dgvDimValues.CurrentCellDirtyStateChanged, AddressOf Me.dgvDimValues_CurrentCellDirtyStateChanged
         ' Add any initialization after the InitializeComponent() call.
+        If rdoPrecision.Checked = True Then
+            dgvLinTolerance.DataSource = GetLinTolerance()
+
+        Else
+
+        End If
         Refresh()
     End Sub
+    Private Function GetLinTolerance() As DataTable
+        Dim dtLinTolerance As New DataTable
+        Dim connString As String = ConfigurationManager.ConnectionStrings("dbx").ConnectionString
+        Using conn As New OleDbConnection(connString)
+            Using cmd As New OleDbCommand("SELECT * FROM [Default Precision-Linear]", conn)
+                conn.Open()
+                Dim reader As OleDbDataReader = cmd.ExecuteReader()
+                dtLinTolerance.Load(reader)
+            End Using
+        End Using
+        Return dtLinTolerance
+    End Function
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim oDoc As DrawingDocument = _invApp.ActiveDocument
         Dim oInteraction As InteractionEvents = _invApp.CommandManager.CreateInteractionEvents
@@ -609,13 +638,5 @@ Public Class Value_Table_SA
             End Select
 
         End If
-    End Sub
-
-    Private Sub Value_Table_SA_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'TODO: This line of code loads data into the 'TolerancesDataSet._Default_Precision_Angular' table. You can move, or remove it, as needed.
-        Me.Default_Precision_AngularTableAdapter.Fill(Me.TolerancesDataSet._Default_Precision_Angular)
-        'TODO: This line of code loads data into the 'TolerancesDataSet._Default_Precision_Linear' table. You can move, or remove it, as needed.
-        Me.Default_Precision_LinearTableAdapter.Fill(Me.TolerancesDataSet._Default_Precision_Linear)
-
     End Sub
 End Class

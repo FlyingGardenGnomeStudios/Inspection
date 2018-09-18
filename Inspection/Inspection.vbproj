@@ -92,6 +92,7 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Deployment" />
@@ -132,11 +133,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="StandardAddInServer.vb" />
-    <Compile Include="TolerancesDataSet1.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TolerancesDataSet1.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Value Table SA.Designer.vb">
       <DependentUpon>Value Table SA.vb</DependentUpon>
     </Compile>
@@ -153,17 +149,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Inspection.X.manifest" />
-    <None Include="TolerancesDataSet1.xsc">
-      <DependentUpon>TolerancesDataSet1.xsd</DependentUpon>
-    </None>
-    <None Include="TolerancesDataSet1.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>TolerancesDataSet1.Designer.vb</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="TolerancesDataSet1.xss">
-      <DependentUpon>TolerancesDataSet1.xsd</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Autodesk.Inspection.Inventor.addin">

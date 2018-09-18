@@ -9,14 +9,14 @@ Public Class Settings
         InitializeComponent()
         _invApp = Marshal.GetActiveObject("Inventor.Application")
         Dim TolString() As String
-        For X = 0 To 4
-            TolString = {X, My.Settings("LinP" & X), My.Settings("LinN" & X)}
-            dgvLTolerance.Rows.Add(TolString)
-        Next
-        For X = 0 To 2
-            TolString = {X, My.Settings("AngP" & X), My.Settings("AngN" & X)}
-            dgvAngTolerance.Rows.Add(TolString)
-        Next
+        'For X = 0 To 4
+        '    TolString = {X, My.Settings("LinP" & X), My.Settings("LinN" & X)}
+        '    dgvLTolerance.Rows.Add(TolString)
+        'Next
+        'For X = 0 To 2
+        '    TolString = {X, My.Settings("AngP" & X), My.Settings("AngN" & X)}
+        '    dgvAngTolerance.Rows.Add(TolString)
+        'Next
         ' Add any initialization after the InitializeComponent() call.
     End Sub
 
