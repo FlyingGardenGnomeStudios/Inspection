@@ -8,7 +8,7 @@ Public Class Settings
         ' This call is required by the designer.
         InitializeComponent()
         _invApp = Marshal.GetActiveObject("Inventor.Application")
-        Dim TolString() As String
+        ' Dim TolString() As String
         'For X = 0 To 4
         '    TolString = {X, My.Settings("LinP" & X), My.Settings("LinN" & X)}
         '    dgvLTolerance.Rows.Add(TolString)

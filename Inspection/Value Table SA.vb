@@ -9,6 +9,8 @@ Imports Microsoft.Office.Interop
 Imports System.Windows.Forms
 Imports System.Text.RegularExpressions
 Imports System.Collections.Generic
+Imports System.Configuration
+Imports System.Data.OleDb
 
 Public Class Value_Table_SA
     Dim _invApp As Inventor.Application
@@ -32,8 +34,104 @@ Public Class Value_Table_SA
         AddHandler dgvDimValues.CellValueChanged, AddressOf Me.dgvDimValues_CellValueChanged
         AddHandler dgvDimValues.CurrentCellDirtyStateChanged, AddressOf Me.dgvDimValues_CurrentCellDirtyStateChanged
         ' Add any initialization after the InitializeComponent() call.
+        Dim Units As String
+        If rdoImp.Checked Then
+            Units = "Imp"
+        Else
+            Units = "Met"
+        End If
+        If rdoPrecision.Checked = True Then
+            dgvLinTolerance.DataSource = GetPrecLinTolerance(Units)
+            dgvAngTolerance.DataSource = GetPrecAngTolerance()
+        Else
+            dgvLinTolerance.DataSource = GetRngLinTolerance(Units)
+            dgvAngTolerance.DataSource = GetRngAngTolerance()
+        End If
+        For Each Column In dgvAngTolerance.Columns
+            If dgvAngTolerance.Columns(Column.index).headertext = "ID" Then dgvAngTolerance.Columns(Column.index).visible = False
+            dgvAngTolerance.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+        Next
+        For Each column In dgvLinTolerance.Columns
+            If dgvLinTolerance.Columns(column.index).headertext = "ID" Or dgvLinTolerance.Columns(column.index).headertext = "Units" Then dgvLinTolerance.Columns(column.index).visible = False
+            dgvLinTolerance.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+        Next
         Refresh()
     End Sub
+    Private Sub rdoPrecision_CheckedChanged(sender As Object, e As EventArgs) Handles rdoPrecision.CheckedChanged
+        RefreshTolChart()
+    End Sub
+
+    Private Sub rdoImp_CheckedChanged(sender As Object, e As EventArgs) Handles rdoImp.CheckedChanged
+        RefreshTolChart()
+    End Sub
+    Private Sub RefreshTolChart()
+        Dim Units As String
+        If rdoImp.Checked Then
+            Units = "Imp"
+        Else
+            Units = "Met"
+        End If
+        If rdoPrecision.Checked = True Then
+            dgvLinTolerance.DataSource = GetPrecLinTolerance(Units)
+            dgvAngTolerance.DataSource = GetPrecAngTolerance()
+        Else
+            dgvLinTolerance.DataSource = GetRngLinTolerance(Units)
+            dgvAngTolerance.DataSource = GetRngAngTolerance()
+            dgvLinTolerance.Columns("Upper Limit").DisplayIndex = 0
+            dgvLinTolerance.Columns("Lower Limit").DisplayIndex = 1
+            dgvLinTolerance.Columns("+Tol").DisplayIndex = 2
+            dgvLinTolerance.Columns("-Tol").DisplayIndex = 3
+        End If
+    End Sub
+    Private Function GetPrecLinTolerance(ByVal Units As String) As DataTable
+        Dim dtPrecLinTolerance As New DataTable
+        Dim connString As String = ConfigurationManager.ConnectionStrings("dbx").ConnectionString
+        Using conn As New OleDbConnection(connString)
+            Using cmd As New OleDbCommand("SELECT * FROM [Default Precision-Linear " & Units & "]", conn)
+                conn.Open()
+                Dim reader As OleDbDataReader = cmd.ExecuteReader()
+                dtPrecLinTolerance.Load(reader)
+            End Using
+        End Using
+        Return dtPrecLinTolerance
+    End Function
+    Private Function GetRngLinTolerance(ByVal Units As String) As DataTable
+        Dim dtRngLinTolerance As New DataTable
+        Dim connString As String = ConfigurationManager.ConnectionStrings("dbx").ConnectionString
+        Using conn As New OleDbConnection(connString)
+            Using cmd As New OleDbCommand("SELECT * FROM [Default Range-Linear " & Units & "]", conn)
+                conn.Open()
+                Dim reader As OleDbDataReader = cmd.ExecuteReader()
+                dtRngLinTolerance.Load(reader)
+            End Using
+        End Using
+        Return dtRngLinTolerance
+    End Function
+    Private Function GetPrecAngTolerance() As DataTable
+        Dim dtPrecAngTolerance As New DataTable
+        Dim connString As String = ConfigurationManager.ConnectionStrings("dbx").ConnectionString
+        Using conn As New OleDbConnection(connString)
+            Using cmd As New OleDbCommand("SELECT * FROM [Default Precision-Angular]", conn)
+                conn.Open()
+                Dim reader As OleDbDataReader = cmd.ExecuteReader()
+                dtPrecAngTolerance.Load(reader)
+            End Using
+        End Using
+        Return dtPrecAngTolerance
+    End Function
+    Private Function GetRngAngTolerance() As DataTable
+        Dim dtRngAngTolerance As New DataTable
+        Dim connString As String = ConfigurationManager.ConnectionStrings("dbx").ConnectionString
+        Using conn As New OleDbConnection(connString)
+            Using cmd As New OleDbCommand("SELECT * FROM [Default Range-Angular]", conn)
+                conn.Open()
+                Dim reader As OleDbDataReader = cmd.ExecuteReader()
+                dtRngAngTolerance.Load(reader)
+            End Using
+        End Using
+        Return dtRngAngTolerance
+    End Function
+
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Read = False
         ' CurrRow = dgvDimValues.RowCount + 1
@@ -76,37 +174,37 @@ Public Class Value_Table_SA
         'Try
         ' _invApp.ScreenUpdating = False
         Dim oType As String
-            Select Case SelectedFeature.type
+        Select Case SelectedFeature.type
                         'Linear Diametral Radial
-                Case 117474560
-                    oType = "Linear"
-                    LinearDim(SelectedFeature, RefKey, "Linear", Insert, Balloon)
-                Case 117475328
-                    oType = "Diameter"
-                    LinearDim(SelectedFeature, RefKey, "Diametral", Insert, Balloon)
-                Case 117475072
-                    oType = "Radial"
-                    LinearDim(SelectedFeature, RefKey, "Radial", Insert, Balloon)
-                Case 117474816
-                    oType = "Angular"
-                    LinearDim(SelectedFeature, RefKey, "Angular", Insert, Balloon)
-                Case 117483008
-                    FCF(SelectedFeature, RefKey)
-                Case 117471488
-                    HoleTag(SelectedFeature, RefKey, "Hole Callout", Insert, Balloon)
-                Case 117491712
-                    ThreadNote(SelectedFeature, RefKey, "Hole Callout", Insert, Balloon)
-                Case 117473024
-                    Note(SelectedFeature, RefKey, "Note", Insert, Balloon)
-                Case 117484032
-                    Surface(SelectedFeature, RefKey)
-                Case 117488384
-                    Chamfer(SelectedFeature, RefKey, "Chamfer", Insert, Balloon)
-                Case 117469952
-                    HoleTable(SelectedFeature, RefKey)
-                Case Else
-                    MsgBox("Unknown")
-            End Select
+            Case 117474560
+                oType = "Linear"
+                LinearDim(SelectedFeature, RefKey, "Linear", Insert, Balloon)
+            Case 117475328
+                oType = "Diameter"
+                LinearDim(SelectedFeature, RefKey, "Diametral", Insert, Balloon)
+            Case 117475072
+                oType = "Radial"
+                LinearDim(SelectedFeature, RefKey, "Radial", Insert, Balloon)
+            Case 117474816
+                oType = "Angular"
+                LinearDim(SelectedFeature, RefKey, "Angular", Insert, Balloon)
+            Case 117483008
+                FCF(SelectedFeature, RefKey)
+            Case 117471488
+                HoleTag(SelectedFeature, RefKey, "Hole Callout", Insert, Balloon)
+            Case 117491712
+                ThreadNote(SelectedFeature, RefKey, "Hole Callout", Insert, Balloon)
+            Case 117473024
+                Note(SelectedFeature, RefKey, "Note", Insert, Balloon)
+            Case 117484032
+                Surface(SelectedFeature, RefKey)
+            Case 117488384
+                Chamfer(SelectedFeature, RefKey, "Chamfer", Insert, Balloon)
+            Case 117469952
+                HoleTable(SelectedFeature, RefKey)
+            Case Else
+                MsgBox("Unknown")
+        End Select
         'Catch ex As Exception
         'MessageBox.Show(Me, ex.Message, "Error")
         'Finally
@@ -678,13 +776,13 @@ Public Class Value_Table_SA
                 Precision = 2
             End If
             FindString = "TolerancePrecision='"
-                If TestCompare.Contains(FindString) Then
+            If TestCompare.Contains(FindString) Then
                 Y = Strings.InStr(TestCompare, FindString) + Len(FindString)
                 Z = Strings.InStr(Y, TestCompare, "'")
-                    TolPrecision = Strings.Mid(TestCompare, Y, Z - Y)
-                Else
-                    TolPrecision = 2
-                End If
+                TolPrecision = Strings.Mid(TestCompare, Y, Z - Y)
+            Else
+                TolPrecision = 2
+            End If
 
             FindString = "UpperTolerance='"
             If TestCompare.Contains(FindString) Then
@@ -933,7 +1031,7 @@ Novalue:
         ' Add a prompted text field at the center of the sketch circle.
         Dim sText As String
         sText = "<StyleOverride FontSize='" & My.Settings.BalloonSize / 50 & "'>" & "<Prompt>Number</Prompt>" & "</StyleOverride>"
-                    Dim oTextBox As Inventor.TextBox
+        Dim oTextBox As Inventor.TextBox
         Dim ValueText As String = "<StyleOverride FontSize='" & 0.0001 & "'>" & "<Prompt>Value</Prompt>" & "</StyleOverride>"
 
         oTextBox = oSketch.TextBoxes.AddFitted(oTG.CreatePoint2d(0, 0), sText)
@@ -991,15 +1089,15 @@ Novalue:
         Dim Ref() As Byte = New Byte() {}
         'Try
         For Each oSketch As SketchedSymbol In oDoc.ActiveSheet.SketchedSymbols
-                If oSketch.Name = "Insp" Then
-                    Dim key As String = oSketch.GetResultText(oSketch.Definition.Sketch.TextBoxes.Item(2))
-                    Call oDoc.ReferenceKeyManager.StringToKey(key, Ref)
-                    Dim Refobj As Object = oDoc.ReferenceKeyManager.BindKeyToObject(Ref)
-                    oDoc.SelectSet.Clear()
-                    Dim oDim As Object = Refobj
-                    DimType(oDim, key, False, CurrRow + 1)
-                End If
-            Next
+            If oSketch.Name = "Insp" Then
+                Dim key As String = oSketch.GetResultText(oSketch.Definition.Sketch.TextBoxes.Item(2))
+                Call oDoc.ReferenceKeyManager.StringToKey(key, Ref)
+                Dim Refobj As Object = oDoc.ReferenceKeyManager.BindKeyToObject(Ref)
+                oDoc.SelectSet.Clear()
+                Dim oDim As Object = Refobj
+                DimType(oDim, key, False, CurrRow + 1)
+            End If
+        Next
         'Catch ex As Exception
         '    MessageBox.Show(ex.Message)
         'Finally
@@ -1089,6 +1187,10 @@ Novalue:
                 Case "Angular"
                     UnitCell.Items.AddRange(ListAngle)
                     UnitCell.Value = "Degrees"
+                Case "Hole Callout"
+                    UnitCell.Items.AddRange(ListAngle)
+                    UnitCell.Items.AddRange(ListLength)
+                    UnitCell.Value = "Degrees"
                 Case Else
                     UnitCell.Items.AddRange(ListLength)
                     UnitCell.Value = "Inch"
@@ -1117,8 +1219,8 @@ Novalue:
                 cmsDGVRBC.Items.Item(0).Text = "Link Balloons"
             Else
                 cmsDGVRBC.Items.Item(0).Text = "Unlink Balloons"
-                End If
             End If
+        End If
     End Sub
     Private Sub DeleteRowToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteRowToolStripMenuItem.Click
         Dim oDoc As Document = _invApp.ActiveDocument
