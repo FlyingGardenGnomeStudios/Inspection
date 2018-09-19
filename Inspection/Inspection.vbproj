@@ -136,6 +136,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="StandardAddInServer.vb" />
+    <Compile Include="UserControl1.Designer.vb">
+      <DependentUpon>UserControl1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl1.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Value Table SA.Designer.vb">
       <DependentUpon>Value Table SA.vb</DependentUpon>
     </Compile>

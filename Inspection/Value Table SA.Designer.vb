@@ -1,5 +1,4 @@
-﻿Imports Inspection
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class Value_Table_SA
     Inherits System.Windows.Forms.Form
 
@@ -23,7 +22,18 @@ Partial Class Value_Table_SA
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.dgvDimValues = New System.Windows.Forms.DataGridView()
+        Me.cmsDGVRBC = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.UnlinkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeleteRowToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.InsertRowToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
+        Me.Button3 = New System.Windows.Forms.Button()
+        Me.Button4 = New System.Windows.Forms.Button()
         Me.Ref = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Balloon = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Value = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -37,29 +47,8 @@ Partial Class Value_Table_SA
         Me.LLimit = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.FitGrade = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Comments = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
-        Me.Button3 = New System.Windows.Forms.Button()
-        Me.Button4 = New System.Windows.Forms.Button()
-        Me.ToleranceTab = New System.Windows.Forms.TabControl()
-        Me.TabPage2 = New System.Windows.Forms.TabPage()
-        Me.dgvLinTolerance = New System.Windows.Forms.DataGridView()
-        Me.TabPage3 = New System.Windows.Forms.TabPage()
-        Me.dgvAngTolerance = New System.Windows.Forms.DataGridView()
-        Me.rdoRange = New System.Windows.Forms.RadioButton()
-        Me.rdoPrecision = New System.Windows.Forms.RadioButton()
-        Me.rdoMet = New System.Windows.Forms.RadioButton()
-        Me.rdoImp = New System.Windows.Forms.RadioButton()
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.ToleranceTab.SuspendLayout()
-        Me.TabPage2.SuspendLayout()
-        CType(Me.dgvLinTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.TabPage3.SuspendLayout()
-        CType(Me.dgvAngTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupBox1.SuspendLayout()
-        Me.GroupBox2.SuspendLayout()
+        Me.cmsDGVRBC.SuspendLayout()
         Me.SuspendLayout()
         '
         'dgvDimValues
@@ -69,6 +58,15 @@ Partial Class Value_Table_SA
         Me.dgvDimValues.AllowUserToResizeRows = False
         Me.dgvDimValues.BackgroundColor = System.Drawing.SystemColors.ControlDark
         Me.dgvDimValues.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Ref, Me.Balloon, Me.Value, Me.Units, Me.Qty, Me.Type, Me.SubType, Me.UTol, Me.LTol, Me.ULimit, Me.LLimit, Me.FitGrade, Me.Comments})
+        Me.dgvDimValues.ContextMenuStrip = Me.cmsDGVRBC
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!)
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvDimValues.DefaultCellStyle = DataGridViewCellStyle2
         Me.dgvDimValues.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgvDimValues.Location = New System.Drawing.Point(12, 76)
         Me.dgvDimValues.Name = "dgvDimValues"
@@ -76,6 +74,66 @@ Partial Class Value_Table_SA
         Me.dgvDimValues.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
         Me.dgvDimValues.Size = New System.Drawing.Size(930, 183)
         Me.dgvDimValues.TabIndex = 6
+        '
+        'cmsDGVRBC
+        '
+        Me.cmsDGVRBC.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UnlinkToolStripMenuItem, Me.DeleteRowToolStripMenuItem, Me.InsertRowToolStripMenuItem})
+        Me.cmsDGVRBC.Name = "cmsDGVRBC"
+        Me.cmsDGVRBC.Size = New System.Drawing.Size(144, 70)
+        '
+        'UnlinkToolStripMenuItem
+        '
+        Me.UnlinkToolStripMenuItem.Name = "UnlinkToolStripMenuItem"
+        Me.UnlinkToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
+        Me.UnlinkToolStripMenuItem.Text = "Unlink"
+        '
+        'DeleteRowToolStripMenuItem
+        '
+        Me.DeleteRowToolStripMenuItem.Name = "DeleteRowToolStripMenuItem"
+        Me.DeleteRowToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
+        Me.DeleteRowToolStripMenuItem.Text = "Remove Row"
+        '
+        'InsertRowToolStripMenuItem
+        '
+        Me.InsertRowToolStripMenuItem.Name = "InsertRowToolStripMenuItem"
+        Me.InsertRowToolStripMenuItem.Size = New System.Drawing.Size(143, 22)
+        Me.InsertRowToolStripMenuItem.Text = "Insert Row"
+        '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(12, 12)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 7
+        Me.Button1.Text = "Add"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'Button2
+        '
+        Me.Button2.Location = New System.Drawing.Point(148, 11)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(75, 23)
+        Me.Button2.TabIndex = 8
+        Me.Button2.Text = "Refresh"
+        Me.Button2.UseVisualStyleBackColor = True
+        '
+        'Button3
+        '
+        Me.Button3.Location = New System.Drawing.Point(282, 11)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(75, 23)
+        Me.Button3.TabIndex = 9
+        Me.Button3.Text = "Load"
+        Me.Button3.UseVisualStyleBackColor = True
+        '
+        'Button4
+        '
+        Me.Button4.Location = New System.Drawing.Point(455, 11)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(75, 23)
+        Me.Button4.TabIndex = 10
+        Me.Button4.Text = "Save"
+        Me.Button4.UseVisualStyleBackColor = True
         '
         'Ref
         '
@@ -93,8 +151,11 @@ Partial Class Value_Table_SA
         'Value
         '
         Me.Value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("InspectionXpert GDT", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Value.DefaultCellStyle = DataGridViewCellStyle1
         Me.Value.HeaderText = "Value"
         Me.Value.Name = "Value"
+        Me.Value.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
         '
         'Units
         '
@@ -163,168 +224,12 @@ Partial Class Value_Table_SA
         Me.Comments.Name = "Comments"
         Me.Comments.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
         '
-        'Button1
-        '
-        Me.Button1.Location = New System.Drawing.Point(12, 12)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(75, 23)
-        Me.Button1.TabIndex = 7
-        Me.Button1.Text = "Add"
-        Me.Button1.UseVisualStyleBackColor = True
-        '
-        'Button2
-        '
-        Me.Button2.Location = New System.Drawing.Point(148, 11)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(75, 23)
-        Me.Button2.TabIndex = 8
-        Me.Button2.Text = "Refresh"
-        Me.Button2.UseVisualStyleBackColor = True
-        '
-        'Button3
-        '
-        Me.Button3.Location = New System.Drawing.Point(282, 11)
-        Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(75, 23)
-        Me.Button3.TabIndex = 9
-        Me.Button3.Text = "Load"
-        Me.Button3.UseVisualStyleBackColor = True
-        '
-        'Button4
-        '
-        Me.Button4.Location = New System.Drawing.Point(455, 11)
-        Me.Button4.Name = "Button4"
-        Me.Button4.Size = New System.Drawing.Size(75, 23)
-        Me.Button4.TabIndex = 10
-        Me.Button4.Text = "Save"
-        Me.Button4.UseVisualStyleBackColor = True
-        '
-        'ToleranceTab
-        '
-        Me.ToleranceTab.Controls.Add(Me.TabPage2)
-        Me.ToleranceTab.Controls.Add(Me.TabPage3)
-        Me.ToleranceTab.Location = New System.Drawing.Point(948, 69)
-        Me.ToleranceTab.Name = "ToleranceTab"
-        Me.ToleranceTab.SelectedIndex = 0
-        Me.ToleranceTab.Size = New System.Drawing.Size(270, 190)
-        Me.ToleranceTab.TabIndex = 11
-        '
-        'TabPage2
-        '
-        Me.TabPage2.Controls.Add(Me.dgvLinTolerance)
-        Me.TabPage2.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage2.Name = "TabPage2"
-        Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(262, 164)
-        Me.TabPage2.TabIndex = 0
-        Me.TabPage2.Text = "Linear"
-        Me.TabPage2.UseVisualStyleBackColor = True
-        '
-        'dgvLinTolerance
-        '
-        Me.dgvLinTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvLinTolerance.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgvLinTolerance.Location = New System.Drawing.Point(3, 3)
-        Me.dgvLinTolerance.Name = "dgvLinTolerance"
-        Me.dgvLinTolerance.RowHeadersVisible = False
-        Me.dgvLinTolerance.Size = New System.Drawing.Size(256, 158)
-        Me.dgvLinTolerance.TabIndex = 1
-        '
-        'TabPage3
-        '
-        Me.TabPage3.Controls.Add(Me.dgvAngTolerance)
-        Me.TabPage3.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage3.Name = "TabPage3"
-        Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage3.Size = New System.Drawing.Size(262, 164)
-        Me.TabPage3.TabIndex = 1
-        Me.TabPage3.Text = "Angular"
-        Me.TabPage3.UseVisualStyleBackColor = True
-        '
-        'dgvAngTolerance
-        '
-        Me.dgvAngTolerance.AllowUserToOrderColumns = True
-        Me.dgvAngTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvAngTolerance.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgvAngTolerance.Location = New System.Drawing.Point(3, 3)
-        Me.dgvAngTolerance.Name = "dgvAngTolerance"
-        Me.dgvAngTolerance.RowHeadersVisible = False
-        Me.dgvAngTolerance.Size = New System.Drawing.Size(256, 158)
-        Me.dgvAngTolerance.TabIndex = 0
-        '
-        'rdoRange
-        '
-        Me.rdoRange.AutoSize = True
-        Me.rdoRange.Location = New System.Drawing.Point(6, 34)
-        Me.rdoRange.Name = "rdoRange"
-        Me.rdoRange.Size = New System.Drawing.Size(72, 17)
-        Me.rdoRange.TabIndex = 13
-        Me.rdoRange.TabStop = True
-        Me.rdoRange.Text = "By Range"
-        Me.rdoRange.UseVisualStyleBackColor = True
-        '
-        'rdoPrecision
-        '
-        Me.rdoPrecision.AutoSize = True
-        Me.rdoPrecision.Location = New System.Drawing.Point(6, 19)
-        Me.rdoPrecision.Name = "rdoPrecision"
-        Me.rdoPrecision.Size = New System.Drawing.Size(83, 17)
-        Me.rdoPrecision.TabIndex = 12
-        Me.rdoPrecision.Text = "By Precision"
-        Me.rdoPrecision.UseVisualStyleBackColor = True
-        '
-        'rdoMet
-        '
-        Me.rdoMet.AutoSize = True
-        Me.rdoMet.Location = New System.Drawing.Point(6, 34)
-        Me.rdoMet.Name = "rdoMet"
-        Me.rdoMet.Size = New System.Drawing.Size(54, 17)
-        Me.rdoMet.TabIndex = 15
-        Me.rdoMet.TabStop = True
-        Me.rdoMet.Text = "Metric"
-        Me.rdoMet.UseVisualStyleBackColor = True
-        '
-        'rdoImp
-        '
-        Me.rdoImp.AutoSize = True
-        Me.rdoImp.Location = New System.Drawing.Point(6, 19)
-        Me.rdoImp.Name = "rdoImp"
-        Me.rdoImp.Size = New System.Drawing.Size(61, 17)
-        Me.rdoImp.TabIndex = 14
-        Me.rdoImp.Text = "Imperial"
-        Me.rdoImp.UseVisualStyleBackColor = True
-        '
-        'GroupBox1
-        '
-        Me.GroupBox1.Controls.Add(Me.rdoImp)
-        Me.GroupBox1.Controls.Add(Me.rdoMet)
-        Me.GroupBox1.Location = New System.Drawing.Point(948, 5)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(78, 58)
-        Me.GroupBox1.TabIndex = 16
-        Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "GroupBox1"
-        '
-        'GroupBox2
-        '
-        Me.GroupBox2.Controls.Add(Me.rdoRange)
-        Me.GroupBox2.Controls.Add(Me.rdoPrecision)
-        Me.GroupBox2.Location = New System.Drawing.Point(1062, 5)
-        Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(96, 58)
-        Me.GroupBox2.TabIndex = 17
-        Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "GroupBox2"
-        '
         'Value_Table_SA
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(1274, 271)
-        Me.Controls.Add(Me.GroupBox2)
-        Me.Controls.Add(Me.GroupBox1)
-        Me.Controls.Add(Me.ToleranceTab)
+        Me.ClientSize = New System.Drawing.Size(949, 271)
         Me.Controls.Add(Me.Button4)
         Me.Controls.Add(Me.Button3)
         Me.Controls.Add(Me.Button2)
@@ -333,15 +238,7 @@ Partial Class Value_Table_SA
         Me.Name = "Value_Table_SA"
         Me.Text = "Value_Table_SA"
         CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ToleranceTab.ResumeLayout(False)
-        Me.TabPage2.ResumeLayout(False)
-        CType(Me.dgvLinTolerance, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.TabPage3.ResumeLayout(False)
-        CType(Me.dgvAngTolerance, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupBox1.ResumeLayout(False)
-        Me.GroupBox1.PerformLayout()
-        Me.GroupBox2.ResumeLayout(False)
-        Me.GroupBox2.PerformLayout()
+        Me.cmsDGVRBC.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -351,6 +248,10 @@ Partial Class Value_Table_SA
     Friend WithEvents Button2 As Windows.Forms.Button
     Friend WithEvents Button3 As Windows.Forms.Button
     Friend WithEvents Button4 As Windows.Forms.Button
+    Friend WithEvents cmsDGVRBC As Windows.Forms.ContextMenuStrip
+    Friend WithEvents UnlinkToolStripMenuItem As Windows.Forms.ToolStripMenuItem
+    Friend WithEvents DeleteRowToolStripMenuItem As Windows.Forms.ToolStripMenuItem
+    Friend WithEvents InsertRowToolStripMenuItem As Windows.Forms.ToolStripMenuItem
     Friend WithEvents Ref As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Balloon As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Value As Windows.Forms.DataGridViewTextBoxColumn
@@ -364,15 +265,4 @@ Partial Class Value_Table_SA
     Friend WithEvents LLimit As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents FitGrade As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents Comments As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents ToleranceTab As Windows.Forms.TabControl
-    Friend WithEvents TabPage2 As Windows.Forms.TabPage
-    Friend WithEvents dgvLinTolerance As Windows.Forms.DataGridView
-    Friend WithEvents TabPage3 As Windows.Forms.TabPage
-    Friend WithEvents dgvAngTolerance As Windows.Forms.DataGridView
-    Friend WithEvents rdoRange As Windows.Forms.RadioButton
-    Friend WithEvents rdoPrecision As Windows.Forms.RadioButton
-    Friend WithEvents rdoMet As Windows.Forms.RadioButton
-    Friend WithEvents rdoImp As Windows.Forms.RadioButton
-    Friend WithEvents GroupBox1 As Windows.Forms.GroupBox
-    Friend WithEvents GroupBox2 As Windows.Forms.GroupBox
 End Class

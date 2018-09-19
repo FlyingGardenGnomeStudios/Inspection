@@ -2,13 +2,13 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
   <Profiles />
   <Settings>
-    <Setting Name="BalloonPos" Type="System.Int32" Scope="User">
+    <Setting Name="BalloonPos" Type="System.String" Scope="User">
       <Value Profile="(Default)">315</Value>
     </Setting>
-    <Setting Name="BalloonSize" Type="System.Int32" Scope="User">
+    <Setting Name="BalloonSize" Type="System.String" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
-    <Setting Name="BalloonStyle" Type="System.Int32" Scope="User">
+    <Setting Name="BalloonStyle" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="LinP0" Type="System.Decimal" Scope="User">
@@ -68,13 +68,65 @@
     <Setting Name="AUoM" Type="System.String" Scope="User">
       <Value Profile="(Default)">Degrees</Value>
     </Setting>
-    <Setting Name="TolerancesConnectionString" Type="(Connection string)" Scope="Application">
-      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;ConnectionString&gt;Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\Resources\Tolerances.mdb&lt;/ConnectionString&gt;
-  &lt;ProviderName&gt;System.Data.OleDb&lt;/ProviderName&gt;
-&lt;/SerializableConnectionString&gt;</DesignTimeValue>
-      <Value Profile="(Default)">Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\Resources\Tolerances.mdb</Value>
+    <Setting Name="LinP5" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0.0005</Value>
+    </Setting>
+    <Setting Name="LinP6" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0.00025</Value>
+    </Setting>
+    <Setting Name="LinP7" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0.000125</Value>
+    </Setting>
+    <Setting Name="LinP8" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0.00001</Value>
+    </Setting>
+    <Setting Name="LinN5" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">-0.0005</Value>
+    </Setting>
+    <Setting Name="LinN6" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">-0.00025</Value>
+    </Setting>
+    <Setting Name="LinN7" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">-0.000125</Value>
+    </Setting>
+    <Setting Name="LinN8" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">-0.00001</Value>
+    </Setting>
+    <Setting Name="AngP3" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0.05</Value>
+    </Setting>
+    <Setting Name="AngP4" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0.025</Value>
+    </Setting>
+    <Setting Name="AngP5" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0.0125</Value>
+    </Setting>
+    <Setting Name="AngP6" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0.00625</Value>
+    </Setting>
+    <Setting Name="AngP7" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0.003125</Value>
+    </Setting>
+    <Setting Name="AngP8" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">0.001</Value>
+    </Setting>
+    <Setting Name="AngN3" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">-0.05</Value>
+    </Setting>
+    <Setting Name="AngN4" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">-0.025</Value>
+    </Setting>
+    <Setting Name="AngN5" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">-0.0125</Value>
+    </Setting>
+    <Setting Name="AngN6" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">-0.00625</Value>
+    </Setting>
+    <Setting Name="AngN7" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">-0.003125</Value>
+    </Setting>
+    <Setting Name="AngN8" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">-0.001</Value>
     </Setting>
   </Settings>
 </SettingsFile>
