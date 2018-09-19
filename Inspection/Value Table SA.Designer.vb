@@ -48,12 +48,18 @@ Partial Class Value_Table_SA
         Me.dgvAngTolerance = New System.Windows.Forms.DataGridView()
         Me.rdoRange = New System.Windows.Forms.RadioButton()
         Me.rdoPrecision = New System.Windows.Forms.RadioButton()
+        Me.rdoMet = New System.Windows.Forms.RadioButton()
+        Me.rdoImp = New System.Windows.Forms.RadioButton()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToleranceTab.SuspendLayout()
         Me.TabPage2.SuspendLayout()
         CType(Me.dgvLinTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage3.SuspendLayout()
         CType(Me.dgvAngTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupBox1.SuspendLayout()
+        Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
         '
         'dgvDimValues
@@ -237,17 +243,19 @@ Partial Class Value_Table_SA
         '
         'dgvAngTolerance
         '
+        Me.dgvAngTolerance.AllowUserToOrderColumns = True
         Me.dgvAngTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvAngTolerance.Location = New System.Drawing.Point(0, 0)
+        Me.dgvAngTolerance.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvAngTolerance.Location = New System.Drawing.Point(3, 3)
         Me.dgvAngTolerance.Name = "dgvAngTolerance"
         Me.dgvAngTolerance.RowHeadersVisible = False
-        Me.dgvAngTolerance.Size = New System.Drawing.Size(259, 164)
+        Me.dgvAngTolerance.Size = New System.Drawing.Size(256, 158)
         Me.dgvAngTolerance.TabIndex = 0
         '
         'rdoRange
         '
         Me.rdoRange.AutoSize = True
-        Me.rdoRange.Location = New System.Drawing.Point(1082, 46)
+        Me.rdoRange.Location = New System.Drawing.Point(6, 34)
         Me.rdoRange.Name = "rdoRange"
         Me.rdoRange.Size = New System.Drawing.Size(72, 17)
         Me.rdoRange.TabIndex = 13
@@ -258,14 +266,55 @@ Partial Class Value_Table_SA
         'rdoPrecision
         '
         Me.rdoPrecision.AutoSize = True
-        Me.rdoPrecision.Checked = True
-        Me.rdoPrecision.Location = New System.Drawing.Point(1082, 31)
+        Me.rdoPrecision.Location = New System.Drawing.Point(6, 19)
         Me.rdoPrecision.Name = "rdoPrecision"
         Me.rdoPrecision.Size = New System.Drawing.Size(83, 17)
         Me.rdoPrecision.TabIndex = 12
-        Me.rdoPrecision.TabStop = True
         Me.rdoPrecision.Text = "By Precision"
         Me.rdoPrecision.UseVisualStyleBackColor = True
+        '
+        'rdoMet
+        '
+        Me.rdoMet.AutoSize = True
+        Me.rdoMet.Location = New System.Drawing.Point(6, 34)
+        Me.rdoMet.Name = "rdoMet"
+        Me.rdoMet.Size = New System.Drawing.Size(54, 17)
+        Me.rdoMet.TabIndex = 15
+        Me.rdoMet.TabStop = True
+        Me.rdoMet.Text = "Metric"
+        Me.rdoMet.UseVisualStyleBackColor = True
+        '
+        'rdoImp
+        '
+        Me.rdoImp.AutoSize = True
+        Me.rdoImp.Location = New System.Drawing.Point(6, 19)
+        Me.rdoImp.Name = "rdoImp"
+        Me.rdoImp.Size = New System.Drawing.Size(61, 17)
+        Me.rdoImp.TabIndex = 14
+        Me.rdoImp.Text = "Imperial"
+        Me.rdoImp.UseVisualStyleBackColor = True
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.rdoImp)
+        Me.GroupBox1.Controls.Add(Me.rdoMet)
+        Me.GroupBox1.Location = New System.Drawing.Point(948, 5)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(78, 58)
+        Me.GroupBox1.TabIndex = 16
+        Me.GroupBox1.TabStop = False
+        Me.GroupBox1.Text = "GroupBox1"
+        '
+        'GroupBox2
+        '
+        Me.GroupBox2.Controls.Add(Me.rdoRange)
+        Me.GroupBox2.Controls.Add(Me.rdoPrecision)
+        Me.GroupBox2.Location = New System.Drawing.Point(1062, 5)
+        Me.GroupBox2.Name = "GroupBox2"
+        Me.GroupBox2.Size = New System.Drawing.Size(96, 58)
+        Me.GroupBox2.TabIndex = 17
+        Me.GroupBox2.TabStop = False
+        Me.GroupBox2.Text = "GroupBox2"
         '
         'Value_Table_SA
         '
@@ -273,8 +322,8 @@ Partial Class Value_Table_SA
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1274, 271)
-        Me.Controls.Add(Me.rdoRange)
-        Me.Controls.Add(Me.rdoPrecision)
+        Me.Controls.Add(Me.GroupBox2)
+        Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.ToleranceTab)
         Me.Controls.Add(Me.Button4)
         Me.Controls.Add(Me.Button3)
@@ -289,8 +338,11 @@ Partial Class Value_Table_SA
         CType(Me.dgvLinTolerance, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage3.ResumeLayout(False)
         CType(Me.dgvAngTolerance, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
+        Me.GroupBox2.ResumeLayout(False)
+        Me.GroupBox2.PerformLayout()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
@@ -319,4 +371,8 @@ Partial Class Value_Table_SA
     Friend WithEvents dgvAngTolerance As Windows.Forms.DataGridView
     Friend WithEvents rdoRange As Windows.Forms.RadioButton
     Friend WithEvents rdoPrecision As Windows.Forms.RadioButton
+    Friend WithEvents rdoMet As Windows.Forms.RadioButton
+    Friend WithEvents rdoImp As Windows.Forms.RadioButton
+    Friend WithEvents GroupBox1 As Windows.Forms.GroupBox
+    Friend WithEvents GroupBox2 As Windows.Forms.GroupBox
 End Class

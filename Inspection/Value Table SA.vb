@@ -39,25 +39,102 @@ Public Class Value_Table_SA
         AddHandler dgvDimValues.CellValueChanged, AddressOf Me.dgvDimValues_CellValueChanged
         AddHandler dgvDimValues.CurrentCellDirtyStateChanged, AddressOf Me.dgvDimValues_CurrentCellDirtyStateChanged
         ' Add any initialization after the InitializeComponent() call.
-        If rdoPrecision.Checked = True Then
-            dgvLinTolerance.DataSource = GetLinTolerance()
-
+        Dim Units As String
+        If rdoImp.Checked Then
+            Units = "Imp"
         Else
-
+            Units = "Met"
         End If
+        If rdoPrecision.Checked = True Then
+            dgvLinTolerance.DataSource = GetPrecLinTolerance(Units)
+            dgvAngTolerance.DataSource = GetPrecAngTolerance()
+        Else
+            dgvLinTolerance.DataSource = GetRngLinTolerance(Units)
+            dgvAngTolerance.DataSource = GetRngAngTolerance()
+        End If
+        For Each Column In dgvAngTolerance.Columns
+            If dgvAngTolerance.Columns(Column.index).headertext = "ID" Then dgvAngTolerance.Columns(Column.index).visible = False
+            dgvAngTolerance.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+        Next
+        For Each column In dgvLinTolerance.Columns
+            If dgvLinTolerance.Columns(column.index).headertext = "ID" Or dgvLinTolerance.Columns(column.index).headertext = "Units" Then dgvLinTolerance.Columns(column.index).visible = False
+            dgvLinTolerance.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+        Next
         Refresh()
     End Sub
-    Private Function GetLinTolerance() As DataTable
-        Dim dtLinTolerance As New DataTable
+    Private Sub rdoPrecision_CheckedChanged(sender As Object, e As EventArgs) Handles rdoPrecision.CheckedChanged
+        RefreshTolChart()
+    End Sub
+
+    Private Sub rdoImp_CheckedChanged(sender As Object, e As EventArgs) Handles rdoImp.CheckedChanged
+        RefreshTolChart()
+    End Sub
+    Private Sub RefreshTolChart()
+        Dim Units As String
+        If rdoImp.Checked Then
+            Units = "Imp"
+        Else
+            Units = "Met"
+        End If
+        If rdoPrecision.Checked = True Then
+            dgvLinTolerance.DataSource = GetPrecLinTolerance(Units)
+            dgvAngTolerance.DataSource = GetPrecAngTolerance()
+        Else
+            dgvLinTolerance.DataSource = GetRngLinTolerance(Units)
+            dgvAngTolerance.DataSource = GetRngAngTolerance()
+            dgvLinTolerance.Columns("Upper Limit").DisplayIndex = 0
+            dgvLinTolerance.Columns("Lower Limit").DisplayIndex = 1
+            dgvLinTolerance.Columns("+Tol").DisplayIndex = 2
+            dgvLinTolerance.Columns("-Tol").DisplayIndex = 3
+        End If
+    End Sub
+    Private Function GetPrecLinTolerance(ByVal Units As String) As DataTable
+        Dim dtPrecLinTolerance As New DataTable
         Dim connString As String = ConfigurationManager.ConnectionStrings("dbx").ConnectionString
         Using conn As New OleDbConnection(connString)
-            Using cmd As New OleDbCommand("SELECT * FROM [Default Precision-Linear]", conn)
+            Using cmd As New OleDbCommand("SELECT * FROM [Default Precision-Linear " & Units & "]", conn)
                 conn.Open()
                 Dim reader As OleDbDataReader = cmd.ExecuteReader()
-                dtLinTolerance.Load(reader)
+                dtPrecLinTolerance.Load(reader)
             End Using
         End Using
-        Return dtLinTolerance
+        Return dtPrecLinTolerance
+    End Function
+    Private Function GetRngLinTolerance(ByVal Units As String) As DataTable
+        Dim dtRngLinTolerance As New DataTable
+        Dim connString As String = ConfigurationManager.ConnectionStrings("dbx").ConnectionString
+        Using conn As New OleDbConnection(connString)
+            Using cmd As New OleDbCommand("SELECT * FROM [Default Range-Linear " & Units & "]", conn)
+                conn.Open()
+                Dim reader As OleDbDataReader = cmd.ExecuteReader()
+                dtRngLinTolerance.Load(reader)
+            End Using
+        End Using
+        Return dtRngLinTolerance
+    End Function
+    Private Function GetPrecAngTolerance() As DataTable
+        Dim dtPrecAngTolerance As New DataTable
+        Dim connString As String = ConfigurationManager.ConnectionStrings("dbx").ConnectionString
+        Using conn As New OleDbConnection(connString)
+            Using cmd As New OleDbCommand("SELECT * FROM [Default Precision-Angular]", conn)
+                conn.Open()
+                Dim reader As OleDbDataReader = cmd.ExecuteReader()
+                dtPrecAngTolerance.Load(reader)
+            End Using
+        End Using
+        Return dtPrecAngTolerance
+    End Function
+    Private Function GetRngAngTolerance() As DataTable
+        Dim dtRngAngTolerance As New DataTable
+        Dim connString As String = ConfigurationManager.ConnectionStrings("dbx").ConnectionString
+        Using conn As New OleDbConnection(connString)
+            Using cmd As New OleDbCommand("SELECT * FROM [Default Range-Angular]", conn)
+                conn.Open()
+                Dim reader As OleDbDataReader = cmd.ExecuteReader()
+                dtRngAngTolerance.Load(reader)
+            End Using
+        End Using
+        Return dtRngAngTolerance
     End Function
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim oDoc As DrawingDocument = _invApp.ActiveDocument
@@ -269,35 +346,6 @@ Public Class Value_Table_SA
             End If
             Exit For
         Next
-    End Sub
-    Sub parameterInfo()
-
-        Dim oDoc As PartDocument
-
-        oDoc = _invApp.ActiveDocument
-
-        Dim para As Parameter
-
-        Dim UOM As UnitsOfMeasure
-
-        UOM = oDoc.UnitsOfMeasure
-
-        For Each para In oDoc.ComponentDefinition.Parameters
-
-            Debug.Print("Expression is " + para.Expression)
-
-            Debug.Print("Display unit is " + para.Units)
-
-            Debug.Print("ModelVaule is " + para.ModelValue.ToString)
-
-            Debug.Print("Value is " + para.Value.ToString)
-
-            Dim displayValue As String
-            displayValue = UOM.ConvertUnits(para.Value, UOM.GetTypeFromString(UOM.GetDatabaseUnitsFromExpression(para.Expression, para.Units)), para.Units)
-            Debug.Print("Display value is " + displayValue)
-
-        Next
-
     End Sub
     Public Sub Note(oDim As DrawingNote, RefKey As String)
         dgvDimValues.Rows.Add()
