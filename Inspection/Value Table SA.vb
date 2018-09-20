@@ -34,26 +34,42 @@ Public Class Value_Table_SA
         AddHandler dgvDimValues.CellValueChanged, AddressOf Me.dgvDimValues_CellValueChanged
         AddHandler dgvDimValues.CurrentCellDirtyStateChanged, AddressOf Me.dgvDimValues_CurrentCellDirtyStateChanged
         ' Add any initialization after the InitializeComponent() call.
-        Dim Units As String
-        If rdoImp.Checked Then
-            Units = "Imp"
-        Else
-            Units = "Met"
-        End If
-        If rdoPrecision.Checked = True Then
-            dgvLinTolerance.DataSource = GetPrecLinTolerance(Units)
-            dgvAngTolerance.DataSource = GetPrecAngTolerance()
-        Else
-            dgvLinTolerance.DataSource = GetRngLinTolerance(Units)
-            dgvAngTolerance.DataSource = GetRngAngTolerance()
-        End If
-        For Each Column In dgvAngTolerance.Columns
-            If dgvAngTolerance.Columns(Column.index).headertext = "ID" Then dgvAngTolerance.Columns(Column.index).visible = False
-            dgvAngTolerance.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+        RefreshTolChart()
+
+        dgvLinImpPrecTolerance.DataSource = GetPrecLinTolerance("Imp")
+        dgvLinMetPrecTolerance.DataSource = GetPrecLinTolerance("Met")
+        dgvLinImpRngTolerance.DataSource = GetRngLinTolerance("Imp")
+        dgvLinMetRngTolerance.DataSource = GetRngLinTolerance("Met")
+        dgvAngPrecTolerance.DataSource = GetPrecAngTolerance()
+        dgvAngRngTolerance.DataSource = GetRngAngTolerance()
+
+        For Each Column In dgvAngPrecTolerance.Columns
+            If dgvAngPrecTolerance.Columns(Column.index).headertext = "ID" Then dgvAngPrecTolerance.Columns(Column.index).visible = False
+            dgvAngPrecTolerance.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+            If dgvAngPrecTolerance.Columns(Column.index).headertext = "Precision" Then dgvAngPrecTolerance.Sort(dgvAngPrecTolerance.Columns(Column.index), System.ComponentModel.ListSortDirection.Ascending)
+            If dgvAngPrecTolerance.Columns(Column.index).headertext = "Upper Range" Then dgvAngPrecTolerance.Sort(dgvAngPrecTolerance.Columns(Column.index), System.ComponentModel.ListSortDirection.Descending)
         Next
-        For Each column In dgvLinTolerance.Columns
-            If dgvLinTolerance.Columns(column.index).headertext = "ID" Or dgvLinTolerance.Columns(column.index).headertext = "Units" Then dgvLinTolerance.Columns(column.index).visible = False
-            dgvLinTolerance.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+        Dim TolDGV As DataGridView = dgvLinImpPrecTolerance
+        For X = 0 To 4
+            For Each column In TolDGV.Columns
+                If TolDGV.Columns(column.index).headertext = "ID" Or TolDGV.Columns(column.index).headertext = "Units" Then TolDGV.Columns(column.index).visible = False
+                TolDGV.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+                If TolDGV.Columns(column.index).headertext = "Precision" Then TolDGV.Sort(TolDGV.Columns(column.index), System.ComponentModel.ListSortDirection.Ascending)
+                If TolDGV.Columns(column.index).headertext = "Upper Range" Then TolDGV.Sort(TolDGV.Columns(column.index), System.ComponentModel.ListSortDirection.Descending)
+            Next
+            Select Case X
+                Case 0
+                    TolDGV = dgvLinImpRngTolerance
+                Case 1
+                    TolDGV = dgvLinMetPrecTolerance
+                Case 2
+                    TolDGV = dgvLinMetRngTolerance
+                Case 3
+                    TolDGV = dgvAngPrecTolerance
+                Case 4
+                    TolDGV = dgvAngRngTolerance
+            End Select
+
         Next
         Refresh()
     End Sub
@@ -65,23 +81,47 @@ Public Class Value_Table_SA
         RefreshTolChart()
     End Sub
     Private Sub RefreshTolChart()
-        Dim Units As String
         If rdoImp.Checked Then
-            Units = "Imp"
+            If rdoPrecision.Checked = True Then
+                dgvLinImpPrecTolerance.BringToFront()
+                dgvAngPrecTolerance.BringToFront()
+            Else
+                dgvLinImpRngTolerance.BringToFront()
+                dgvAngRngTolerance.BringToFront()
+            End If
         Else
-            Units = "Met"
+            If rdoPrecision.Checked = True Then
+                dgvLinMetPrecTolerance.BringToFront()
+                dgvAngPrecTolerance.BringToFront()
+            Else
+                dgvAngRngTolerance.BringToFront()
+                dgvLinMetRngTolerance.BringToFront()
+            End If
         End If
-        If rdoPrecision.Checked = True Then
-            dgvLinTolerance.DataSource = GetPrecLinTolerance(Units)
-            dgvAngTolerance.DataSource = GetPrecAngTolerance()
+        If rdoPrecision.Checked Then
+            dgvAngPrecTolerance.Visible = True
+            dgvAngRngTolerance.Visible = False
         Else
-            dgvLinTolerance.DataSource = GetRngLinTolerance(Units)
-            dgvAngTolerance.DataSource = GetRngAngTolerance()
-            dgvLinTolerance.Columns("Upper Limit").DisplayIndex = 0
-            dgvLinTolerance.Columns("Lower Limit").DisplayIndex = 1
-            dgvLinTolerance.Columns("+Tol").DisplayIndex = 2
-            dgvLinTolerance.Columns("-Tol").DisplayIndex = 3
+            dgvAngRngTolerance.Visible = True
+            dgvAngPrecTolerance.Visible = False
         End If
+        Dim Units As String
+        'If rdoImp.Checked Then
+        '    Units = "Imp"
+        'Else
+        '    Units = "Met"
+        'End If
+        'If rdoPrecision.Checked = True Then
+        '    dgvLinImpTolerance.DataSource = GetPrecLinTolerance(Units)
+        '    dgvAngTolerance.DataSource = GetPrecAngTolerance()
+        'Else
+        '    dgvLinImpTolerance.DataSource = GetRngLinTolerance(Units)
+        '    dgvAngTolerance.DataSource = GetRngAngTolerance()
+        '    dgvLinImpTolerance.Columns("Upper Limit").DisplayIndex = 0
+        '    dgvLinImpTolerance.Columns("Lower Limit").DisplayIndex = 1
+        '    dgvLinImpTolerance.Columns("+Tol").DisplayIndex = 2
+        '    dgvLinImpTolerance.Columns("-Tol").DisplayIndex = 3
+        'End If
     End Sub
     Private Function GetPrecLinTolerance(ByVal Units As String) As DataTable
         Dim dtPrecLinTolerance As New DataTable
@@ -491,7 +531,7 @@ Public Class Value_Table_SA
     End Sub
     Private Sub Parse_Tolerances(ByVal oDim As GeneralDimension, ByRef anglTol As Decimal, ByRef anguTol As Decimal, ByRef linlTol As Decimal,
                                  ByRef linuTol As Decimal, ByRef TolMod As Decimal, ByVal TolType As ToleranceTypeEnum, ByVal angPrecision As AngularPrecisionEnum,
-                                 ByVal linPrecision As LinearPrecisionEnum, ByVal uTol As Decimal, lTol As Decimal)
+                                 ByVal linPrecision As LinearPrecisionEnum, ByVal uTol As Decimal, lTol As Decimal, ByVal Value As String, ByVal Units As String)
         If oDim.Style.DisplayFormat = DisplayFormatEnum.kDecimalFormat Then
             Select Case TolType 'oDim.Tolerance.ToleranceType
                 Case ToleranceTypeEnum.kMaxTolerance
@@ -510,20 +550,69 @@ Public Class Value_Table_SA
                     linuTol = uTol / TolMod
                     linlTol = linuTol * -1
                 Case ToleranceTypeEnum.kDefaultTolerance, ToleranceTypeEnum.kBasicTolerance
-                    If uTol = 0 Then
-                        linuTol = My.Settings("LinP" & linPrecision)
-                        anguTol = My.Settings("AngP" & linPrecision)
+                    If linuTol = 0 AndAlso linlTol = 0 AndAlso anguTol = 0 AndAlso anglTol = 0 Then
+                        Dim TolDGV As DataGridView
+                        If Units = "Millimeter" Or "Centimeter" Or "Meter" Or "Kilometer" Or "Micron" Then
+                            TolDGV = dgvLinMetPrecTolerance
+                        Else
+                            TolDGV = dgvLinImpPrecTolerance
+                        End If
+                        If rdoPrecision.Checked = True Then
+                            For Each row In TolDGV.Rows
+                                If TolDGV(TolDGV.Columns("Precision").Index, row.index).Value = linPrecision Then
+                                    linuTol = TolDGV(TolDGV.Columns("+Tol").Index, row.index).Value
+                                    linlTol = TolDGV(TolDGV.Columns("-Tol").Index, row.index).Value
+                                    Exit For
+                                End If
+                            Next
+                            For Each row In dgvAngPrecTolerance.Rows
+                                If dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Precision").Index, row.index).Value = linPrecision Then
+                                    anguTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("+Tol").Index, row.index).Value
+                                    anglTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("-Tol").Index, row.index).Value
+                                    Exit For
+                                End If
+                            Next
+                        Else
+                            If TolDGV(TolDGV.Columns("Upper Limit").Index, 0).Value < Value Then
+                                MsgBox("The dimension is outside the specified ranges" & vbNewLine &
+                                       "The largest tolerance will be used")
+                                linuTol = TolDGV(TolDGV.Columns("+Tol").Index, 0).Value
+                                linlTol = TolDGV(TolDGV.Columns("-Tol").Index, 0).Value
+                            ElseIf dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Upper Limit").Index, 0).Value < Value Then
+                                MsgBox("The dimension is outside the specified ranges" & vbNewLine &
+                                       "The largest tolerance will be used")
+                                anguTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("+Tol").Index, 0).Value
+                                anglTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("-Tol").Index, 0).Value
+                            Else
+                                For Each row In TolDGV.Rows
+                                    If TolDGV(TolDGV.Columns("Upper Limit").Index, row.index).Value > Value AndAlso
+                                        Value > TolDGV(TolDGV.Columns("Lower Limit").Index, row.index).Value Then
+                                        linuTol = TolDGV(TolDGV.Columns("+Tol").Index, row.index).Value
+                                        linlTol = TolDGV(TolDGV.Columns("-Tol").Index, row.index).Value
+                                        Exit For
+                                    End If
+                                Next
+                                For Each row In dgvAngPrecTolerance.Rows
+                                    If dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Upper Limit").Index, row.index).Value > Value AndAlso
+                                    Value > dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Lower Limit").Index, row.index).Value Then
+                                        anguTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("+Tol").Index, row.index).Value
+                                        anglTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("-Tol").Index, row.index).Value
+                                        Exit For
+                                    End If
+                                Next
+                            End If
+                        End If
                     Else
                         linuTol = uTol / TolMod
                         anguTol = uTol / TolMod
                     End If
-                    If lTol = 0 Then
-                        linlTol = My.Settings("LinN" & linPrecision)
-                        anglTol = My.Settings("AngN" & linPrecision)
-                    Else
-                        linlTol = lTol / TolMod
-                        anglTol = lTol / TolMod
-                    End If
+                    'If lTol = 0 Then
+                    '    linlTol = My.Settings("LinN" & linPrecision)
+                    '    anglTol = My.Settings("AngN" & linPrecision)
+                    'Else
+                    '    linlTol = lTol / TolMod
+                    '    anglTol = lTol / TolMod
+                    'End If
                 Case ToleranceTypeEnum.kDeviationTolerance,
                      ToleranceTypeEnum.kLimitLinearTolerance,
                      ToleranceTypeEnum.kLimitsStackedTolerance,
@@ -543,7 +632,7 @@ Public Class Value_Table_SA
     End Sub
     Private Sub Add_To_Table(ByVal oType As String, ByVal RefKey As String, ByVal oDim As GeneralDimension, ByVal Prefix As String, ByVal StringValue As String, ByVal Precision As Integer,
                             ByVal TolPrecision As Integer, ByVal linuTol As Decimal, ByVal linlTol As Decimal, ByVal Value As String, ByVal Balloon As String, ByVal Type As String, ByVal Units As String,
-                            ByVal Comment As String)
+                            ByVal Comment As String, ByVal Suffix As String)
         dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = Balloon
         dgvDimValues(dgvDimValues.Columns("Ref").Index, CurrRow).Value = RefKey
         dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value = 1
@@ -558,7 +647,7 @@ Public Class Value_Table_SA
                 dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(Value + linuTol, Precision)
                 dgvDimValues(dgvDimValues.Columns("LLimit").Index, CurrRow).Value = ReturnDegreesMinutesSecondsFromDecimalDegrees(Value + linlTol, Precision)
             Else
-                dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & FormatNumber(StringValue, Precision) & Tag
+                dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & FormatNumber(StringValue, Precision) & Suffix
                 dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = FormatNumber(linuTol, TolPrecision)
                 dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = FormatNumber(linlTol, TolPrecision)
                 dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = FormatNumber(Value + linuTol, Precision)
@@ -567,7 +656,7 @@ Public Class Value_Table_SA
         Else
             If Not oDim.Style.DisplayFormat = DisplayFormatEnum.kDecimalFormat Then
                 If UCase(Value) = LCase(Value) Then
-                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & GetFraction(Value, Precision) & Tag
+                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & GetFraction(Value, Precision) & Suffix
                     dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = GetFraction(linuTol, TolPrecision)
                     dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = GetFraction(linlTol, TolPrecision)
                     dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = GetFraction(Value + linuTol, Precision)
@@ -578,7 +667,7 @@ Public Class Value_Table_SA
 
             Else
                 If UCase(Value) = LCase(Value) Then
-                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & GetFraction(StringValue, Precision) & Tag
+                    dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Prefix & FormatNumber(Value, Precision) & Suffix
                     dgvDimValues(dgvDimValues.Columns("UTol").Index, CurrRow).Value = FormatNumber(linuTol, TolPrecision)
                     dgvDimValues(dgvDimValues.Columns("LTol").Index, CurrRow).Value = FormatNumber(linlTol, TolPrecision)
                     dgvDimValues(dgvDimValues.Columns("ULimit").Index, CurrRow).Value = FormatNumber(Value + linuTol, Precision)
@@ -609,19 +698,27 @@ Public Class Value_Table_SA
     End Sub
     Public Sub LinearDim(oDim As GeneralDimension, RefKey As String, oType As String, Insert As Boolean, Balloon As Integer)
         If Read = False Then InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, RefKey, Balloon)
-        Dim Value, Prefix, Tag As String
-        Prefix = ""
-        Tag = ""
-        Value = ""
+        Dim Value, Prefix, Suffix As String
+        If oDim.Text.Text.Contains("n") Then
+            Prefix = ""
+            Suffix = ""
+            Value = Replace(oDim.Text.Text, "n", "")
+        ElseIf oDim.Text.Text.Contains("R") Then
+            Prefix = "R"
+            Suffix = ""
+            Value = Replace(oDim.Text.Text, "R", "")
+        End If
+
         Dim linuTol, linlTol, anglTol, anguTol As Decimal
         Dim StringValue As String = ""
         dgvDimValues.Rows.Insert(CurrRow)
         Dim Units As String = "Centimeter"
         Dim TolMod As Decimal = 1
         Parse_Units(oDim, oType, Units, Value, StringValue, TolMod, Prefix, oDim.Precision)
-        Parse_Tolerances(oDim, anglTol, anguTol, linlTol, linuTol, TolMod, oDim.Tolerance.ToleranceType, oDim.TolerancePrecision, oDim.TolerancePrecision, oDim.Tolerance.Upper, oDim.Tolerance.Lower)
-        Add_To_Table(oType, RefKey, oDim, Prefix, StringValue, oDim.Precision, oDim.TolerancePrecision, linuTol, linlTol, Value, Balloon, "Dimension", Units,
-                     Strings.Replace(Strings.Replace(oDim.Text.FormattedText, "<DimensionValue/>", ""), "<Br/>", " " & vbCrLf & " "))
+        Parse_Tolerances(oDim, anglTol, anguTol, linlTol, linuTol, TolMod, oDim.Tolerance.ToleranceType,
+                         oDim.Precision, oDim.Precision, oDim.Tolerance.Upper, oDim.Tolerance.Lower, Value, Units)
+        Add_To_Table(oType, RefKey, oDim, Prefix, oDim.Text.Text, oDim.Precision, oDim.TolerancePrecision, linuTol, linlTol, Value, Balloon, "Dimension", Units,
+                     Strings.Replace(Strings.Replace(oDim.Text.FormattedText, "<DimensionValue/>", ""), "<Br/>", " " & vbCrLf & " "), Suffix)
         'dgvDimValues(dgvDimValues.Columns("Comments").Index, CurrRow).Value = Strings.Replace(Strings.Replace(oDim.Text.FormattedText, "<DimensionValue/>", ""), "<Br/>", " " & vbCrLf & " ")
         CurrRow += 1
     End Sub
@@ -879,8 +976,8 @@ Public Class Value_Table_SA
             End Select
 #End Region
             Parse_Units(oDim, oType, Units, Value, StringValue, TolMod, Prefix, Precision)
-            Parse_Tolerances(oDim, anglTol, anguTol, linlTol, linuTol, TolMod, TolType, oDim.Precision, TolPrecision, UTol, lTol)
-            Add_To_Table(oType, RefKey, oDim, Prefix, CStr(Value), Precision, TolPrecision, linuTol, linlTol, Value, Balloon & Convert.ToChar(x + 65), "Note", Units, Comment)
+            Parse_Tolerances(oDim, anglTol, anguTol, linlTol, linuTol, TolMod, TolType, oDim.Precision, TolPrecision, UTol, lTol, Value, Units)
+            Add_To_Table(oType, RefKey, oDim, Prefix, CStr(Value), Precision, TolPrecision, linuTol, linlTol, Value, Balloon & Convert.ToChar(x + 65), "Note", Units, Comment, Suffix)
             _invApp.CommandManager.ControlDefinitions.Item("AppUndoCmd").Execute()
 
             CurrRow += 1

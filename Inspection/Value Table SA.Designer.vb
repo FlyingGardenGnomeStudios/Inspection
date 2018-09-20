@@ -49,24 +49,32 @@ Partial Class Value_Table_SA
         Me.Button4 = New System.Windows.Forms.Button()
         Me.ToleranceTab = New System.Windows.Forms.TabControl()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
-        Me.dgvLinTolerance = New System.Windows.Forms.DataGridView()
+        Me.dgvLinImpPrecTolerance = New System.Windows.Forms.DataGridView()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
-        Me.dgvAngTolerance = New System.Windows.Forms.DataGridView()
+        Me.dgvAngPrecTolerance = New System.Windows.Forms.DataGridView()
         Me.gpbType = New System.Windows.Forms.GroupBox()
         Me.rdoRng = New System.Windows.Forms.RadioButton()
         Me.rdoPrecision = New System.Windows.Forms.RadioButton()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.rdoMet = New System.Windows.Forms.RadioButton()
         Me.rdoImp = New System.Windows.Forms.RadioButton()
+        Me.dgvLinMetPrecTolerance = New System.Windows.Forms.DataGridView()
+        Me.dgvAngRngTolerance = New System.Windows.Forms.DataGridView()
+        Me.dgvLinImpRngTolerance = New System.Windows.Forms.DataGridView()
+        Me.dgvLinMetRngTolerance = New System.Windows.Forms.DataGridView()
         CType(Me.dgvDimValues, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.cmsDGVRBC.SuspendLayout()
         Me.ToleranceTab.SuspendLayout()
         Me.TabPage2.SuspendLayout()
-        CType(Me.dgvLinTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvLinImpPrecTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage3.SuspendLayout()
-        CType(Me.dgvAngTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvAngPrecTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.gpbType.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
+        CType(Me.dgvLinMetPrecTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvAngRngTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvLinImpRngTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvLinMetRngTolerance, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'dgvDimValues
@@ -254,7 +262,10 @@ Partial Class Value_Table_SA
         '
         'TabPage2
         '
-        Me.TabPage2.Controls.Add(Me.dgvLinTolerance)
+        Me.TabPage2.Controls.Add(Me.dgvLinMetRngTolerance)
+        Me.TabPage2.Controls.Add(Me.dgvLinImpRngTolerance)
+        Me.TabPage2.Controls.Add(Me.dgvLinMetPrecTolerance)
+        Me.TabPage2.Controls.Add(Me.dgvLinImpPrecTolerance)
         Me.TabPage2.Location = New System.Drawing.Point(4, 22)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
@@ -263,19 +274,19 @@ Partial Class Value_Table_SA
         Me.TabPage2.Text = "Linear"
         Me.TabPage2.UseVisualStyleBackColor = True
         '
-        'dgvLinTolerance
+        'dgvLinImpPrecTolerance
         '
-        Me.dgvLinTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvLinTolerance.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgvLinTolerance.Location = New System.Drawing.Point(3, 3)
-        Me.dgvLinTolerance.Name = "dgvLinTolerance"
-        Me.dgvLinTolerance.RowHeadersVisible = False
-        Me.dgvLinTolerance.Size = New System.Drawing.Size(256, 158)
-        Me.dgvLinTolerance.TabIndex = 1
+        Me.dgvLinImpPrecTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvLinImpPrecTolerance.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvLinImpPrecTolerance.Location = New System.Drawing.Point(3, 3)
+        Me.dgvLinImpPrecTolerance.Name = "dgvLinImpPrecTolerance"
+        Me.dgvLinImpPrecTolerance.Size = New System.Drawing.Size(256, 158)
+        Me.dgvLinImpPrecTolerance.TabIndex = 1
         '
         'TabPage3
         '
-        Me.TabPage3.Controls.Add(Me.dgvAngTolerance)
+        Me.TabPage3.Controls.Add(Me.dgvAngRngTolerance)
+        Me.TabPage3.Controls.Add(Me.dgvAngPrecTolerance)
         Me.TabPage3.Location = New System.Drawing.Point(4, 22)
         Me.TabPage3.Name = "TabPage3"
         Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
@@ -284,15 +295,14 @@ Partial Class Value_Table_SA
         Me.TabPage3.Text = "Angular"
         Me.TabPage3.UseVisualStyleBackColor = True
         '
-        'dgvAngTolerance
+        'dgvAngPrecTolerance
         '
-        Me.dgvAngTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvAngTolerance.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dgvAngTolerance.Location = New System.Drawing.Point(3, 3)
-        Me.dgvAngTolerance.Name = "dgvAngTolerance"
-        Me.dgvAngTolerance.RowHeadersVisible = False
-        Me.dgvAngTolerance.Size = New System.Drawing.Size(256, 158)
-        Me.dgvAngTolerance.TabIndex = 0
+        Me.dgvAngPrecTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvAngPrecTolerance.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvAngPrecTolerance.Location = New System.Drawing.Point(3, 3)
+        Me.dgvAngPrecTolerance.Name = "dgvAngPrecTolerance"
+        Me.dgvAngPrecTolerance.Size = New System.Drawing.Size(256, 158)
+        Me.dgvAngPrecTolerance.TabIndex = 0
         '
         'gpbType
         '
@@ -362,6 +372,42 @@ Partial Class Value_Table_SA
         Me.rdoImp.Text = "Imperial"
         Me.rdoImp.UseVisualStyleBackColor = True
         '
+        'dgvLinMetPrecTolerance
+        '
+        Me.dgvLinMetPrecTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvLinMetPrecTolerance.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvLinMetPrecTolerance.Location = New System.Drawing.Point(3, 3)
+        Me.dgvLinMetPrecTolerance.Name = "dgvLinMetPrecTolerance"
+        Me.dgvLinMetPrecTolerance.Size = New System.Drawing.Size(256, 158)
+        Me.dgvLinMetPrecTolerance.TabIndex = 14
+        '
+        'dgvAngRngTolerance
+        '
+        Me.dgvAngRngTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvAngRngTolerance.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvAngRngTolerance.Location = New System.Drawing.Point(3, 3)
+        Me.dgvAngRngTolerance.Name = "dgvAngRngTolerance"
+        Me.dgvAngRngTolerance.Size = New System.Drawing.Size(256, 158)
+        Me.dgvAngRngTolerance.TabIndex = 1
+        '
+        'dgvLinImpRngTolerance
+        '
+        Me.dgvLinImpRngTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvLinImpRngTolerance.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvLinImpRngTolerance.Location = New System.Drawing.Point(3, 3)
+        Me.dgvLinImpRngTolerance.Name = "dgvLinImpRngTolerance"
+        Me.dgvLinImpRngTolerance.Size = New System.Drawing.Size(256, 158)
+        Me.dgvLinImpRngTolerance.TabIndex = 15
+        '
+        'dgvLinMetRngTolerance
+        '
+        Me.dgvLinMetRngTolerance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvLinMetRngTolerance.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgvLinMetRngTolerance.Location = New System.Drawing.Point(3, 3)
+        Me.dgvLinMetRngTolerance.Name = "dgvLinMetRngTolerance"
+        Me.dgvLinMetRngTolerance.Size = New System.Drawing.Size(256, 158)
+        Me.dgvLinMetRngTolerance.TabIndex = 16
+        '
         'Value_Table_SA
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -382,13 +428,17 @@ Partial Class Value_Table_SA
         Me.cmsDGVRBC.ResumeLayout(False)
         Me.ToleranceTab.ResumeLayout(False)
         Me.TabPage2.ResumeLayout(False)
-        CType(Me.dgvLinTolerance, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvLinImpPrecTolerance, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage3.ResumeLayout(False)
-        CType(Me.dgvAngTolerance, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvAngPrecTolerance, System.ComponentModel.ISupportInitialize).EndInit()
         Me.gpbType.ResumeLayout(False)
         Me.gpbType.PerformLayout()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        CType(Me.dgvLinMetPrecTolerance, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvAngRngTolerance, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvLinImpRngTolerance, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvLinMetRngTolerance, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -417,13 +467,17 @@ Partial Class Value_Table_SA
     Friend WithEvents Comments As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents ToleranceTab As Windows.Forms.TabControl
     Friend WithEvents TabPage2 As Windows.Forms.TabPage
-    Friend WithEvents dgvLinTolerance As Windows.Forms.DataGridView
+    Friend WithEvents dgvLinImpPrecTolerance As Windows.Forms.DataGridView
     Friend WithEvents TabPage3 As Windows.Forms.TabPage
-    Friend WithEvents dgvAngTolerance As Windows.Forms.DataGridView
+    Friend WithEvents dgvAngPrecTolerance As Windows.Forms.DataGridView
     Friend WithEvents gpbType As Windows.Forms.GroupBox
     Friend WithEvents rdoRng As Windows.Forms.RadioButton
     Friend WithEvents rdoPrecision As Windows.Forms.RadioButton
     Friend WithEvents GroupBox1 As Windows.Forms.GroupBox
     Friend WithEvents rdoMet As Windows.Forms.RadioButton
     Friend WithEvents rdoImp As Windows.Forms.RadioButton
+    Friend WithEvents dgvLinMetPrecTolerance As Windows.Forms.DataGridView
+    Friend WithEvents dgvAngRngTolerance As Windows.Forms.DataGridView
+    Friend WithEvents dgvLinMetRngTolerance As Windows.Forms.DataGridView
+    Friend WithEvents dgvLinImpRngTolerance As Windows.Forms.DataGridView
 End Class
