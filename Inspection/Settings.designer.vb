@@ -48,6 +48,7 @@ Partial Class Settings
         Me.txtLotSize = New System.Windows.Forms.TextBox()
         Me.tbpExtSettings = New System.Windows.Forms.TabPage()
         Me.ddpHoleCallout = New ScrewTurn.DropDownPanel()
+        Me.chkSeparateCallout = New System.Windows.Forms.CheckBox()
         Me.CheckBox5 = New System.Windows.Forms.CheckBox()
         Me.rtbHoleCallout = New System.Windows.Forms.RichTextBox()
         Me.CheckBox7 = New System.Windows.Forms.CheckBox()
@@ -80,7 +81,7 @@ Partial Class Settings
         Me.btnCancel = New System.Windows.Forms.Button()
         Me.btnLoad = New System.Windows.Forms.Button()
         Me.btnSave = New System.Windows.Forms.Button()
-        Me.chkSeparateCallout = New System.Windows.Forms.CheckBox()
+        Me.chkSepHTCallout = New System.Windows.Forms.CheckBox()
         Me.ddpGeneralSettings.SuspendLayout()
         Me.CharacteristicsTab.SuspendLayout()
         Me.tbpSettings.SuspendLayout()
@@ -372,6 +373,7 @@ Partial Class Settings
         'ddpHoleCallout
         '
         Me.ddpHoleCallout.AutoCollapseDelay = -1
+        Me.ddpHoleCallout.Controls.Add(Me.chkSepHTCallout)
         Me.ddpHoleCallout.Controls.Add(Me.chkSeparateCallout)
         Me.ddpHoleCallout.Controls.Add(Me.CheckBox5)
         Me.ddpHoleCallout.Controls.Add(Me.rtbHoleCallout)
@@ -393,6 +395,18 @@ Partial Class Settings
         Me.ddpHoleCallout.RoundedCorners = False
         Me.ddpHoleCallout.Size = New System.Drawing.Size(279, 139)
         Me.ddpHoleCallout.TabIndex = 2
+        '
+        'chkSeparateCallout
+        '
+        Me.chkSeparateCallout.AutoSize = True
+        Me.chkSeparateCallout.Checked = True
+        Me.chkSeparateCallout.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkSeparateCallout.Location = New System.Drawing.Point(3, 103)
+        Me.chkSeparateCallout.Name = "chkSeparateCallout"
+        Me.chkSeparateCallout.Size = New System.Drawing.Size(201, 17)
+        Me.chkSeparateCallout.TabIndex = 6
+        Me.chkSeparateCallout.Text = "Separate Hole Callout Characteristics"
+        Me.chkSeparateCallout.UseVisualStyleBackColor = True
         '
         'CheckBox5
         '
@@ -770,17 +784,17 @@ Partial Class Settings
         Me.btnSave.Text = "Save Settings"
         Me.btnSave.UseVisualStyleBackColor = True
         '
-        'chkSeparateCallout
+        'chkSepHTCallout
         '
-        Me.chkSeparateCallout.AutoSize = True
-        Me.chkSeparateCallout.Checked = True
-        Me.chkSeparateCallout.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkSeparateCallout.Location = New System.Drawing.Point(3, 103)
-        Me.chkSeparateCallout.Name = "chkSeparateCallout"
-        Me.chkSeparateCallout.Size = New System.Drawing.Size(166, 17)
-        Me.chkSeparateCallout.TabIndex = 6
-        Me.chkSeparateCallout.Text = "Separate Hole Characteristics"
-        Me.chkSeparateCallout.UseVisualStyleBackColor = True
+        Me.chkSepHTCallout.AutoSize = True
+        Me.chkSepHTCallout.Checked = True
+        Me.chkSepHTCallout.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkSepHTCallout.Location = New System.Drawing.Point(3, 119)
+        Me.chkSepHTCallout.Name = "chkSepHTCallout"
+        Me.chkSepHTCallout.Size = New System.Drawing.Size(196, 17)
+        Me.chkSepHTCallout.TabIndex = 7
+        Me.chkSepHTCallout.Text = "Separate Hole Table Characteristics"
+        Me.chkSepHTCallout.UseVisualStyleBackColor = True
         '
         'Settings
         '
@@ -880,4 +894,5 @@ Partial Class Settings
     Friend WithEvents btnLoad As Windows.Forms.Button
     Friend WithEvents btnSave As Windows.Forms.Button
     Friend WithEvents chkSeparateCallout As Windows.Forms.CheckBox
+    Friend WithEvents chkSepHTCallout As Windows.Forms.CheckBox
 End Class

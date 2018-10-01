@@ -1030,13 +1030,37 @@ Novalue:
     End Sub
     Public Sub HoleTable(oDim As HoleTable, RefKey As String)
         Dim Text As String = ""
-        For Each Row As HoleTableRow In oDim.HoleTableRows
-            For Each Col In oDim.HoleTableColumns
-                Debug.Print(Row.Item(Col).Text)
+        Dim Val As New List(Of String)
+        Dim SepVal As New List(Of List(Of String))
+        Dim otype As String
+        For Row = 1 To oDim.HoleTableRows.Count
+            Dim Comment As String = ""
+            For Col = 1 To oDim.HoleTableColumns.Count
+                otype = "Linear"
+                Select Case oDim.HoleTableColumns.Item(Col).Title
+                    Case "HOLE"
+                        Comment = oDim.HoleTableRows(Row).Item(Col).Text
+                    Case "XDIM", "YDIM", "XDIM (Alt)", "YDIM (Alt)"
+                    Case "C'SINK ANGLE", "C'SINK ANGLE (Alt)"
+                        otype = "Angular"
+                    Case "DESCRIPTION"
+                        Dim PreValue As String = Replace(oDim.HoleTableRows(Row).Item(Col).Text, "n", "")
+                        PreValue = Replace(PreValue, "v", "")
+                        PreValue = Replace(PreValue, "x", "")
+                        PreValue = Replace(PreValue, "w", "")
+                    Case Else
+                        Val.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                End Select
             Next
-            'Text = Text & item.HoleTag & " " & item. & " " & item.DatumTwo & " " & item.DatumThree & vbNewLine
-            'dgvDimValues.Rows.Add(dgvDimValues.Rows.Count, oDim.GetHashCode, Text, "TBD", oDim.Type, item.Tolerance, item.LowerTolerance)
+            dgvDimValues(dgvDimValues.Columns("Comment").Index, CurrRow).Value = Comment
+            dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = Balloon
+            dgvDimValues(dgvDimValues.Columns("Ref").Index, CurrRow).Value = RefKey
+            dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value = 1
+            dgvDimValues(dgvDimValues.Columns("Type").Index, CurrRow).Value = Type
+            dgvDimValues(dgvDimValues.Columns("SubType").Index, CurrRow).Value = otype
+            dgvDimValues(dgvDimValues.Columns("Units").Index, CurrRow).Value = Units
         Next
+
         Dim Values As String = RefKey
         InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values, CurrRow)
     End Sub
