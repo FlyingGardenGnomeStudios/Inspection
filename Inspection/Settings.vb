@@ -33,8 +33,6 @@ Public Class Settings
         cmbPrimary.Width = cmbAngle.Width
         cmbSecondary.Width = cmbAngle.Width
         ToleranceTab.Width = gpbType.Width
-        rtbHoleCallout.Width = gpbType.Width
-        rtbNotes.Width = gpbType.Width
         txtCustomer.Width = CharacteristicsTab.Width - 149
         txtDocName.Width = txtCustomer.Width
         txtDocNum.Width = txtCustomer.Width

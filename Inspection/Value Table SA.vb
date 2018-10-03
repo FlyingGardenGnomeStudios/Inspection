@@ -241,7 +241,7 @@ Public Class Value_Table_SA
             Case 117488384
                 Chamfer(SelectedFeature, RefKey, "Chamfer", Insert, Balloon)
             Case 117469952
-                HoleTable(SelectedFeature, RefKey)
+                HoleTable(SelectedFeature, RefKey, Balloon)
             Case Else
                 MsgBox("Unknown")
         End Select
@@ -550,69 +550,7 @@ Public Class Value_Table_SA
                     linuTol = uTol / TolMod
                     linlTol = linuTol * -1
                 Case ToleranceTypeEnum.kDefaultTolerance, ToleranceTypeEnum.kBasicTolerance
-                    If linuTol = 0 AndAlso linlTol = 0 AndAlso anguTol = 0 AndAlso anglTol = 0 Then
-                        Dim TolDGV As DataGridView
-                        If Units = "Millimeter" Or "Centimeter" Or "Meter" Or "Kilometer" Or "Micron" Then
-                            TolDGV = dgvLinMetPrecTolerance
-                        Else
-                            TolDGV = dgvLinImpPrecTolerance
-                        End If
-                        If rdoPrecision.Checked = True Then
-                            For Each row In TolDGV.Rows
-                                If TolDGV(TolDGV.Columns("Precision").Index, row.index).Value = linPrecision Then
-                                    linuTol = TolDGV(TolDGV.Columns("+Tol").Index, row.index).Value
-                                    linlTol = TolDGV(TolDGV.Columns("-Tol").Index, row.index).Value
-                                    Exit For
-                                End If
-                            Next
-                            For Each row In dgvAngPrecTolerance.Rows
-                                If dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Precision").Index, row.index).Value = linPrecision Then
-                                    anguTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("+Tol").Index, row.index).Value
-                                    anglTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("-Tol").Index, row.index).Value
-                                    Exit For
-                                End If
-                            Next
-                        Else
-                            If TolDGV(TolDGV.Columns("Upper Limit").Index, 0).Value < Value Then
-                                MsgBox("The dimension is outside the specified ranges" & vbNewLine &
-                                       "The largest tolerance will be used")
-                                linuTol = TolDGV(TolDGV.Columns("+Tol").Index, 0).Value
-                                linlTol = TolDGV(TolDGV.Columns("-Tol").Index, 0).Value
-                            ElseIf dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Upper Limit").Index, 0).Value < Value Then
-                                MsgBox("The dimension is outside the specified ranges" & vbNewLine &
-                                       "The largest tolerance will be used")
-                                anguTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("+Tol").Index, 0).Value
-                                anglTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("-Tol").Index, 0).Value
-                            Else
-                                For Each row In TolDGV.Rows
-                                    If TolDGV(TolDGV.Columns("Upper Limit").Index, row.index).Value > Value AndAlso
-                                        Value > TolDGV(TolDGV.Columns("Lower Limit").Index, row.index).Value Then
-                                        linuTol = TolDGV(TolDGV.Columns("+Tol").Index, row.index).Value
-                                        linlTol = TolDGV(TolDGV.Columns("-Tol").Index, row.index).Value
-                                        Exit For
-                                    End If
-                                Next
-                                For Each row In dgvAngPrecTolerance.Rows
-                                    If dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Upper Limit").Index, row.index).Value > Value AndAlso
-                                    Value > dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Lower Limit").Index, row.index).Value Then
-                                        anguTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("+Tol").Index, row.index).Value
-                                        anglTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("-Tol").Index, row.index).Value
-                                        Exit For
-                                    End If
-                                Next
-                            End If
-                        End If
-                    Else
-                        linuTol = uTol / TolMod
-                        anguTol = uTol / TolMod
-                    End If
-                    'If lTol = 0 Then
-                    '    linlTol = My.Settings("LinN" & linPrecision)
-                    '    anglTol = My.Settings("AngN" & linPrecision)
-                    'Else
-                    '    linlTol = lTol / TolMod
-                    '    anglTol = lTol / TolMod
-                    'End If
+                    Parse_Basic_Tolerance(anglTol, anguTol, linlTol, linuTol, TolMod, linPrecision, uTol, Value, Units)
                 Case ToleranceTypeEnum.kDeviationTolerance,
                      ToleranceTypeEnum.kLimitLinearTolerance,
                      ToleranceTypeEnum.kLimitsStackedTolerance,
@@ -629,6 +567,73 @@ Public Class Value_Table_SA
             anguTol = My.Settings.AngP0
             anglTol = My.Settings.AngN0
         End If
+    End Sub
+    Private Sub Parse_Basic_Tolerance(ByRef anglTol As Decimal, ByRef anguTol As Decimal, ByRef linlTol As Decimal,
+                                 ByRef linuTol As Decimal, ByRef TolMod As Decimal, ByVal linPrecision As LinearPrecisionEnum,
+                                      ByVal uTol As Decimal, ByVal Value As String, ByVal Units As String)
+        If linuTol = 0 AndAlso linlTol = 0 AndAlso anguTol = 0 AndAlso anglTol = 0 Then
+            Dim TolDGV As DataGridView
+            If Units.Contains("meter") OrElse Units.Contains("Micron") Then
+                TolDGV = dgvLinMetPrecTolerance
+            Else
+                TolDGV = dgvLinImpPrecTolerance
+            End If
+            If rdoPrecision.Checked = True Then
+                For Each row In TolDGV.Rows
+                    If TolDGV(TolDGV.Columns("Precision").Index, row.index).Value = linPrecision Then
+                        linuTol = TolDGV(TolDGV.Columns("+Tol").Index, row.index).Value
+                        linlTol = TolDGV(TolDGV.Columns("-Tol").Index, row.index).Value
+                        Exit For
+                    End If
+                Next
+                For Each row In dgvAngPrecTolerance.Rows
+                    If dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Precision").Index, row.index).Value = linPrecision Then
+                        anguTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("+Tol").Index, row.index).Value
+                        anglTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("-Tol").Index, row.index).Value
+                        Exit For
+                    End If
+                Next
+            Else
+                If TolDGV(TolDGV.Columns("Upper Limit").Index, 0).Value < Value Then
+                    MsgBox("The dimension is outside the specified ranges" & vbNewLine &
+                                       "The largest tolerance will be used")
+                    linuTol = TolDGV(TolDGV.Columns("+Tol").Index, 0).Value
+                    linlTol = TolDGV(TolDGV.Columns("-Tol").Index, 0).Value
+                ElseIf dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Upper Limit").Index, 0).Value < Value Then
+                    MsgBox("The dimension is outside the specified ranges" & vbNewLine &
+                                       "The largest tolerance will be used")
+                    anguTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("+Tol").Index, 0).Value
+                    anglTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("-Tol").Index, 0).Value
+                Else
+                    For Each row In TolDGV.Rows
+                        If TolDGV(TolDGV.Columns("Upper Limit").Index, row.index).Value > Value AndAlso
+                                        Value > TolDGV(TolDGV.Columns("Lower Limit").Index, row.index).Value Then
+                            linuTol = TolDGV(TolDGV.Columns("+Tol").Index, row.index).Value
+                            linlTol = TolDGV(TolDGV.Columns("-Tol").Index, row.index).Value
+                            Exit For
+                        End If
+                    Next
+                    For Each row In dgvAngPrecTolerance.Rows
+                        If dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Upper Limit").Index, row.index).Value > Value AndAlso
+                                    Value > dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("Lower Limit").Index, row.index).Value Then
+                            anguTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("+Tol").Index, row.index).Value
+                            anglTol = dgvAngPrecTolerance(dgvAngPrecTolerance.Columns("-Tol").Index, row.index).Value
+                            Exit For
+                        End If
+                    Next
+                End If
+            End If
+        Else
+            linuTol = uTol / TolMod
+            anguTol = uTol / TolMod
+        End If
+        'If lTol = 0 Then
+        '    linlTol = My.Settings("LinN" & linPrecision)
+        '    anglTol = My.Settings("AngN" & linPrecision)
+        'Else
+        '    linlTol = lTol / TolMod
+        '    anglTol = lTol / TolMod
+        'End If
     End Sub
     Private Sub Add_To_Table(ByVal oType As String, ByVal RefKey As String, ByVal oDim As GeneralDimension, ByVal Prefix As String, ByVal StringValue As String, ByVal Precision As Integer,
                             ByVal TolPrecision As Integer, ByVal linuTol As Decimal, ByVal linlTol As Decimal, ByVal Value As String, ByVal Balloon As String, ByVal Type As String, ByVal Units As String,
@@ -1028,41 +1033,190 @@ Novalue:
         dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = "NA"
         Dim Values As String = RefKey
     End Sub
-    Public Sub HoleTable(oDim As HoleTable, RefKey As String)
+    Public Sub HoleTable(oDim As HoleTable, RefKey As String, Balloon As Integer)
         Dim Text As String = ""
-        Dim Val As New List(Of String)
-        Dim SepVal As New List(Of List(Of String))
-        Dim otype As String
+        Dim StringValue As String
+        Dim TolMod As Decimal
+
+        Dim RowDetails As New List(Of Dictionary(Of String, String))
+        Dim TableDetails As New List(Of List(Of Dictionary(Of String, String)))
+        Dim Units As String = "Centimeter"
+        Dim otype As String = "Linear"
+        Dim Value As String
+        Dim linutol, linlTol As Decimal
         For Row = 1 To oDim.HoleTableRows.Count
-            Dim Comment As String = ""
+            Dim hole As Object = oDim.HoleTableRows.Item(Row).ReferencedHole
+            Dim Comment = oDim.HoleTableRows.Item(Row).HoleTag.Text
+            'Dim HoleTag As HoleTag = 
             For Col = 1 To oDim.HoleTableColumns.Count
-                otype = "Linear"
-                Select Case oDim.HoleTableColumns.Item(Col).Title
-                    Case "HOLE"
-                        Comment = oDim.HoleTableRows(Row).Item(Col).Text
-                    Case "XDIM", "YDIM", "XDIM (Alt)", "YDIM (Alt)"
-                    Case "C'SINK ANGLE", "C'SINK ANGLE (Alt)"
-                        otype = "Angular"
-                    Case "DESCRIPTION"
-                        Dim PreValue As String = Replace(oDim.HoleTableRows(Row).Item(Col).Text, "n", "")
-                        PreValue = Replace(PreValue, "v", "")
-                        PreValue = Replace(PreValue, "x", "")
-                        PreValue = Replace(PreValue, "w", "")
-                    Case Else
-                        Val.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                Dim ColTag As Object = oDim.HoleTableRows.Item(Row).Item(Col)
+                'Select Case My.Settings.HoleTableUnits
+                '    Case 1
+                '        Units = "Milimeter"
+                '        StringValue = Math.Round(Value * 10, Precision)
+                '        Tolmod = 0.1
+                '        Value = StringValue
+                '    Case UnitsTypeEnum.kCentimeterLengthUnits
+                '        Units = 2
+                '        StringValue = Math.Round(Value * 1, Precision)
+                '    Case UnitsTypeEnum.kMeterLengthUnits
+                '        Units = 3
+                '        StringValue = Math.Round(Value / 100, Precision)
+                '        Tolmod = 100
+                '        Value = StringValue
+                '    Case UnitsTypeEnum.kMicronLengthUnits
+                '        Units = 7
+                '        Tolmod = 0.0001
+                '        StringValue = Math.Round(Value * 10000, Precision)
+                '        Value = StringValue
+                '    Case 0
+                '        Units = "Inch"
+                '        Tolmod = 2.54
+                '        Value = Math.Round(Value / 2.54, Precision)
+                '        If Not oDim.Style.DisplayFormat = DisplayFormatEnum.kDecimalFormat Then
+                '            StringValue = GetFraction(Value, Precision)
+                '        Else
+                '            StringValue = FormatNumber(Value, Precision)
+                '        End If
+                '    Case 4
+                '        Units = "Foot"
+                '        StringValue = Math.Round(Value / 2.54 / 12, Precision)
+                '        Tolmod = 2.54 * 12
+                '        Value = StringValue
+                '    Case 6
+                '        Units = "Yard"
+                '        StringValue = Math.Round(Value / 2.54 / 12 / 3, Precision)
+                '        Tolmod = 2.54 * 12 * 3
+                '        Value = StringValue
+                '    Case 5
+                '        Units = "Mile"
+                '        Tolmod = 2.54 * 12 * 5280
+                '        StringValue = Math.Round(Value / 2.54 / 12 / 5280, Precision)
+                '        Value = StringValue
+                'End Select
+                Dim CellDetails As New Dictionary(Of String, String)
+                Select Case oDim.HoleTableColumns.Item(Col).PropertyType
+                    'Case HolePropertyEnum.kCBoreDepthHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kCBoreDiameterHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kCSinkAngleHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kCSinkDepthHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kCSinkDiameterHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kCustomDesignationHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kCustomHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kDescriptionHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kFastenerTypeHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kFasternerFitHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kFasternerSizeHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kHoleDepthHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kHoleDiameterHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kHoleHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kPunchAngleHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kPunchDepthHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kPunchDirectionHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kPunchDirectionHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kPunchIdHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kQuantityHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kTapDrillDiameterHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kThreadClassHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kThreadDepthHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kThreadDesignationHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    'Case HolePropertyEnum.kThreadPitchHoleProperty
+                    '    CellDetails.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                    Case HolePropertyEnum.kXDIMHoleProperty
+                        Value = Strings.Left(oDim.HoleTableRows(Row).Item(Col).Text, InStr(oDim.HoleTableRows(Row).Item(Col).Text, " ") - 1)
+                        CellDetails.Add("Value", Value)
+                        CellDetails.Add("Units", My.Settings.HoleTableUnits)
+                        CellDetails.Add("QTY", 1)
+                        CellDetails.Add("Type", "Dimension")
+                        CellDetails.Add("Sub-Type", "Linear")
+                        Parse_Basic_Tolerance(0, 0, linlTol, linutol, 1, InStrRev(Value, "."), 0, Value, My.Settings.HoleTableUnits)
+                        CellDetails.Add("UTol", linutol)
+                        CellDetails.Add("LTol", linlTol)
+                        CellDetails.Add("ULimit", Value + linutol)
+                        CellDetails.Add("LLimit", Value + linlTol)
+                        CellDetails.Add("Comments", Comment)
+                    Case HolePropertyEnum.kYDIMHoleProperty
+                        Value = Strings.Left(oDim.HoleTableRows(Row).Item(Col).Text, InStr(oDim.HoleTableRows(Row).Item(Col).Text, " ") - 1)
+                        CellDetails.Add("Value", Value)
+                        CellDetails.Add("Units", My.Settings.HoleTableUnits)
+                        CellDetails.Add("QTY", 1)
+                        CellDetails.Add("Type", "Dimension")
+                        CellDetails.Add("Sub-Type", "Linear")
+                        Parse_Basic_Tolerance(0, 0, linlTol, linutol, 1, InStrRev(Value, "."), 0, Value, My.Settings.HoleTableUnits)
+                        CellDetails.Add("UTol", linutol)
+                        CellDetails.Add("LTol", linlTol)
+                        CellDetails.Add("ULimit", Value + linutol)
+                        CellDetails.Add("LLimit", Value + linlTol)
+                        CellDetails.Add("Comments", Comment)
+                        'Case "XDIM", "YDIM"
+                        '    Units = My.Settings.HoleTableUnits
+                        '    Val.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                        'Case "DESCRIPTION"
+                        '    Dim PreValue As String = Replace(oDim.HoleTableRows(Row).Item(Col).Text, "n", "")
+                        '    PreValue = Replace(PreValue, "v", "")
+                        '    PreValue = Replace(PreValue, "x", "")
+                        '    PreValue = Replace(PreValue, "w", "")
+                        '    Text = PreValue
+                        'Case "FASTENER FIT", "FASTENER SIZE", "FASTENER TYPE"
+                        '    Value = oDim.HoleTableRows(Row).Item(Col).Text
+                        '    Val.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                        'Case "CUSTOM DESIGNATION"
+                        '    Val.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                        'Case "THREAD PITCH", "THREAD DESIGNATION", "THREAD CLASS", "QUANTITY", "PUNCH ID",
+                        '     Text = oDim.HoleTableRows(Row).Item(Col).Text
+                        'Case Else
+                        '    If oDim.HoleTableColumns.Item(Col).Title.Contains("(Alt)") Then
+                        '        Units = My.Settings.HoleTableAltUnits
+                        '        Val.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                        '    ElseIf oDim.HoleTableColumns.Item(Col).Title.Contains("ANGLE") Then
+                        '        otype = "Angular"
+                        '        Val.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                        '    Else
+                        '        Val.Add(oDim.HoleTableRows(Row).Item(Col).Text)
+                        '        Units = My.Settings.HoleTableUnits
+                        '    End If
                 End Select
+                RowDetails.Add(CellDetails)
             Next
-            dgvDimValues(dgvDimValues.Columns("Comment").Index, CurrRow).Value = Comment
+            Dim Values As String = RefKey
+            dgvDimValues.Rows.Add()
+            dgvDimValues(dgvDimValues.Columns("Comments").Index, CurrRow).Value = Comment
             dgvDimValues(dgvDimValues.Columns("Balloon").Index, CurrRow).Value = Balloon
             dgvDimValues(dgvDimValues.Columns("Ref").Index, CurrRow).Value = RefKey
             dgvDimValues(dgvDimValues.Columns("Qty").Index, CurrRow).Value = 1
-            dgvDimValues(dgvDimValues.Columns("Type").Index, CurrRow).Value = Type
+            dgvDimValues(dgvDimValues.Columns("Type").Index, CurrRow).Value = "Dimension"
             dgvDimValues(dgvDimValues.Columns("SubType").Index, CurrRow).Value = otype
             dgvDimValues(dgvDimValues.Columns("Units").Index, CurrRow).Value = Units
+            dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Text
+            InsertSketchedSymbolSample(oDim, oDim.HoleTableRows.Item(Row).HoleTag.RangeBox.MaxPoint, oDim.HoleTableRows.Item(Row).HoleTag.RangeBox.MinPoint, Values, CurrRow)
         Next
 
-        Dim Values As String = RefKey
-        InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values, CurrRow)
+
+
     End Sub
     Public Sub FCF(oDim As FeatureControlFrame, RefKey As String)
         Dim Text As String = ""

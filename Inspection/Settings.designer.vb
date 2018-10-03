@@ -47,14 +47,19 @@ Partial Class Settings
         Me.txtSampleSize = New System.Windows.Forms.TextBox()
         Me.txtLotSize = New System.Windows.Forms.TextBox()
         Me.tbpExtSettings = New System.Windows.Forms.TabPage()
+        Me.ddpHoleTable = New ScrewTurn.DropDownPanel()
+        Me.cmbHTAltUnits = New System.Windows.Forms.ComboBox()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.cmbHTDefUnits = New System.Windows.Forms.ComboBox()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.CheckBox8 = New System.Windows.Forms.CheckBox()
         Me.ddpHoleCallout = New ScrewTurn.DropDownPanel()
+        Me.chkSepHTCallout = New System.Windows.Forms.CheckBox()
         Me.chkSeparateCallout = New System.Windows.Forms.CheckBox()
         Me.CheckBox5 = New System.Windows.Forms.CheckBox()
-        Me.rtbHoleCallout = New System.Windows.Forms.RichTextBox()
         Me.CheckBox7 = New System.Windows.Forms.CheckBox()
         Me.ddpNotes = New ScrewTurn.DropDownPanel()
         Me.CheckBox4 = New System.Windows.Forms.CheckBox()
-        Me.rtbNotes = New System.Windows.Forms.RichTextBox()
         Me.CheckBox6 = New System.Windows.Forms.CheckBox()
         Me.ddpDimensions = New ScrewTurn.DropDownPanel()
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
@@ -81,12 +86,12 @@ Partial Class Settings
         Me.btnCancel = New System.Windows.Forms.Button()
         Me.btnLoad = New System.Windows.Forms.Button()
         Me.btnSave = New System.Windows.Forms.Button()
-        Me.chkSepHTCallout = New System.Windows.Forms.CheckBox()
         Me.ddpGeneralSettings.SuspendLayout()
         Me.CharacteristicsTab.SuspendLayout()
         Me.tbpSettings.SuspendLayout()
         Me.ddpSampleing.SuspendLayout()
         Me.tbpExtSettings.SuspendLayout()
+        Me.ddpHoleTable.SuspendLayout()
         Me.ddpHoleCallout.SuspendLayout()
         Me.ddpNotes.SuspendLayout()
         Me.ddpDimensions.SuspendLayout()
@@ -359,6 +364,8 @@ Partial Class Settings
         '
         'tbpExtSettings
         '
+        Me.tbpExtSettings.AutoScroll = True
+        Me.tbpExtSettings.Controls.Add(Me.ddpHoleTable)
         Me.tbpExtSettings.Controls.Add(Me.ddpHoleCallout)
         Me.tbpExtSettings.Controls.Add(Me.ddpNotes)
         Me.tbpExtSettings.Controls.Add(Me.ddpDimensions)
@@ -370,13 +377,86 @@ Partial Class Settings
         Me.tbpExtSettings.Text = "Extraction Settings"
         Me.tbpExtSettings.UseVisualStyleBackColor = True
         '
+        'ddpHoleTable
+        '
+        Me.ddpHoleTable.AutoCollapseDelay = -1
+        Me.ddpHoleTable.Controls.Add(Me.cmbHTAltUnits)
+        Me.ddpHoleTable.Controls.Add(Me.Label7)
+        Me.ddpHoleTable.Controls.Add(Me.cmbHTDefUnits)
+        Me.ddpHoleTable.Controls.Add(Me.Label6)
+        Me.ddpHoleTable.Controls.Add(Me.CheckBox8)
+        Me.ddpHoleTable.EnableHeaderMenu = True
+        Me.ddpHoleTable.ExpandAnimationSpeed = ScrewTurn.AnimationSpeed.Medium
+        Me.ddpHoleTable.Expanded = True
+        Me.ddpHoleTable.HeaderFont = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ddpHoleTable.HeaderHeight = 20
+        Me.ddpHoleTable.HeaderIconNormal = Nothing
+        Me.ddpHoleTable.HeaderIconOver = Nothing
+        Me.ddpHoleTable.HeaderText = "Hole Table"
+        Me.ddpHoleTable.HomeLocation = New System.Drawing.Point(0, 258)
+        Me.ddpHoleTable.HotTrackStyle = ScrewTurn.HotTrackStyle.Both
+        Me.ddpHoleTable.Location = New System.Drawing.Point(0, 258)
+        Me.ddpHoleTable.ManageControls = False
+        Me.ddpHoleTable.Moveable = False
+        Me.ddpHoleTable.Name = "ddpHoleTable"
+        Me.ddpHoleTable.RoundedCorners = False
+        Me.ddpHoleTable.Size = New System.Drawing.Size(279, 125)
+        Me.ddpHoleTable.TabIndex = 3
+        '
+        'cmbHTAltUnits
+        '
+        Me.cmbHTAltUnits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cmbHTAltUnits.FormattingEnabled = True
+        Me.cmbHTAltUnits.Items.AddRange(New Object() {"Inches", "Milimeters", "Centimeters", "Meters", "Feet", "Miles", "Yards", "Microns"})
+        Me.cmbHTAltUnits.Location = New System.Drawing.Point(165, 50)
+        Me.cmbHTAltUnits.Name = "cmbHTAltUnits"
+        Me.cmbHTAltUnits.Size = New System.Drawing.Size(111, 21)
+        Me.cmbHTAltUnits.TabIndex = 9
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(83, 53)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(76, 13)
+        Me.Label7.TabIndex = 8
+        Me.Label7.Text = "Alternate Units"
+        '
+        'cmbHTDefUnits
+        '
+        Me.cmbHTDefUnits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cmbHTDefUnits.FormattingEnabled = True
+        Me.cmbHTDefUnits.Items.AddRange(New Object() {"Inches", "Milimeters", "Centimeters", "Meters", "Feet", "Miles", "Yards", "Microns"})
+        Me.cmbHTDefUnits.Location = New System.Drawing.Point(165, 23)
+        Me.cmbHTDefUnits.Name = "cmbHTDefUnits"
+        Me.cmbHTDefUnits.Size = New System.Drawing.Size(111, 21)
+        Me.cmbHTDefUnits.TabIndex = 7
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(83, 26)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(68, 13)
+        Me.Label6.TabIndex = 6
+        Me.Label6.Text = "Default Units"
+        '
+        'CheckBox8
+        '
+        Me.CheckBox8.AutoSize = True
+        Me.CheckBox8.Location = New System.Drawing.Point(6, 25)
+        Me.CheckBox8.Name = "CheckBox8"
+        Me.CheckBox8.Size = New System.Drawing.Size(71, 17)
+        Me.CheckBox8.TabIndex = 5
+        Me.CheckBox8.Text = "Use GDT"
+        Me.CheckBox8.UseVisualStyleBackColor = True
+        '
         'ddpHoleCallout
         '
         Me.ddpHoleCallout.AutoCollapseDelay = -1
         Me.ddpHoleCallout.Controls.Add(Me.chkSepHTCallout)
         Me.ddpHoleCallout.Controls.Add(Me.chkSeparateCallout)
         Me.ddpHoleCallout.Controls.Add(Me.CheckBox5)
-        Me.ddpHoleCallout.Controls.Add(Me.rtbHoleCallout)
         Me.ddpHoleCallout.Controls.Add(Me.CheckBox7)
         Me.ddpHoleCallout.EnableHeaderMenu = True
         Me.ddpHoleCallout.ExpandAnimationSpeed = ScrewTurn.AnimationSpeed.Medium
@@ -386,22 +466,34 @@ Partial Class Settings
         Me.ddpHoleCallout.HeaderIconNormal = Nothing
         Me.ddpHoleCallout.HeaderIconOver = Nothing
         Me.ddpHoleCallout.HeaderText = "Hole Callout"
-        Me.ddpHoleCallout.HomeLocation = New System.Drawing.Point(0, 218)
+        Me.ddpHoleCallout.HomeLocation = New System.Drawing.Point(0, 157)
         Me.ddpHoleCallout.HotTrackStyle = ScrewTurn.HotTrackStyle.Both
-        Me.ddpHoleCallout.Location = New System.Drawing.Point(0, 218)
+        Me.ddpHoleCallout.Location = New System.Drawing.Point(0, 157)
         Me.ddpHoleCallout.ManageControls = False
         Me.ddpHoleCallout.Moveable = False
         Me.ddpHoleCallout.Name = "ddpHoleCallout"
         Me.ddpHoleCallout.RoundedCorners = False
-        Me.ddpHoleCallout.Size = New System.Drawing.Size(279, 139)
+        Me.ddpHoleCallout.Size = New System.Drawing.Size(279, 95)
         Me.ddpHoleCallout.TabIndex = 2
+        '
+        'chkSepHTCallout
+        '
+        Me.chkSepHTCallout.AutoSize = True
+        Me.chkSepHTCallout.Checked = True
+        Me.chkSepHTCallout.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkSepHTCallout.Location = New System.Drawing.Point(3, 74)
+        Me.chkSepHTCallout.Name = "chkSepHTCallout"
+        Me.chkSepHTCallout.Size = New System.Drawing.Size(196, 17)
+        Me.chkSepHTCallout.TabIndex = 7
+        Me.chkSepHTCallout.Text = "Separate Hole Table Characteristics"
+        Me.chkSepHTCallout.UseVisualStyleBackColor = True
         '
         'chkSeparateCallout
         '
         Me.chkSeparateCallout.AutoSize = True
         Me.chkSeparateCallout.Checked = True
         Me.chkSeparateCallout.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkSeparateCallout.Location = New System.Drawing.Point(3, 103)
+        Me.chkSeparateCallout.Location = New System.Drawing.Point(3, 58)
         Me.chkSeparateCallout.Name = "chkSeparateCallout"
         Me.chkSeparateCallout.Size = New System.Drawing.Size(201, 17)
         Me.chkSeparateCallout.TabIndex = 6
@@ -411,21 +503,12 @@ Partial Class Settings
         'CheckBox5
         '
         Me.CheckBox5.AutoSize = True
-        Me.CheckBox5.Location = New System.Drawing.Point(3, 87)
+        Me.CheckBox5.Location = New System.Drawing.Point(3, 42)
         Me.CheckBox5.Name = "CheckBox5"
         Me.CheckBox5.Size = New System.Drawing.Size(71, 17)
         Me.CheckBox5.TabIndex = 5
         Me.CheckBox5.Text = "Use GDT"
         Me.CheckBox5.UseVisualStyleBackColor = True
-        '
-        'rtbHoleCallout
-        '
-        Me.rtbHoleCallout.Enabled = False
-        Me.rtbHoleCallout.Location = New System.Drawing.Point(3, 42)
-        Me.rtbHoleCallout.Name = "rtbHoleCallout"
-        Me.rtbHoleCallout.Size = New System.Drawing.Size(267, 44)
-        Me.rtbHoleCallout.TabIndex = 2
-        Me.rtbHoleCallout.Text = ""
         '
         'CheckBox7
         '
@@ -443,7 +526,6 @@ Partial Class Settings
         '
         Me.ddpNotes.AutoCollapseDelay = -1
         Me.ddpNotes.Controls.Add(Me.CheckBox4)
-        Me.ddpNotes.Controls.Add(Me.rtbNotes)
         Me.ddpNotes.Controls.Add(Me.CheckBox6)
         Me.ddpNotes.EnableHeaderMenu = True
         Me.ddpNotes.ExpandAnimationSpeed = ScrewTurn.AnimationSpeed.Medium
@@ -460,27 +542,18 @@ Partial Class Settings
         Me.ddpNotes.Moveable = False
         Me.ddpNotes.Name = "ddpNotes"
         Me.ddpNotes.RoundedCorners = False
-        Me.ddpNotes.Size = New System.Drawing.Size(279, 130)
+        Me.ddpNotes.Size = New System.Drawing.Size(279, 69)
         Me.ddpNotes.TabIndex = 1
         '
         'CheckBox4
         '
         Me.CheckBox4.AutoSize = True
-        Me.CheckBox4.Location = New System.Drawing.Point(3, 87)
+        Me.CheckBox4.Location = New System.Drawing.Point(3, 40)
         Me.CheckBox4.Name = "CheckBox4"
         Me.CheckBox4.Size = New System.Drawing.Size(71, 17)
         Me.CheckBox4.TabIndex = 5
         Me.CheckBox4.Text = "Use GDT"
         Me.CheckBox4.UseVisualStyleBackColor = True
-        '
-        'rtbNotes
-        '
-        Me.rtbNotes.Enabled = False
-        Me.rtbNotes.Location = New System.Drawing.Point(3, 42)
-        Me.rtbNotes.Name = "rtbNotes"
-        Me.rtbNotes.Size = New System.Drawing.Size(267, 44)
-        Me.rtbNotes.TabIndex = 2
-        Me.rtbNotes.Text = ""
         '
         'CheckBox6
         '
@@ -784,18 +857,6 @@ Partial Class Settings
         Me.btnSave.Text = "Save Settings"
         Me.btnSave.UseVisualStyleBackColor = True
         '
-        'chkSepHTCallout
-        '
-        Me.chkSepHTCallout.AutoSize = True
-        Me.chkSepHTCallout.Checked = True
-        Me.chkSepHTCallout.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkSepHTCallout.Location = New System.Drawing.Point(3, 119)
-        Me.chkSepHTCallout.Name = "chkSepHTCallout"
-        Me.chkSepHTCallout.Size = New System.Drawing.Size(196, 17)
-        Me.chkSepHTCallout.TabIndex = 7
-        Me.chkSepHTCallout.Text = "Separate Hole Table Characteristics"
-        Me.chkSepHTCallout.UseVisualStyleBackColor = True
-        '
         'Settings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -814,6 +875,8 @@ Partial Class Settings
         Me.ddpSampleing.ResumeLayout(False)
         Me.ddpSampleing.PerformLayout()
         Me.tbpExtSettings.ResumeLayout(False)
+        Me.ddpHoleTable.ResumeLayout(False)
+        Me.ddpHoleTable.PerformLayout()
         Me.ddpHoleCallout.ResumeLayout(False)
         Me.ddpHoleCallout.PerformLayout()
         Me.ddpNotes.ResumeLayout(False)
@@ -864,10 +927,8 @@ Partial Class Settings
     Friend WithEvents txtLotSize As Windows.Forms.TextBox
     Friend WithEvents ddpHoleCallout As ScrewTurn.DropDownPanel
     Friend WithEvents CheckBox5 As Windows.Forms.CheckBox
-    Friend WithEvents rtbHoleCallout As Windows.Forms.RichTextBox
     Friend WithEvents CheckBox7 As Windows.Forms.CheckBox
     Friend WithEvents CheckBox4 As Windows.Forms.CheckBox
-    Friend WithEvents rtbNotes As Windows.Forms.RichTextBox
     Friend WithEvents CheckBox6 As Windows.Forms.CheckBox
     Friend WithEvents CheckBox1 As Windows.Forms.CheckBox
     Friend WithEvents TabPage1 As Windows.Forms.TabPage
@@ -895,4 +956,10 @@ Partial Class Settings
     Friend WithEvents btnSave As Windows.Forms.Button
     Friend WithEvents chkSeparateCallout As Windows.Forms.CheckBox
     Friend WithEvents chkSepHTCallout As Windows.Forms.CheckBox
+    Friend WithEvents ddpHoleTable As ScrewTurn.DropDownPanel
+    Friend WithEvents cmbHTDefUnits As Windows.Forms.ComboBox
+    Friend WithEvents Label6 As Windows.Forms.Label
+    Friend WithEvents CheckBox8 As Windows.Forms.CheckBox
+    Friend WithEvents cmbHTAltUnits As Windows.Forms.ComboBox
+    Friend WithEvents Label7 As Windows.Forms.Label
 End Class

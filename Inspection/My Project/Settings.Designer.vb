@@ -557,6 +557,30 @@ Namespace My
                 Me("AngN8") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Inch")>  _
+        Public Property HoleTableUnits() As String
+            Get
+                Return CType(Me("HoleTableUnits"),String)
+            End Get
+            Set
+                Me("HoleTableUnits") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Milimeter")>  _
+        Public Property HoleTableAltUnits() As String
+            Get
+                Return CType(Me("HoleTableAltUnits"),String)
+            End Get
+            Set
+                Me("HoleTableAltUnits") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

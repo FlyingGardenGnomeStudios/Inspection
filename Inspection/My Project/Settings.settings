@@ -128,5 +128,11 @@
     <Setting Name="AngN8" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">-0.001</Value>
     </Setting>
+    <Setting Name="HoleTableUnits" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Inch</Value>
+    </Setting>
+    <Setting Name="HoleTableAltUnits" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Milimeter</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
