@@ -702,7 +702,7 @@ Public Class Value_Table_SA
         dgvDimValues(dgvDimValues.Columns("Comments").Index, CurrRow).Value = Comment
     End Sub
     Public Sub LinearDim(oDim As GeneralDimension, RefKey As String, oType As String, Insert As Boolean, Balloon As Integer)
-        If Read = False Then InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, RefKey, Balloon)
+        If Read = False Then InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, RefKey, Balloon, Nothing)
         Dim Value, Prefix, Suffix As String
         If oDim.Text.Text.Contains("n") Then
             Prefix = ""
@@ -728,7 +728,7 @@ Public Class Value_Table_SA
         CurrRow += 1
     End Sub
     Public Sub Note(oDim As DrawingNote, RefKey As String, oType As String, Insert As Boolean, Balloon As Integer)
-        If Read = False Then InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, RefKey, Balloon)
+        If Read = False Then InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, RefKey, Balloon, oDim)
         dgvDimValues.Rows.Add()
         dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = Balloon
         dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
@@ -736,7 +736,6 @@ Public Class Value_Table_SA
         dgvDimValues(dgvDimValues.Columns("Value").Index, dgvDimValues.RowCount - 1).Value = oDim.Text
         dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "NA"
         dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oType
-        Dim Values As String = RefKey
         'InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values, CurrRow)
     End Sub
     Public Sub HoleTableTag(oDim As HoleTag, RefKey As String)
@@ -747,7 +746,7 @@ Public Class Value_Table_SA
         dgvDimValues(dgvDimValues.Columns("Qty").Index, dgvDimValues.RowCount - 1).Value = "TBD"
         dgvDimValues(dgvDimValues.Columns("Type").Index, dgvDimValues.RowCount - 1).Value = oDim.Type
         Dim Values As String = RefKey
-        InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values, CurrRow)
+        InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, Values, CurrRow, Nothing)
     End Sub
     Public Sub Surface(oDim As SurfaceTextureSymbol, RefKey As String)
         dgvDimValues.Rows.Add()
@@ -759,10 +758,10 @@ Public Class Value_Table_SA
         dgvDimValues(dgvDimValues.Columns("UTol").Index, dgvDimValues.RowCount - 1).Value = oDim.MaximumRoughness
         dgvDimValues(dgvDimValues.Columns("LTol").Index, dgvDimValues.RowCount - 1).Value = oDim.MinimumRoughness
         Dim Values As String = RefKey
-        InsertSketchedSymbolSample(oDim, oDim.Position, oDim.Position, Values, CurrRow)
+        InsertSketchedSymbolSample(oDim, oDim.Position, oDim.Position, Values, CurrRow, Nothing)
     End Sub
     Public Sub HoleTag(oDim As HoleTag, RefKey As String, oType As String, Insert As Boolean, Balloon As Integer)
-        If Read = False Then InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, RefKey, Balloon)
+        If Read = False Then InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, RefKey, Balloon, Nothing)
         dgvDimValues.Rows.Add()
         Dim QTY As Integer
 
@@ -778,7 +777,7 @@ Public Class Value_Table_SA
         Dim Values As String = RefKey
     End Sub
     Public Sub ThreadNote(ByRef oDim As HoleThreadNote, ByRef RefKey As String, ByRef oType As String, ByRef Insert As Boolean, ByRef Balloon As Integer)
-        If Read = False Then InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, RefKey, Balloon)
+        If Read = False Then InsertSketchedSymbolSample(oDim, oDim.Text.RangeBox.MaxPoint, oDim.Text.RangeBox.MinPoint, RefKey, Balloon, Nothing)
         Dim Value, Prefix, Tag, Suffix, Comment As String
         Prefix = ""
         Suffix = ""
@@ -1021,7 +1020,10 @@ Novalue:
         Return Value
     End Function
     Public Sub Chamfer(oDim As ChamferNote, RefKey As String, oType As String, insert As Boolean, Balloon As Integer)
-        If Read = False Then InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, RefKey, Balloon)
+        If Read = False Then InsertSketchedSymbolSample(oDim, oDim.RangeBox.MaxPoint, oDim.RangeBox.MinPoint, RefKey, Balloon, oDim)
+
+        Dim ChamferNote() As String = Strings.Split(oDim.FormattedChamferNote, "> ")
+
         dgvDimValues.Rows.Add()
         dgvDimValues(dgvDimValues.Columns("Balloon").Index, dgvDimValues.RowCount - 1).Value = Balloon
         dgvDimValues(dgvDimValues.Columns("Ref").Index, dgvDimValues.RowCount - 1).Value = RefKey
@@ -1212,7 +1214,7 @@ Novalue:
             dgvDimValues(dgvDimValues.Columns("SubType").Index, CurrRow).Value = otype
             dgvDimValues(dgvDimValues.Columns("Units").Index, CurrRow).Value = Units
             dgvDimValues(dgvDimValues.Columns("Value").Index, CurrRow).Value = Text
-            InsertSketchedSymbolSample(oDim, oDim.HoleTableRows.Item(Row).HoleTag.RangeBox.MaxPoint, oDim.HoleTableRows.Item(Row).HoleTag.RangeBox.MinPoint, Values, CurrRow)
+            InsertSketchedSymbolSample(oDim, oDim.HoleTableRows.Item(Row).HoleTag.RangeBox.MaxPoint, oDim.HoleTableRows.Item(Row).HoleTag.RangeBox.MinPoint, Values, CurrRow, Nothing)
         Next
 
 
@@ -1226,7 +1228,7 @@ Novalue:
             dgvDimValues.Rows.Add(dgvDimValues.Rows.Count, _invApp.ReferenceKeyManager.KeyToString(RefKey), Text, "TBD", oDim.Type, item.Tolerance, item.LowerTolerance)
         Next
         Dim Values As String = RefKey
-        InsertSketchedSymbolSample(oDim, oDim.Position, oDim.Position, Values, CurrRow)
+        InsertSketchedSymbolSample(oDim, oDim.Position, oDim.Position, Values, CurrRow, Nothing)
     End Sub
     Public Sub HoleTable()
         Dim oDoc As DrawingDocument
@@ -1241,7 +1243,7 @@ Novalue:
             Next
         Next
     End Sub
-    Private Sub InsertSketchedSymbolSample(oDim As Object, ByRef MaxP As Point2d, ByRef MinP As Point2d, ByRef Values As String, ByRef Balloon As Integer) 'ByRef Text As Box2d)
+    Private Sub InsertSketchedSymbolSample(oDim As Object, ByRef MaxP As Point2d, ByRef MinP As Point2d, ByRef Values As String, ByRef Balloon As Integer, ByRef Note As LeaderNote) 'ByRef Text As Box2d)
         Dim oDrawDoc As DrawingDocument
         oDrawDoc = _invApp.ActiveDocument
         ' Obtain a sketched symbol definition.
@@ -1288,13 +1290,19 @@ Novalue:
         End Select
         Dim oSketchedSymbol As SketchedSymbol
         Dim oGI As GeometryIntent
-        oGI = oSheet.CreateGeometryIntent(oDim, oPoint)
         Dim oCol As ObjectCollection
         oCol = _invApp.TransientObjects.CreateObjectCollection
-        oCol.Add(oPoint)
-        oCol.Add(oGI)
         oSketchedSymbol = oSheet.SketchedSymbols.Add(oSketchedSymbolDef, oPoint, 0, 1, sPromptStrings)
-        oSketchedSymbol.Leader.AddLeader(oCol)
+        If Not Note Is Nothing Then
+            Call oCol.Add(oPoint)
+            oGI = oSheet.CreateGeometryIntent(Note, _invApp.TransientGeometry.CreatePoint2d(Note.Position.X, Note.Position.Y))
+            Call oCol.Add(oGI)
+        Else
+            oGI = oSheet.CreateGeometryIntent(oDim, oPoint)
+            oCol.Add(oGI)
+            oCol.Add(oPoint)
+        End If
+        Call oSketchedSymbol.Leader.AddLeader(oCol)
         oSketchedSymbol.LeaderVisible = False
     End Sub
     Private Sub CreateSketchedSymbolDefinition()
